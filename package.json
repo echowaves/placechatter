@@ -1,0 +1,25 @@
+{
+  "name": "placechatter",
+  "version": "1.0.0",
+  "author": "Echowaves Corp.",
+  "license": "MIT",
+  "scripts": {
+    "start": "expo start",
+    "startc": "expo r -c",
+    "reset:simulator": "xcrun simctl erase all",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "build": "eas build",
+    "publish:prod": "expo publish --release-channel production"
+  },
+  "dependencies": {
+    "expo": "~46.0.9",
+    "expo-status-bar": "~1.4.0",
+    "react": "18.0.0",
+    "react-native": "0.69.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9"
+  },
+  "private": true
+}
