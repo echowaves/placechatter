@@ -9,7 +9,16 @@ export default {
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#ffffff",
+    },
+    packagerOpts: {
+      sourceExts: ["js", "json", "ts", "tsx", "jsx", "vue"],
+    },
+    extra: {
+      API_URI: process.env.API_URI,
+      REALTIME_API_URI: process.env.REALTIME_API_URI,
+      API_KEY: process.env.API_KEY,
+      PRIVATE_IMG_HOST: process.env.PRIVATE_IMG_HOST,
     },
     scheme: "placechatter",
     updates: {
