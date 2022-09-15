@@ -11,6 +11,7 @@ export default {
       resizeMode: "contain",
       backgroundColor: "#ffffff"
     },
+    scheme: "placechatter",
     updates: {
       fallbackToCacheTimeout: 0
     },
@@ -19,7 +20,7 @@ export default {
     ],
     ios: {
       bundleIdentifier: "com.echowaves.placechatter",
-      buildNumber: "1",
+      buildNumber: "2",
       supportsTablet: true,
       associatedDomains: [
         "applinks:link.placechatter.com" 
@@ -37,7 +38,7 @@ export default {
         backgroundColor: "#FFFFFF"
       },
       package: "com.echowaves.placechatter",
-      versionCode: 1,
+      versionCode: 2,
       permissions: [
         "INTERNET",
         "SYSTEM_ALERT_WINDOW",
