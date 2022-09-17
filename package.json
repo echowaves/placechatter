@@ -4,13 +4,13 @@
   "author": "Echowaves Corp.",
   "license": "MIT",
   "scripts": {
-    "start": "expo start",
-    "startc": "expo r -c",
+    "start": "npx expo start",
+    "startc": "npx expo r -c",
     "reset:simulator": "xcrun simctl erase all",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "npx expo start --android",
+    "ios": "npx expo start --ios",
     "build": "eas build",
-    "publish:prod": "expo publish --release-channel production"
+    "publish:prod": "npx expo publish --release-channel production"
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
@@ -92,7 +92,6 @@
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-react-native": "^3.11.0",
-    "expo-cli": "5.4.7",
     "jest": "^26.6.3",
     "jetifier": "^2.0.0",
     "react-native-clean-project": "^3.6.4",

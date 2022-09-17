@@ -22,6 +22,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import * as CONST from "./src/consts.js";
 
 import PlacesList from "./src/screens/PlacesList"
+import AddNewPlace from "./src/screens/AddNewPlace"
 import PlaceDetails from "./src/screens/PlaceDetails"
 import Feedback from "./src/screens/Feedback"
 import Login from "./src/screens/Login"
@@ -75,11 +76,11 @@ function App() {
                     headerRight: "",
                   }}
                 />
-                {/* <Stack.Screen
-                  name="PlacesDetails"
-                  component={PlacesDetails}
+                <Stack.Screen
+                  name="AddNewPlace"
+                  component={AddNewPlace}
                   options={{ headerTintColor: CONST.MAIN_COLOR, gestureEnabled: false }}
-                  screenOptions={{ headerShown: false }} /> */}
+                  screenOptions={{ headerShown: true }} />
                 {/* <Stack.Screen
                   name="Chat"
                   component={Chat}
@@ -126,7 +127,6 @@ function App() {
             }} />
         </Drawer.Navigator>
       </NavigationContainer>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
     </ThemeProvider>
   );
 }
