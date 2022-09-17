@@ -26,11 +26,9 @@ import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icon
 import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts.js'
+import Footer from '../../components/Footer'
 
-const maxNickNameLength = 40  
-const minNickNameLength = 4 
-
-function Login() {
+function PlacesList() {
   const navigation = useNavigation()
 
   const [nickName, setNickName] = useState('')
@@ -40,7 +38,7 @@ function Login() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'my login',
+      headerTitle: 'places near me',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -55,20 +53,6 @@ function Login() {
     // resetFields()
   }, [navigation])
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'my secret',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canSubmit])
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -82,9 +66,9 @@ function Login() {
 
   const renderHeaderRight = () => (
     <Ionicons
-      onPress={
-        canSubmit ? () => handleSubmit() : null
-      }
+      // onPress={
+      //   canSubmit ? () => handleSubmit() : null
+      // }
       name="send"
       size={30}
       style={
@@ -114,43 +98,9 @@ function Login() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={
-          false
-        }>
-        <Card containerStyle={{ padding: 0 }}>
-          <ListItem>
-            <Text style={
-              {
-                color: CONST.MAIN_COLOR,
-                fontSize: 20,
-              }
-            }>The secret allows you to carry incognito identity to a different device, or restore it from another phone.
-            </Text>
-          </ListItem>
-        </Card>
-
-        <Input
-          placeholder="Nickname"
-          autoCorrect={false}
-          autoCapitalize="none"
-          autoComplete="off"
-          disabled={nickNameEntered}
-          leftIcon={(
-            <FontAwesome
-              name="user"
-              size={24}
-              color="black"
-            />
-          )}
-          value={nickName}
-          onChangeText={text => setNickName(text.toLowerCase())}
-          errorStyle={{ color: 'red' }}
-          // errorMessage={errorsMap.get('nickName')}
-        />
-      </ScrollView>
+      <Text>List of places</Text>
+      <Footer />
     </SafeAreaView>
   )
 }
-export default Login
+export default PlacesList

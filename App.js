@@ -16,17 +16,18 @@ import { NavigationContainer } from '@react-navigation/native'
 
 import { createDrawerNavigator } from '@react-navigation/drawer'
 
-import { ThemeProvider } from 'react-native-elements'
+import { ThemeProvider, Button, createTheme } from '@rneui/themed'
+
 import Toast from 'react-native-toast-message'
 
 import { createStackNavigator } from '@react-navigation/stack'
 import * as CONST from './src/consts.js'
 
-import PlacesList from './src/screens/Login'
-import PlacesDetails from './src/screens/Login'
-import Feedback from './src/screens/Login'
+import PlacesList from './src/screens/PlacesList'
+import PlaceDetails from './src/screens/PlaceDetails'
+import Feedback from './src/screens/Feedback'
 import Login from './src/screens/Login'
-import Chat from './src/screens/Login'
+import Chat from './src/screens/Chat'
 
 import 'react-native-gesture-handler'
 
@@ -54,7 +55,8 @@ function App() {
                       marginLeft: 10,
                       color: CONST.MAIN_COLOR,
                       width: 60,
-                    }} />
+                    }}
+                  />
                 ),
               drawerLabel: '',
             }}>
@@ -72,19 +74,19 @@ function App() {
                     headerLeft: '',
                     headerRight: '',
                   }} />
-                <Stack.Screen
+                {/* <Stack.Screen
                   name="PlacesDetails"
                   component={PlacesDetails}
                   options={{ headerTintColor: CONST.MAIN_COLOR, gestureEnabled: false }}
-                  screenOptions={{ headerShown: false }} />
-                <Stack.Screen
+                  screenOptions={{ headerShown: false }} /> */}
+                {/* <Stack.Screen
                   name="Chat"
                   component={Chat}
-                  options={{ headerTintColor: CONST.MAIN_COLOR }} />
+                  options={{ headerTintColor: CONST.MAIN_COLOR }} /> */}
               </Stack.Navigator>
             )}
           </Drawer.Screen>
-          <Drawer.Screen
+          {/* <Drawer.Screen
             name="Login"
             component={Login}
             options={{
@@ -101,9 +103,9 @@ function App() {
                 ),
               drawerLabel: 'secret',
               headerShown: true,
-            }} />
+            }} /> */}
 
-          <Drawer.Screen
+          {/* <Drawer.Screen
             name="Feedback"
             component={Feedback}
             options={{
@@ -120,7 +122,7 @@ function App() {
                 ),
               drawerLabel: 'feedback',
               headerShown: true,
-            }} />
+            }} /> */}
         </Drawer.Navigator>
       </NavigationContainer>
       <Toast ref={ref => Toast.setRef(ref)} />
