@@ -28,7 +28,7 @@ import * as CONST from '../../consts.js'
 const maxNickNameLength = 40  
 const minNickNameLength = 4 
 
-const SecretScreen = () => {
+function SecretScreen() {
   const navigation = useNavigation()
 
   const [nickName, setNickName] = useState('')
@@ -37,7 +37,6 @@ const SecretScreen = () => {
   const [canSubmit, setCanSubmit] = useState(false)
 
   useEffect(() => {
-
     navigation.setOptions({
       headerTitle: 'my login',
       headerTintColor: CONST.MAIN_COLOR,
@@ -53,7 +52,6 @@ const SecretScreen = () => {
   useEffect(() => {
     // resetFields()
   }, [navigation])
-
 
   useEffect(() => {
     navigation.setOptions({
