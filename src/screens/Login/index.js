@@ -57,7 +57,7 @@ function Login() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'my secret',
+      headerTitle: 'login',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -114,42 +114,7 @@ function Login() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        showsVerticalScrollIndicator={
-          false
-        }>
-        <Card containerStyle={{ padding: 0 }}>
-          <ListItem>
-            <Text style={
-              {
-                color: CONST.MAIN_COLOR,
-                fontSize: 20,
-              }
-            }>The secret allows you to carry incognito identity to a different device, or restore it from another phone.
-            </Text>
-          </ListItem>
-        </Card>
-
-        <Input
-          placeholder="Nickname"
-          autoCorrect={false}
-          autoCapitalize="none"
-          autoComplete="off"
-          disabled={nickNameEntered}
-          leftIcon={(
-            <FontAwesome
-              name="user"
-              size={24}
-              color="black"
-            />
-          )}
-          value={nickName}
-          onChangeText={text => setNickName(text.toLowerCase())}
-          errorStyle={{ color: 'red' }}
-          // errorMessage={errorsMap.get('nickName')}
-        />
-      </ScrollView>
+      <Text>login</Text>
     </SafeAreaView>
   )
 }

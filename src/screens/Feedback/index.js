@@ -27,7 +27,6 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts.js'
 
-
 function Feedback() {
   const navigation = useNavigation()
 
@@ -98,7 +97,7 @@ function Feedback() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Place details</Text>
+      <Text>Feedback</Text>
     </SafeAreaView>
   )
 }

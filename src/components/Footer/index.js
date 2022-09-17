@@ -65,7 +65,7 @@ function Footer() {
         >
           <FontAwesome
             onPress={() => navigation.openDrawer()}
-            name='navicon'
+            name="navicon"
             size={25}
             style={{
               color: CONST.MAIN_COLOR,
@@ -74,15 +74,7 @@ function Footer() {
               left: 15,
             }}
           />
-        </Col>
-
-        {/* drawer button */}
-        <Col
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        />
+        </Col>        
       </Grid>
     </SafeAreaView>
   )
