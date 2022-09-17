@@ -94,8 +94,8 @@ function App() {
             options={{
               drawerIcon:
                 config => (
-                  <FontAwesome
-                    name="user-secret"
+                  <MaterialIcons
+                    name="login"
                     size={30}
                     style={{
                       marginLeft: 10,
