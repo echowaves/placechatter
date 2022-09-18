@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { useDimensions } from "@react-native-community/hooks"
-import * as Linking from "expo-linking"
+
 import * as Location from "expo-location"
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from "react-native"
@@ -26,15 +26,17 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons"
 import PropTypes from "prop-types"
 
 import * as CONST from "../../consts.js"
+import * as utils from "../../utils.js"
+
 import Footer from "../../components/Footer"
 
 function PlacesList() {
   const navigation = useNavigation()
   const { width, height } = useDimensions().window
+  const [topOffset, setTopOffset] = useState(height / 3)
+  const [currentLocation, setCurrentLocation] = useState(null)
 
   const [isTandcAccepted, setIsTandcAccepted] = useState(false)
-  const [currentLocation, setCurrentLocation] = useState(null)
-  const [topOffset, setTopOffset] = useState(height / 3)
 
   useEffect(() => {
     navigation.setOptions({
@@ -57,9 +59,19 @@ function PlacesList() {
       } catch (err) {
         console.log("failed to setIsTandcAccepted")
       }
+
+      try {
+        const location = await utils._getLocation()
+        setCurrentLocation(location)
+      } catch (err) {
+        Toast.show({
+          text1: "Unable to get location",
+          type: "error",
+          topOffset,
+        })
+      }
     }
     init()
-    _getLocation()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -150,66 +162,6 @@ function PlacesList() {
         </Overlay>
       </SafeAreaView>
     )
-  }
-
-  async function _getLocation() {
-    const locationPermission = await _checkPermission({
-      permissionFunction: Location.requestForegroundPermissionsAsync,
-      alertHeader:
-        "Placechatter shows you place closest on your current location.",
-      alertBody: "You need to enable Location in Settings and Try Again.",
-    })
-
-    if (locationPermission === "granted") {
-      try {
-        const location = await Location.getLastKnownPositionAsync({
-          maxAge: 60 * 1000 * 60, // 1 hour
-          requiredAccuracy: 10, // 10 meters
-        })
-
-        console.loglocation
-        // initially set the location that is last known -- works much faster this way
-        setCurrentLocation(location)
-
-        Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.Lowest,
-            timeInterval: 10000,
-            distanceInterval: 3000,
-          },
-          async (loc) => {
-            setCurrentLocation(loc)
-            console.log({ loc })
-          }
-        )
-      } catch (err) {
-        Toast.show({
-          text1: "Unable to get location",
-          type: "error",
-          topOffset,
-        })
-      }
-    }
-  }
-
-  async function _checkPermission({
-    permissionFunction,
-    alertHeader,
-    alertBody,
-    permissionFunctionArgument,
-  }) {
-    const { status } = await permissionFunction(permissionFunctionArgument)
-    if (status !== "granted") {
-      Alert.alert(alertHeader, alertBody, [
-        {
-          text: "Open Settings",
-          onPress: () => {
-            Linking.openSettings()
-          },
-        },
-      ])
-    }
-    return status
   }
 
   return (
