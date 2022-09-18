@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 import { useDimensions } from "@react-native-community/hooks"
 
+import * as Location from "expo-location"
+
 import { Alert, SafeAreaView, StyleSheet, ScrollView } from "react-native"
 
 import {
@@ -51,8 +53,9 @@ function AddNewPlace() {
     })
 
     const init = async function () {
+      let location = null
       try {
-        const location = await utils._getLocation()
+        location = await utils._getLocation()
         setCurrentLocation(location)
       } catch (err) {
         Toast.show({
@@ -61,6 +64,13 @@ function AddNewPlace() {
           topOffset,
         })
       }
+      const { latitude, longitude } = location.coords
+
+      const locationGeocodedAddress = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      })
+      console.log({ locationGeocodedAddress })
     }
     init()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

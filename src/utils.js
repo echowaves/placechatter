@@ -12,9 +12,9 @@ export async function _getLocation() {
 
   if (locationPermission === "granted") {
     const location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Highest,
+      accuracy: Location.Accuracy.BestForNavigation,
     })
-    console.log({ location })
+    // console.log({ location })
     return location
     // initially set the location that is last known -- works much faster this way
   }
