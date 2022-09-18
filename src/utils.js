@@ -11,9 +11,8 @@ export async function _getLocation() {
   })
 
   if (locationPermission === "granted") {
-    const location = await Location.getLastKnownPositionAsync({
-      maxAge: 60 * 1000 * 60, // 1 hour
-      requiredAccuracy: 10, // 10 meters
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Highest,
     })
     console.log({ location })
     return location
