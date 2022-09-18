@@ -22,29 +22,36 @@ export default {
     },
     scheme: "placechatter",
     updates: {
-      fallbackToCacheTimeout: 0
+      fallbackToCacheTimeout: 0,
     },
-    assetBundlePatterns: [
-      "**/*"
-    ],
+    assetBundlePatterns: ["**/*"],
     ios: {
       bundleIdentifier: "com.echowaves.placechatter",
       buildNumber: "2",
       supportsTablet: true,
-      associatedDomains: [
-        "applinks:link.placechatter.com" 
-      ],
+      associatedDomains: ["applinks:link.placechatter.com"],
       config: {
         usesNonExemptEncryption: false,
         branch: {
-          apiKey: "key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX"
+          apiKey: "key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX",
         },
+      },
+      infoPlist: {
+        UIBackgroundModes: ["fetch"],
+        NSLocationAlwaysUsageDescription:
+          "We need to know your location so that we can show you places in your area.",
+        NSLocationWhenInUseUsageDescription:
+          "You need to enable your location, in order to see places that are closest to you.",
+        NSLocationAlwaysAndWhenInUseUsageDescription:
+          "You need to enable your location, in order to see places that are closest to you.",
+        NSMotionUsageDescription:
+          "This will help us to improve the relevance of places that you can see related to you location.",
       },
     },
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
       },
       package: "com.echowaves.placechatter",
       versionCode: 2,
@@ -56,11 +63,11 @@ export default {
         "CAMERA",
         "WRITE_EXTERNAL_STORAGE",
         "READ_EXTERNAL_STORAGE",
-        "com.google.android.gms.permission.AD_ID"
+        "com.google.android.gms.permission.AD_ID",
       ],
       config: {
         branch: {
-          apiKey: "key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX"
+          apiKey: "key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX",
         },
       },
       intentFilters: [
@@ -71,23 +78,20 @@ export default {
             {
               scheme: "https",
               host: "*.placechatter.com",
-              pathPrefix: "/places"
+              pathPrefix: "/places",
             },
             {
               scheme: "https",
               host: "*.placechatter.com",
-              pathPrefix: "/friends"
+              pathPrefix: "/friends",
             },
           ],
-          category: [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        }
-      ]
+          category: ["BROWSABLE", "DEFAULT"],
+        },
+      ],
     },
     web: {
-      favicon: "./assets/favicon.png"
-    }
-  }
+      favicon: "./assets/favicon.png",
+    },
+  },
 }

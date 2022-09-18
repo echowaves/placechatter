@@ -21,12 +21,12 @@ import Toast from "react-native-toast-message";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as CONST from "./src/consts.js";
 
-import PlacesList from "./src/screens/PlacesList"
-import AddNewPlace from "./src/screens/AddNewPlace"
-import PlaceDetails from "./src/screens/PlaceDetails"
-import Feedback from "./src/screens/Feedback"
-import Login from "./src/screens/Login"
-import Chat from "./src/screens/Chat"
+import PlacesList from "./src/screens/PlacesList";
+import AddNewPlace from "./src/screens/AddNewPlace";
+import PlaceDetails from "./src/screens/PlaceDetails";
+import Feedback from "./src/screens/Feedback";
+import Login from "./src/screens/Login";
+import Chat from "./src/screens/Chat";
 
 import "react-native-gesture-handler";
 
@@ -44,11 +44,11 @@ function App() {
           screenOptions={{ gestureEnabled: true, headerShown: false }}
         >
           <Drawer.Screen
-            name='Home'
+            name="Home"
             options={{
-              drawerIcon: config => (
+              drawerIcon: (config) => (
                 <FontAwesome
-                  name='chevron-left'
+                  name="chevron-left"
                   size={30}
                   style={{
                     marginLeft: 10,
@@ -67,7 +67,7 @@ function App() {
                 screenOptions={{ gestureEnabled: true, headerShown: true }}
               >
                 <Stack.Screen
-                  name='PlacesList'
+                  name="PlacesList"
                   component={PlacesList}
                   options={{
                     headerTintColor: CONST.MAIN_COLOR,
@@ -79,8 +79,12 @@ function App() {
                 <Stack.Screen
                   name="AddNewPlace"
                   component={AddNewPlace}
-                  options={{ headerTintColor: CONST.MAIN_COLOR, gestureEnabled: false }}
-                  screenOptions={{ headerShown: true }} />
+                  options={{
+                    headerTintColor: CONST.MAIN_COLOR,
+                    gestureEnabled: false,
+                  }}
+                  screenOptions={{ headerShown: true }}
+                />
                 {/* <Stack.Screen
                   name="Chat"
                   component={Chat}
@@ -92,39 +96,41 @@ function App() {
             name="Login"
             component={Login}
             options={{
-              drawerIcon:
-                config => (
-                  <MaterialIcons
-                    name="login"
-                    size={30}
-                    style={{
-                      marginLeft: 10,
-                      color: CONST.MAIN_COLOR,
-                      width: 60,
-                    }} />
-                ),
-              drawerLabel: 'login',
+              drawerIcon: (config) => (
+                <MaterialIcons
+                  name="login"
+                  size={30}
+                  style={{
+                    marginLeft: 10,
+                    color: CONST.MAIN_COLOR,
+                    width: 60,
+                  }}
+                />
+              ),
+              drawerLabel: "login",
               headerShown: true,
-            }} />
+            }}
+          />
 
           <Drawer.Screen
             name="Feedback"
             component={Feedback}
             options={{
-              drawerIcon:
-                config => (
-                  <MaterialIcons
-                    name="feedback"
-                    size={30}
-                    style={{
-                      marginLeft: 10,
-                      color: CONST.MAIN_COLOR,
-                      width: 60,
-                    }} />
-                ),
-              drawerLabel: 'feedback',
+              drawerIcon: (config) => (
+                <MaterialIcons
+                  name="feedback"
+                  size={30}
+                  style={{
+                    marginLeft: 10,
+                    color: CONST.MAIN_COLOR,
+                    width: 60,
+                  }}
+                />
+              ),
+              drawerLabel: "feedback",
               headerShown: true,
-            }} />
+            }}
+          />
         </Drawer.Navigator>
       </NavigationContainer>
     </ThemeProvider>

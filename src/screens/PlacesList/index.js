@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react"
+import { useNavigation } from "@react-navigation/native"
+import { useDimensions } from "@react-native-community/hooks"
+import * as Linking from "expo-linking"
+import * as Location from "expo-location"
 
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-} from "react-native";
-import * as SecureStore from "expo-secure-store";
+import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from "react-native"
+import * as SecureStore from "expo-secure-store"
 
 import {
   Text,
@@ -19,22 +16,26 @@ import {
   Button,
   Overlay,
   Divider,
-} from "@rneui/themed";
+} from "@rneui/themed"
 
 // import * as FileSystem from 'expo-file-system'
-import Toast from "react-native-toast-message";
+import Toast from "react-native-toast-message"
 
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons"
 
-import PropTypes from "prop-types";
+import PropTypes from "prop-types"
 
-import * as CONST from "../../consts.js";
-import Footer from "../../components/Footer";
+import * as CONST from "../../consts.js"
+import Footer from "../../components/Footer"
 
 function PlacesList() {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
+  const { width, height } = useDimensions().window
 
-  const [isTandcAccepted, setIsTandcAccepted] = useState(false);
+  const [isTandcAccepted, setIsTandcAccepted] = useState(false)
+  const [currentLocation, setCurrentLocation] = useState(null)
+  const [topOffset, setTopOffset] = useState(height / 3)
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: "places near me",
@@ -45,23 +46,25 @@ function PlacesList() {
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
-    });
+    })
 
-    (async () => {
+    const init = async function () {
       try {
         setIsTandcAccepted(
           (await SecureStore.getItemAsync(CONST.IS_TANDC_ACCEPTED_KEY)) ===
             "true"
-        );
+        )
       } catch (err) {
-        console.log("failed to setIsTandcAccepted");
+        console.log("failed to setIsTandcAccepted")
       }
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }
+    init()
+    _getLocation()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // resetFields()
-  }, [navigation]);
+  }, [navigation])
 
   const styles = StyleSheet.create({
     container: {
@@ -71,21 +74,21 @@ function PlacesList() {
       marginHorizontal: 0,
       paddingTop: 50,
     },
-  });
+  })
 
   const renderHeaderRight = () => (
     <MaterialIcons
       onPress={() => navigation.navigate("AddNewPlace")}
-      name='add-circle'
+      name="add-circle"
       size={40}
       style={{
         marginRight: 10,
         color: CONST.MAIN_COLOR,
       }}
     />
-  );
+  )
 
-  const renderHeaderLeft = () => {};
+  const renderHeaderLeft = () => {}
 
   if (!isTandcAccepted) {
     return (
@@ -117,7 +120,8 @@ function PlacesList() {
               <Divider />
               <ListItem>
                 <Text>
-                  The abusive users may be banned from placechatter forever.
+                  The abusive users may be banned from placechatter forever, and
+                  will be reported.
                 </Text>
               </ListItem>
               <Divider />
@@ -130,14 +134,14 @@ function PlacesList() {
 
               <ListItem style={{ alignItems: "center" }}>
                 <Button
-                  title='I Agree'
-                  type='outline'
+                  title="I Agree"
+                  type="outline"
                   onPress={() => {
                     SecureStore.setItemAsync(
                       CONST.IS_TANDC_ACCEPTED_KEY,
                       "true"
-                    );
-                    setIsTandcAccepted(true);
+                    )
+                    setIsTandcAccepted(true)
                   }}
                 />
               </ListItem>
@@ -145,7 +149,67 @@ function PlacesList() {
           </ScrollView>
         </Overlay>
       </SafeAreaView>
-    );
+    )
+  }
+
+  async function _getLocation() {
+    const locationPermission = await _checkPermission({
+      permissionFunction: Location.requestForegroundPermissionsAsync,
+      alertHeader:
+        "Placechatter shows you place closest on your current location.",
+      alertBody: "You need to enable Location in Settings and Try Again.",
+    })
+
+    if (locationPermission === "granted") {
+      try {
+        const location = await Location.getLastKnownPositionAsync({
+          maxAge: 60 * 1000 * 60, // 1 hour
+          requiredAccuracy: 10, // 10 meters
+        })
+
+        console.loglocation
+        // initially set the location that is last known -- works much faster this way
+        setCurrentLocation(location)
+
+        Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.Lowest,
+            timeInterval: 10000,
+            distanceInterval: 3000,
+          },
+          async (loc) => {
+            setCurrentLocation(loc)
+            console.log({ loc })
+          }
+        )
+      } catch (err) {
+        Toast.show({
+          text1: "Unable to get location",
+          type: "error",
+          topOffset,
+        })
+      }
+    }
+  }
+
+  async function _checkPermission({
+    permissionFunction,
+    alertHeader,
+    alertBody,
+    permissionFunctionArgument,
+  }) {
+    const { status } = await permissionFunction(permissionFunctionArgument)
+    if (status !== "granted") {
+      Alert.alert(alertHeader, alertBody, [
+        {
+          text: "Open Settings",
+          onPress: () => {
+            Linking.openSettings()
+          },
+        },
+      ])
+    }
+    return status
   }
 
   return (
@@ -153,6 +217,6 @@ function PlacesList() {
       <Text>List of places</Text>
       <Footer />
     </SafeAreaView>
-  );
+  )
 }
-export default PlacesList;
+export default PlacesList
