@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect, useState } from "react"
+import { useNavigation } from "@react-navigation/native"
 
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-} from 'react-native'
+import { Alert, SafeAreaView, StyleSheet, ScrollView } from "react-native"
 
 import {
   Text,
@@ -15,41 +10,44 @@ import {
   Card,
   ListItem,
   Button,
-} from '@rneui/themed'
-
+} from "@rneui/themed"
 
 // import * as FileSystem from 'expo-file-system'
-import Toast from 'react-native-toast-message'
+import Toast from "react-native-toast-message"
 
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import {
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons"
 
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types"
 
-import * as CONST from '../../consts.js'
+import * as CONST from "../../consts.js"
 
-const maxNickNameLength = 40  
-const minNickNameLength = 4 
+const maxNickNameLength = 40
+const minNickNameLength = 4
 
-function Login() {
+function PhoneCheck() {
   const navigation = useNavigation()
 
-  const [nickName, setNickName] = useState('')
+  const [nickName, setNickName] = useState("")
   const [nickNameEntered, setNickNameEntered] = useState(false)
 
   const [canSubmit, setCanSubmit] = useState(false)
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'my login',
+      headerTitle: "my login",
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
+      headerBackTitle: "",
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-  }, [])// eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // resetFields()
@@ -57,16 +55,16 @@ function Login() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'login',
+      headerTitle: "login",
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
+      headerBackTitle: "",
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canSubmit])
 
   const styles = StyleSheet.create({
@@ -74,7 +72,7 @@ function Login() {
       flex: 1,
     },
     scrollView: {
-      alignItems: 'center',
+      alignItems: "center",
       marginHorizontal: 0,
       paddingBottom: 300,
     },
@@ -82,33 +80,25 @@ function Login() {
 
   const renderHeaderRight = () => (
     <Ionicons
-      onPress={
-        canSubmit ? () => handleSubmit() : null
-      }
+      onPress={canSubmit ? () => handleSubmit() : null}
       name="send"
       size={30}
-      style={
-        {
-          marginRight: 10,
-          color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
-        }
-      }
+      style={{
+        marginRight: 10,
+        color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
+      }}
     />
   )
   const renderHeaderLeft = () => (
     <FontAwesome
       name="chevron-left"
       size={30}
-      style={
-        {
-          marginLeft: 10,
-          color: CONST.MAIN_COLOR,
-          width: 60,
-        }
-      }
-      onPress={
-        () => navigation.goBack()
-      }
+      style={{
+        marginLeft: 10,
+        color: CONST.MAIN_COLOR,
+        width: 60,
+      }}
+      onPress={() => navigation.goBack()}
     />
   )
 
@@ -118,4 +108,4 @@ function Login() {
     </SafeAreaView>
   )
 }
-export default Login
+export default PhoneCheck

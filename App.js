@@ -5,35 +5,40 @@
  * @flow strict-local
  */
 
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React from "react"
+import { StyleSheet, View } from "react-native"
 
-import { FontAwesome, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  FontAwesome5,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons"
 
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native"
 
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createDrawerNavigator } from "@react-navigation/drawer"
 
-import { ThemeProvider, Button, createTheme } from "@rneui/themed";
+import { ThemeProvider, Button, createTheme } from "@rneui/themed"
 
-import Toast from "react-native-toast-message";
+import Toast from "react-native-toast-message"
 
-import { createStackNavigator } from "@react-navigation/stack";
-import * as CONST from "./src/consts.js";
+import { createStackNavigator } from "@react-navigation/stack"
+import * as CONST from "./src/consts.js"
 
-import PlacesList from "./src/screens/PlacesList";
-import AddNewPlace from "./src/screens/AddNewPlace";
-import PlaceDetails from "./src/screens/PlaceDetails";
-import Feedback from "./src/screens/Feedback";
-import Login from "./src/screens/Login";
-import Chat from "./src/screens/Chat";
+import PlacesList from "./src/screens/PlacesList"
+import AddNewPlace from "./src/screens/AddNewPlace"
+import PlaceDetails from "./src/screens/PlaceDetails"
+import Feedback from "./src/screens/Feedback"
+import PhoneCheck from "./src/screens/PhoneCheck"
+import Chat from "./src/screens/Chat"
 
-import "react-native-gesture-handler";
+import "react-native-gesture-handler"
 
 // import StackNavigator from './src/nav/stackNavigator.js'
 
-const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator()
+const Stack = createStackNavigator()
 
 function App() {
   return (
@@ -93,12 +98,12 @@ function App() {
             )}
           </Drawer.Screen>
           <Drawer.Screen
-            name="Login"
-            component={Login}
+            name="PhoneCheck"
+            component={PhoneCheck}
             options={{
               drawerIcon: (config) => (
-                <MaterialIcons
-                  name="login"
+                <MaterialCommunityIcons
+                  name="cellphone-check"
                   size={30}
                   style={{
                     marginLeft: 10,
@@ -107,7 +112,7 @@ function App() {
                   }}
                 />
               ),
-              drawerLabel: "login",
+              drawerLabel: "My Number",
               headerShown: true,
             }}
           />
@@ -127,13 +132,13 @@ function App() {
                   }}
                 />
               ),
-              drawerLabel: "feedback",
+              drawerLabel: "Feedback",
               headerShown: true,
             }}
           />
         </Drawer.Navigator>
       </NavigationContainer>
     </ThemeProvider>
-  );
+  )
 }
-export default App;
+export default App
