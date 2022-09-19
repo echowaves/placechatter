@@ -4,7 +4,7 @@ import { useDimensions } from "@react-native-community/hooks"
 
 import * as Location from "expo-location"
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView } from "react-native"
+import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from "react-native"
 
 import {
   Text,
@@ -34,9 +34,7 @@ function AddNewPlace() {
   const { width, height } = useDimensions().window
   const [topOffset, setTopOffset] = useState(height / 3)
   const [currentLocation, setCurrentLocation] = useState(null)
-
-  const [nickName, setNickName] = useState("")
-  const [nickNameEntered, setNickNameEntered] = useState(false)
+  const [locationGeocodedAddress, setLocationGeocodedAddress] = useState(null)
 
   const [canSubmit, setCanSubmit] = useState(false)
 
@@ -67,11 +65,11 @@ function AddNewPlace() {
       if (location) {
         const { latitude, longitude } = location.coords
 
-        const locationGeocodedAddress = await Location.reverseGeocodeAsync({
+        const geocodedAddress = await Location.reverseGeocodeAsync({
           latitude,
           longitude,
         })
-        console.log({ locationGeocodedAddress })
+        setLocationGeocodedAddress(geocodedAddress)
       }
     }
     init()
@@ -118,7 +116,7 @@ function AddNewPlace() {
     />
   )
 
-  if (!currentLocation) {
+  if (!currentLocation || !locationGeocodedAddress) {
     return (
       <LinearProgress
         color={CONST.MAIN_COLOR}
@@ -131,10 +129,27 @@ function AddNewPlace() {
       />
     )
   }
+  console.log({ locationGeocodedAddress })
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>add new place</Text>
+      <ScrollView>
+        {locationGeocodedAddress.map((loc, i) => (
+          <Card key={{ i }}>
+            <Card.Title>{`${loc.name}`}</Card.Title>
+            <Card.Divider />
+            <Text>{`${loc.streetNumber} ${loc.street}`}</Text>
+            <Text>{`${loc.city}, ${loc.region} `}</Text>
+            <Text>{`${loc.postalCode}`}</Text>
+            <Text>{`${loc.country} (${loc.isoCountryCode})`}</Text>
+            <Card.Divider />
+            <Text>{`${loc.district}`}</Text>
+            <Text>{`${loc.region}`}</Text>
+            <Text>{`${loc.subregion}`}</Text>
+            <Text>{`${loc.timezone}`}</Text>
+          </Card>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   )
 }
