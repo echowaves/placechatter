@@ -23,6 +23,10 @@ export default {
     scheme: "placechatter",
     updates: {
       fallbackToCacheTimeout: 0,
+      // url: "https://u.expo.dev/c8788597-86cf-4b92-a3a1-3d27b1bd5da9",
+    },
+    runtimeVersion: {
+      policy: "sdkVersion",
     },
     assetBundlePatterns: ["**/*"],
     ios: {
