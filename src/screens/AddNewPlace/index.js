@@ -64,13 +64,15 @@ function AddNewPlace() {
           topOffset,
         })
       }
-      const { latitude, longitude } = location.coords
+      if (location) {
+        const { latitude, longitude } = location.coords
 
-      const locationGeocodedAddress = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      })
-      console.log({ locationGeocodedAddress })
+        const locationGeocodedAddress = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        })
+        console.log({ locationGeocodedAddress })
+      }
     }
     init()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -115,6 +117,20 @@ function AddNewPlace() {
       onPress={() => navigation.goBack()}
     />
   )
+
+  if (!currentLocation) {
+    return (
+      <LinearProgress
+        color={CONST.MAIN_COLOR}
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          left: 0,
+        }}
+      />
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
