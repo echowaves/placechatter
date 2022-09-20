@@ -106,13 +106,33 @@ function App() {
                   name="cellphone-check"
                   size={30}
                   style={{
-                    marginLeft: 10,
+                    marginLeft: 5,
                     color: CONST.MAIN_COLOR,
-                    width: 60,
+                    width: 30,
                   }}
                 />
               ),
-              drawerLabel: "My Number",
+              drawerLabel: "Confirm Phone",
+              headerShown: true,
+            }}
+          />
+
+          <Drawer.Screen
+            name="AddNewPlace"
+            component={AddNewPlace}
+            options={{
+              drawerIcon: (config) => (
+                <MaterialIcons
+                  name="add-circle"
+                  size={30}
+                  style={{
+                    marginLeft: 5,
+                    color: CONST.MAIN_COLOR,
+                    width: 30,
+                  }}
+                />
+              ),
+              drawerLabel: "Add Place",
               headerShown: true,
             }}
           />
@@ -126,9 +146,9 @@ function App() {
                   name="feedback"
                   size={30}
                   style={{
-                    marginLeft: 10,
+                    marginLeft: 5,
                     color: CONST.MAIN_COLOR,
-                    width: 60,
+                    width: 30,
                   }}
                 />
               ),

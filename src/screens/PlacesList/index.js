@@ -88,17 +88,7 @@ function PlacesList() {
     },
   })
 
-  const renderHeaderRight = () => (
-    <MaterialIcons
-      onPress={() => navigation.navigate("AddNewPlace")}
-      name="add-circle"
-      size={40}
-      style={{
-        marginRight: 10,
-        color: CONST.MAIN_COLOR,
-      }}
-    />
-  )
+  const renderHeaderRight = () => null
 
   const renderHeaderLeft = () => {}
 
