@@ -5,7 +5,7 @@
  * @flow strict-local
  */
 
-import React from "react"
+import React, { useState } from "react"
 // import { StyleSheet, View } from "react-native"
 
 import {
@@ -39,125 +39,142 @@ import "react-native-gesture-handler"
 const Drawer = createDrawerNavigator()
 const Stack = createStackNavigator()
 
+export const DeviceContext = React.createContext()
+
 function App() {
+  const [uuid, setUuid] = useState("")
+  const [nickName, setNickName] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+
   return (
-    <ThemeProvider>
-      <NavigationContainer>
-        <Drawer.Navigator
-          useLegacyImplementation
-          screenOptions={{ gestureEnabled: true, headerShown: false }}
-        >
-          <Drawer.Screen
-            name="Home"
-            options={{
-              drawerIcon: (config) => (
-                <FontAwesome
-                  name="chevron-left"
-                  size={30}
-                  style={{
-                    marginLeft: 10,
-                    color: CONST.MAIN_COLOR,
-                    width: 60,
-                  }}
-                />
-              ),
-              drawerLabel: "",
-            }}
+    <DeviceContext.Provider
+      value={{
+        uuid,
+        setUuid,
+        nickName,
+        setNickName,
+        phoneNumber,
+        setPhoneNumber,
+      }}
+    >
+      <ThemeProvider>
+        <NavigationContainer>
+          <Drawer.Navigator
+            useLegacyImplementation
+            screenOptions={{ gestureEnabled: true, headerShown: false }}
           >
-            {(props) => (
-              <Stack.Navigator
-                // headerMode="none"
-                // initialRouteName="PhotosList"
-                screenOptions={{ gestureEnabled: true, headerShown: true }}
-              >
-                <Stack.Screen
-                  name="PlacesList"
-                  component={PlacesList}
-                  options={{
-                    headerTintColor: CONST.MAIN_COLOR,
-                    headerTitle: "",
-                    headerLeft: "",
-                    headerRight: "",
-                  }}
-                />
-                <Stack.Screen
-                  name="AddNewPlace"
-                  component={AddNewPlace}
-                  options={{
-                    headerTintColor: CONST.MAIN_COLOR,
-                    gestureEnabled: false,
-                  }}
-                  screenOptions={{ headerShown: true }}
-                />
-                {/* <Stack.Screen
+            <Drawer.Screen
+              name="Home"
+              options={{
+                drawerIcon: (config) => (
+                  <FontAwesome
+                    name="chevron-left"
+                    size={30}
+                    style={{
+                      marginLeft: 10,
+                      color: CONST.MAIN_COLOR,
+                      width: 60,
+                    }}
+                  />
+                ),
+                drawerLabel: "",
+              }}
+            >
+              {(props) => (
+                <Stack.Navigator
+                  // headerMode="none"
+                  // initialRouteName="PhotosList"
+                  screenOptions={{ gestureEnabled: true, headerShown: true }}
+                >
+                  <Stack.Screen
+                    name="PlacesList"
+                    component={PlacesList}
+                    options={{
+                      headerTintColor: CONST.MAIN_COLOR,
+                      headerTitle: "",
+                      headerLeft: "",
+                      headerRight: "",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="AddNewPlace"
+                    component={AddNewPlace}
+                    options={{
+                      headerTintColor: CONST.MAIN_COLOR,
+                      gestureEnabled: false,
+                    }}
+                    screenOptions={{ headerShown: true }}
+                  />
+                  {/* <Stack.Screen
                   name="Chat"
                   component={Chat}
                   options={{ headerTintColor: CONST.MAIN_COLOR }} /> */}
-              </Stack.Navigator>
-            )}
-          </Drawer.Screen>
-          <Drawer.Screen
-            name="PhoneCheck"
-            component={PhoneCheck}
-            options={{
-              drawerIcon: (config) => (
-                <MaterialCommunityIcons
-                  name="cellphone-check"
-                  size={30}
-                  style={{
-                    marginLeft: 5,
-                    color: CONST.MAIN_COLOR,
-                    width: 30,
-                  }}
-                />
-              ),
-              drawerLabel: "NickName",
-              headerShown: true,
-            }}
-          />
+                </Stack.Navigator>
+              )}
+            </Drawer.Screen>
+            <Drawer.Screen
+              name="PhoneCheck"
+              component={PhoneCheck}
+              options={{
+                drawerIcon: (config) => (
+                  <MaterialCommunityIcons
+                    name="cellphone-check"
+                    size={30}
+                    style={{
+                      marginLeft: 5,
+                      color: CONST.MAIN_COLOR,
+                      width: 30,
+                    }}
+                  />
+                ),
+                drawerLabel: "NickName",
+                headerShown: true,
+              }}
+            />
 
-          <Drawer.Screen
-            name="AddNewPlace"
-            component={AddNewPlace}
-            options={{
-              drawerIcon: (config) => (
-                <MaterialIcons
-                  name="add-circle"
-                  size={30}
-                  style={{
-                    marginLeft: 5,
-                    color: CONST.MAIN_COLOR,
-                    width: 30,
-                  }}
-                />
-              ),
-              drawerLabel: "Add Place",
-              headerShown: true,
-            }}
-          />
+            <Drawer.Screen
+              name="AddNewPlace"
+              component={AddNewPlace}
+              options={{
+                drawerIcon: (config) => (
+                  <MaterialIcons
+                    name="add-circle"
+                    size={30}
+                    style={{
+                      marginLeft: 5,
+                      color: CONST.MAIN_COLOR,
+                      width: 30,
+                    }}
+                  />
+                ),
+                drawerLabel: "Add Place",
+                headerShown: true,
+              }}
+            />
 
-          <Drawer.Screen
-            name="Feedback"
-            component={Feedback}
-            options={{
-              drawerIcon: (config) => (
-                <MaterialIcons
-                  name="feedback"
-                  size={30}
-                  style={{
-                    marginLeft: 5,
-                    color: CONST.MAIN_COLOR,
-                    width: 30,
-                  }}
-                />
-              ),
-              drawerLabel: "Feedback",
-              headerShown: true,
-            }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </ThemeProvider>
+            <Drawer.Screen
+              name="Feedback"
+              component={Feedback}
+              options={{
+                drawerIcon: (config) => (
+                  <MaterialIcons
+                    name="feedback"
+                    size={30}
+                    style={{
+                      marginLeft: 5,
+                      color: CONST.MAIN_COLOR,
+                      width: 30,
+                    }}
+                  />
+                ),
+                drawerLabel: "Feedback",
+                headerShown: true,
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
+    </DeviceContext.Provider>
   )
 }
 export default App
