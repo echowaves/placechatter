@@ -5,34 +5,34 @@
  * @flow strict-local
  */
 
-import React, { useState } from "react"
+import React, { useState } from 'react'
 // import { StyleSheet, View } from "react-native"
 
 import {
   FontAwesome,
   MaterialIcons,
   MaterialCommunityIcons,
-} from "@expo/vector-icons"
+} from '@expo/vector-icons'
 
-import { NavigationContainer } from "@react-navigation/native"
+import { NavigationContainer } from '@react-navigation/native'
 
-import { createDrawerNavigator } from "@react-navigation/drawer"
+import { createDrawerNavigator } from '@react-navigation/drawer'
 
-import { ThemeProvider, Button, createTheme } from "@rneui/themed"
+import { ThemeProvider, Button, createTheme } from '@rneui/themed'
 
-import Toast from "react-native-toast-message"
+import Toast from 'react-native-toast-message'
 
-import { createStackNavigator } from "@react-navigation/stack"
-import * as CONST from "./src/consts.js"
+import { createStackNavigator } from '@react-navigation/stack'
+import * as CONST from './src/consts.js'
 
-import PlacesList from "./src/screens/PlacesList"
-import AddNewPlace from "./src/screens/AddNewPlace"
-import PlaceDetails from "./src/screens/PlaceDetails"
-import Feedback from "./src/screens/Feedback"
-import PhoneCheck from "./src/screens/PhoneCheck"
-import Chat from "./src/screens/Chat"
+import PlacesList from './src/screens/PlacesList'
+import AddNewPlace from './src/screens/AddNewPlace'
+import PlaceDetails from './src/screens/PlaceDetails'
+import Feedback from './src/screens/Feedback'
+import PhoneCheck from './src/screens/PhoneCheck'
+import Chat from './src/screens/Chat'
 
-import "react-native-gesture-handler"
+import 'react-native-gesture-handler'
 
 // import StackNavigator from './src/nav/stackNavigator.js'
 
@@ -42,21 +42,21 @@ const Stack = createStackNavigator()
 export const DeviceContext = React.createContext()
 
 function App() {
-  const [uuid, setUuid] = useState("")
-  const [nickName, setNickName] = useState("")
-  const [phoneNumber, setPhoneNumber] = useState("")
+  const [uuid, setUuid] = useState('')
+  const [nickName, setNickName] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+
+  const deviceState = {
+    uuid,
+    setUuid,
+    nickName,
+    setNickName,
+    phoneNumber,
+    setPhoneNumber,
+  }
 
   return (
-    <DeviceContext.Provider
-      value={{
-        uuid,
-        setUuid,
-        nickName,
-        setNickName,
-        phoneNumber,
-        setPhoneNumber,
-      }}
-    >
+    <DeviceContext.Provider value={deviceState}>
       <ThemeProvider>
         <NavigationContainer>
           <Drawer.Navigator
@@ -77,7 +77,7 @@ function App() {
                     }}
                   />
                 ),
-                drawerLabel: "",
+                drawerLabel: '',
               }}
             >
               {(props) => (
@@ -91,9 +91,9 @@ function App() {
                     component={PlacesList}
                     options={{
                       headerTintColor: CONST.MAIN_COLOR,
-                      headerTitle: "",
-                      headerLeft: "",
-                      headerRight: "",
+                      headerTitle: '',
+                      headerLeft: '',
+                      headerRight: '',
                     }}
                   />
                   <Stack.Screen
@@ -127,7 +127,7 @@ function App() {
                     }}
                   />
                 ),
-                drawerLabel: "NickName",
+                drawerLabel: 'NickName',
                 headerShown: true,
               }}
             />
@@ -147,7 +147,7 @@ function App() {
                     }}
                   />
                 ),
-                drawerLabel: "Add Place",
+                drawerLabel: 'Add Place',
                 headerShown: true,
               }}
             />
@@ -167,7 +167,7 @@ function App() {
                     }}
                   />
                 ),
-                drawerLabel: "Feedback",
+                drawerLabel: 'Feedback',
                 headerShown: true,
               }}
             />

@@ -1,5 +1,6 @@
 {
     "prettier.semi": false,
     "javascript.format.semicolons": "remove",
-    "typescript.format.semicolons": "remove"
+    "typescript.format.semicolons": "remove",
+    "editor.formatOnSave": true
 }
