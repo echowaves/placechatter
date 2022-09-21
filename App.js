@@ -6,11 +6,10 @@
  */
 
 import React from "react"
-import { StyleSheet, View } from "react-native"
+// import { StyleSheet, View } from "react-native"
 
 import {
   FontAwesome,
-  FontAwesome5,
   MaterialIcons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons"
@@ -112,7 +111,7 @@ function App() {
                   }}
                 />
               ),
-              drawerLabel: "Confirm Phone",
+              drawerLabel: "NickName",
               headerShown: true,
             }}
           />

@@ -55,7 +55,7 @@ function PhoneCheck() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "login",
+      headerTitle: "Create NickName",
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
