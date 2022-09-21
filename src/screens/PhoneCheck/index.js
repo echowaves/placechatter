@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import React, { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView } from "react-native"
+import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 
 import {
   Text,
@@ -10,20 +10,20 @@ import {
   Card,
   ListItem,
   Button,
-} from "@rneui/themed"
+} from '@rneui/themed'
 
 // import * as FileSystem from 'expo-file-system'
-import Toast from "react-native-toast-message"
+import Toast from 'react-native-toast-message'
 
 import {
   FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
-} from "@expo/vector-icons"
+} from '@expo/vector-icons'
 
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types'
 
-import * as CONST from "../../consts.js"
+import * as CONST from '../../consts.js'
 
 const maxNickNameLength = 40
 const minNickNameLength = 4
@@ -31,18 +31,18 @@ const minNickNameLength = 4
 function PhoneCheck() {
   const navigation = useNavigation()
 
-  const [nickName, setNickName] = useState("")
+  const [nickName, setNickName] = useState('')
   const [nickNameEntered, setNickNameEntered] = useState(false)
 
   const [canSubmit, setCanSubmit] = useState(false)
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "my login",
+      headerTitle: 'my login',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
-      headerBackTitle: "",
+      headerBackTitle: '',
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
@@ -55,11 +55,11 @@ function PhoneCheck() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "Create NickName",
+      headerTitle: 'Create NickName',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
-      headerBackTitle: "",
+      headerBackTitle: '',
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
@@ -72,7 +72,7 @@ function PhoneCheck() {
       flex: 1,
     },
     scrollView: {
-      alignItems: "center",
+      alignItems: 'center',
       marginHorizontal: 0,
       paddingBottom: 300,
     },
