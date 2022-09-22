@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
-import PhoneInput from 'react-native-phone-number-input'
+import {
+  Alert,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  ScrollView,
+  View,
+  TouchableOpacity,
+} from 'react-native'
 
 import {
   Text,
@@ -11,6 +18,7 @@ import {
   Card,
   ListItem,
   Button,
+  Icon,
 } from '@rneui/themed'
 
 // import * as FileSystem from 'expo-file-system'
@@ -27,17 +35,15 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 
-const maxNickNameLength = 40
-const minNickNameLength = 4
-
 function PhoneCheck() {
   const navigation = useNavigation()
   const [uuid, setUuid] = useState(null)
 
-  const [nickName, setNickName] = useState('')
-  const [nickNameEntered, setNickNameEntered] = useState(false)
-
+  const [phoneInput, setPhoneInput] = useState('')
   const [canSubmit, setCanSubmit] = useState(false)
+
+  const handleSubmit = async () => {}
+
   const renderHeaderRight = () => (
     <Ionicons
       onPress={canSubmit ? () => handleSubmit() : null}
@@ -65,7 +71,7 @@ function PhoneCheck() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'my login',
+      headerTitle: 'send sms code',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -82,15 +88,16 @@ function PhoneCheck() {
   }, [])
 
   useEffect(() => {
+    if (phoneInput.length === 10 && /^-?\d+$/.test(phoneInput)) {
+      setCanSubmit(true)
+    } else {
+      setCanSubmit(false)
+    }
+  }, [phoneInput])
+
+  useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Create NickName',
-      headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
     })
   }, [canSubmit])
 
@@ -106,9 +113,21 @@ function PhoneCheck() {
   })
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>{`${uuid}`}</Text>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.wrapper}>
+        <Input
+          label="enter 10 digits phone number"
+          placeholder="your mobile phone number"
+          leftIcon={{ type: 'font-awesome', name: 'mobile-phone' }}
+          focus={true}
+          keyboardType="numeric"
+          value={phoneInput}
+          onChangeText={(value) =>
+            value.length <= 10 ? setPhoneInput(value) : null
+          }
+        />
+      </SafeAreaView>
+    </View>
   )
 }
 export default PhoneCheck
