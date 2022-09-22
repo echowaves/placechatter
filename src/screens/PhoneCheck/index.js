@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, createRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import {
@@ -41,6 +41,7 @@ function PhoneCheck() {
 
   const [phoneInput, setPhoneInput] = useState('')
   const [canSubmit, setCanSubmit] = useState(false)
+  const input = createRef()
 
   const handleSubmit = async () => {}
 
@@ -80,6 +81,8 @@ function PhoneCheck() {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
+    input.current.focus()
+    input.current.clear()
 
     async function init() {
       setUuid(await UTILS.getUUID())
@@ -116,6 +119,7 @@ function PhoneCheck() {
     <View style={styles.container}>
       <SafeAreaView style={styles.wrapper}>
         <Input
+          ref={input}
           label="enter 10 digits phone number"
           placeholder="your mobile phone number"
           leftIcon={{ type: 'font-awesome', name: 'mobile-phone' }}
