@@ -4,6 +4,7 @@ import * as Location from 'expo-location'
 import * as SecureStore from 'expo-secure-store'
 import Toast from 'react-native-toast-message'
 import { v4 as uuidv4 } from 'uuid'
+import 'react-native-get-random-values'
 
 import * as CONST from './consts'
 
@@ -46,10 +47,11 @@ export async function getLocation() {
   return null
 }
 
-const storeUUID = async (uuid) => {
+async function storeUUID(uuid) {
   try {
     await SecureStore.setItemAsync(CONST.UUID_KEY, uuid)
-  } catch (err) {
+  } catch (err1) {
+    // console.log({ err1 })
     Toast.show({
       text1: 'Unable to store UUID',
       text2: err.toString(),
@@ -63,6 +65,7 @@ export async function getUUID() {
   try {
     uuid = await SecureStore.getItemAsync(CONST.UUID_KEY)
   } catch (err) {
+    // console.log({ err })
     uuid = null
   }
   if (uuid === null) {
@@ -70,13 +73,14 @@ export async function getUUID() {
 
     if (uuid === '' || uuid === null) {
       uuid = uuidv4()
+      // console.log('storing', { uuid })
       await storeUUID(uuid)
     }
   }
   return uuid
 }
 
-export const setNickName = async (nickName) => {
+export async function setNickName(nickName) {
   try {
     await SecureStore.setItemAsync(CONST.NICK_NAME_KEY, nickName)
   } catch (err) {

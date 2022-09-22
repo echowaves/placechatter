@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
-import { useNavigation } from "@react-navigation/native"
-import { useDimensions } from "@react-native-community/hooks"
+import React, { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { useDimensions } from '@react-native-community/hooks'
 
-import * as Location from "expo-location"
+import * as Location from 'expo-location'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from "react-native"
+import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
 
 import {
   Text,
@@ -13,21 +13,21 @@ import {
   Card,
   ListItem,
   Button,
-} from "@rneui/themed"
+} from '@rneui/themed'
 
 // import * as FileSystem from 'expo-file-system'
-import Toast from "react-native-toast-message"
+import Toast from 'react-native-toast-message'
 
 import {
   FontAwesome,
   Ionicons,
   MaterialCommunityIcons,
-} from "@expo/vector-icons"
+} from '@expo/vector-icons'
 
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types'
 
-import * as CONST from "../../consts.js"
-import * as utils from "../../utils.js"
+import * as CONST from '../../consts'
+import * as UTILS from '../../utils'
 
 function AddNewPlace() {
   const navigation = useNavigation()
@@ -40,11 +40,11 @@ function AddNewPlace() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "",
+      headerTitle: '',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
-      headerBackTitle: "",
+      headerBackTitle: '',
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
@@ -53,12 +53,12 @@ function AddNewPlace() {
     const init = async function () {
       let location = null
       try {
-        location = await utils._getLocation()
+        location = await UTILS.getLocation()
         setCurrentLocation(location)
       } catch (err) {
         Toast.show({
-          text1: "Unable to get location",
-          type: "error",
+          text1: 'Unable to get location',
+          type: 'error',
           topOffset,
         })
       }
@@ -84,7 +84,7 @@ function AddNewPlace() {
       flex: 1,
     },
     scrollView: {
-      alignItems: "center",
+      alignItems: 'center',
       marginHorizontal: 0,
       paddingBottom: 300,
     },
@@ -121,7 +121,7 @@ function AddNewPlace() {
       <LinearProgress
         color={CONST.MAIN_COLOR}
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           right: 0,
           left: 0,

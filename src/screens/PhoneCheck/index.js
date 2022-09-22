@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
+import PhoneInput from 'react-native-phone-number-input'
 
 import {
   Text,
@@ -23,61 +24,20 @@ import {
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts.js'
+import * as CONST from '../../consts'
+import * as UTILS from '../../utils'
 
 const maxNickNameLength = 40
 const minNickNameLength = 4
 
 function PhoneCheck() {
   const navigation = useNavigation()
+  const [uuid, setUuid] = useState(null)
 
   const [nickName, setNickName] = useState('')
   const [nickNameEntered, setNickNameEntered] = useState(false)
 
   const [canSubmit, setCanSubmit] = useState(false)
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'my login',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    // resetFields()
-  }, [navigation])
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'Create NickName',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canSubmit])
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    scrollView: {
-      alignItems: 'center',
-      marginHorizontal: 0,
-      paddingBottom: 300,
-    },
-  })
-
   const renderHeaderRight = () => (
     <Ionicons
       onPress={canSubmit ? () => handleSubmit() : null}
@@ -89,6 +49,7 @@ function PhoneCheck() {
       }}
     />
   )
+
   const renderHeaderLeft = () => (
     <FontAwesome
       name="chevron-left"
@@ -102,9 +63,51 @@ function PhoneCheck() {
     />
   )
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'my login',
+      headerTintColor: CONST.MAIN_COLOR,
+      headerRight: renderHeaderRight,
+      headerLeft: renderHeaderLeft,
+      headerBackTitle: '',
+      headerStyle: {
+        backgroundColor: CONST.NAV_COLOR,
+      },
+    })
+
+    async function init() {
+      setUuid(await UTILS.getUUID())
+    }
+    init()
+  }, [])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'Create NickName',
+      headerTintColor: CONST.MAIN_COLOR,
+      headerRight: renderHeaderRight,
+      headerLeft: renderHeaderLeft,
+      headerBackTitle: '',
+      headerStyle: {
+        backgroundColor: CONST.NAV_COLOR,
+      },
+    })
+  }, [canSubmit])
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    scrollView: {
+      alignItems: 'center',
+      marginHorizontal: 0,
+      paddingBottom: 300,
+    },
+  })
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>login</Text>
+      <Text>{`${uuid}`}</Text>
     </SafeAreaView>
   )
 }
