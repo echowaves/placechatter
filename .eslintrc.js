@@ -12,6 +12,7 @@ module.exports = {
   },
   rules: {
     'prettier/prettier': 'error',
+    // 'comma-dangle': ['error', 'always'],
   },
   plugins: ['prettier'],
 }

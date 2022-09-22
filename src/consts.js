@@ -24,6 +24,10 @@ export const { API_URI, API_KEY, PRIVATE_IMG_HOST } = Constants.manifest.extra
 // export const HOST = "https://api.placechatter.com"
 // export const HOST = "https://testapi.placechatter.com"
 export const IS_TANDC_ACCEPTED_KEY = 'IS_TANDC_ACCEPTED_KEY'
+export const UUID_KEY = 'placechatter_device_uuid'
+export const NICK_NAME_KEY = 'placechatter_nick_name'
+export const PHONE_NUMBER_KEY = 'placechatter_phone_number'
+
 export const MAIN_COLOR = '#EA5E3D'
 export const EMPHASIZED_COLOR = '#0000CD'
 export const SECONDARY_COLOR = '#C0C0C0'

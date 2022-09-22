@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { useNavigation } from "@react-navigation/native"
-import { useDimensions } from "@react-native-community/hooks"
+import React, { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { useDimensions } from '@react-native-community/hooks'
 
-import * as Location from "expo-location"
+import * as Location from 'expo-location'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from "react-native"
-import * as SecureStore from "expo-secure-store"
+import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
+import * as SecureStore from 'expo-secure-store'
 
 import {
   Text,
@@ -16,19 +16,19 @@ import {
   Button,
   Overlay,
   Divider,
-} from "@rneui/themed"
+} from '@rneui/themed'
 
 // import * as FileSystem from 'expo-file-system'
-import Toast from "react-native-toast-message"
+import Toast from 'react-native-toast-message'
 
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons"
+import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types'
 
-import * as CONST from "../../consts.js"
-import * as utils from "../../utils.js"
+import * as CONST from '../../consts.js'
+import * as utils from '../../utils.js'
 
-import Footer from "../../components/Footer"
+import Footer from '../../components/Footer'
 
 function PlacesList() {
   const navigation = useNavigation()
@@ -40,11 +40,11 @@ function PlacesList() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "places near me",
+      headerTitle: 'places near me',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
-      headerBackTitle: "",
+      headerBackTitle: '',
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
@@ -54,25 +54,25 @@ function PlacesList() {
       try {
         setIsTandcAccepted(
           (await SecureStore.getItemAsync(CONST.IS_TANDC_ACCEPTED_KEY)) ===
-            "true"
+            'true',
         )
       } catch (err) {
-        console.log("failed to setIsTandcAccepted")
+        console.log('failed to setIsTandcAccepted')
       }
 
       try {
-        const location = await utils._getLocation()
+        const location = await utils.getLocation()
         setCurrentLocation(location)
       } catch (err) {
         Toast.show({
-          text1: "Unable to get location",
-          type: "error",
+          text1: 'Unable to get location',
+          type: 'error',
           topOffset,
         })
       }
     }
     init()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     // resetFields()
@@ -134,14 +134,14 @@ function PlacesList() {
               </ListItem>
               <Divider />
 
-              <ListItem style={{ alignItems: "center" }}>
+              <ListItem style={{ alignItems: 'center' }}>
                 <Button
                   title="I Agree"
                   type="outline"
                   onPress={() => {
                     SecureStore.setItemAsync(
                       CONST.IS_TANDC_ACCEPTED_KEY,
-                      "true"
+                      'true',
                     )
                     setIsTandcAccepted(true)
                   }}
