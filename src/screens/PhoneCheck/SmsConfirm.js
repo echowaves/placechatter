@@ -39,7 +39,7 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 
-function PhoneCheck() {
+function SmsConfirm() {
   const navigation = useNavigation()
   const [uuid, setUuid] = useState(null)
 
@@ -49,7 +49,6 @@ function PhoneCheck() {
 
   const handleSubmit = async () => {
     try {
-      // const response = await
       CONST.gqlClient.query({
         query: gql`
           query generateActivationCode($phoneNumber: String!, $uuid: String!) {
@@ -63,7 +62,6 @@ function PhoneCheck() {
       })
       // console.log({ response })
       // alert(response)
-      navigation.navigate('SmsConfirm')
     } catch (err) {
       // console.log({ err })
       Toast.show({
@@ -101,7 +99,7 @@ function PhoneCheck() {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'verify sms',
+      headerTitle: 'confirm code',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -149,9 +147,9 @@ function PhoneCheck() {
       <SafeAreaView style={styles.wrapper}>
         <Input
           ref={input}
-          label="enter 10 digits phone number"
-          placeholder="your mobile phone number"
-          leftIcon={{ type: 'font-awesome', name: 'mobile-phone' }}
+          label="Enter sms confirmation code"
+          placeholder="4 letter code"
+          leftIcon={{ type: 'material-icons', name: 'confirmation-num' }}
           focus={true}
           keyboardType="numeric"
           value={phoneNumber}
@@ -163,4 +161,4 @@ function PhoneCheck() {
     </View>
   )
 }
-export default PhoneCheck
+export default SmsConfirm

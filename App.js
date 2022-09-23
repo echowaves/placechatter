@@ -32,6 +32,7 @@ import AddNewPlace from './src/screens/AddNewPlace'
 // import PlaceDetails from './src/screens/PlaceDetails'
 import Feedback from './src/screens/Feedback'
 import PhoneCheck from './src/screens/PhoneCheck'
+import SmsConfirm from './src/screens/PhoneCheck/SmsConfirm'
 // import Chat from './src/screens/Chat'
 
 import 'react-native-gesture-handler'
@@ -93,10 +94,24 @@ function App() {
                   }}
                   screenOptions={{ headerShown: true }}
                 />
-                {/* <Stack.Screen
-                  name="Chat"
-                  component={Chat}
-                  options={{ headerTintColor: CONST.MAIN_COLOR }} /> */}
+                <Stack.Screen
+                  name="PhoneCheck"
+                  component={PhoneCheck}
+                  options={{
+                    headerTintColor: CONST.MAIN_COLOR,
+                    gestureEnabled: false,
+                  }}
+                  screenOptions={{ headerShown: true }}
+                />
+                <Stack.Screen
+                  name="SmsConfirm"
+                  component={SmsConfirm}
+                  options={{
+                    headerTintColor: CONST.MAIN_COLOR,
+                    gestureEnabled: false,
+                  }}
+                  screenOptions={{ headerShown: true }}
+                />
               </Stack.Navigator>
             )}
           </Drawer.Screen>
