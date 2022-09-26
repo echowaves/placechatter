@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, createRef } from 'react'
-import { useNavigation } from '@react-navigation/native'
 
 import {
   Alert,
@@ -24,6 +23,7 @@ import {
 } from '@rneui/themed'
 
 import { gql } from '@apollo/client'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
@@ -38,38 +38,53 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
+import * as VALID from '../../valid'
 
-function SmsConfirm() {
-  const navigation = useNavigation()
-  const [uuid, setUuid] = useState(null)
+function SmsConfirm({ route, navigation }) {
+  const [showSpinner, setShowSpinner] = useState(false)
 
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const { uuid, phoneNumber } = route.params
+  console.log({ uuid, phoneNumber })
+
+  //   const navigation = useNavigation()
+
+  const [smsCode, setSmscode] = useState('')
+  const [nickName, setNickName] = useState('')
+  const [nickNameError, setNickNameError] = useState('')
+
   const [canSubmit, setCanSubmit] = useState(false)
   const input = createRef()
 
   const handleSubmit = async () => {
+    setShowSpinner(true)
     try {
-      CONST.gqlClient.query({
-        query: gql`
-          query generateActivationCode($phoneNumber: String!, $uuid: String!) {
-            generateActivationCode(phoneNumber: $phoneNumber, uuid: $uuid)
+      CONST.gqlClient.mitation({
+        mutation: gql`
+          mutation activatePhone($uuid: String!, $phoneNumber: String!, smsCode: String!, nickName: String!) {
+            activatePhone(uuid: $uuid, phoneNumber: $phoneNumber, smsCode: $smsCode, nickName: $nickName)
           }
         `,
         variables: {
-          phoneNumber,
           uuid,
+          phoneNumber,
+          smsCode,
+          nickName,
         },
       })
+      await UTILS.setNickName(nickName)
+      await UTILS.setPhoneNumber(phoneNumber)
+
       // console.log({ response })
       // alert(response)
     } catch (err) {
       // console.log({ err })
       Toast.show({
-        text1: 'Unable to validate phone number',
+        text1: 'Unable to activatePhone phone',
         text2: err.toString(),
         type: 'error',
       })
     }
+    setShowSpinner(false)
   }
 
   const renderHeaderRight = () => (
@@ -112,18 +127,49 @@ function SmsConfirm() {
     input.current.clear()
 
     async function init() {
-      setUuid(await UTILS.getUUID())
+      setNickName(await UTILS.getNickName())
     }
     init()
   }, [])
 
   useEffect(() => {
-    if (phoneNumber.length === 10 && /^-?\d+$/.test(phoneNumber)) {
-      setCanSubmit(true)
-    } else {
-      setCanSubmit(false)
+    async function validateTypeAhead() {
+      try {
+        const nickNamesFound = await CONST.gqlClient.query({
+          query: gql`
+            query nickNameTypeAhead($phoneNumber: String!, $nickName: String!) {
+              nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
+            }
+          `,
+          variables: {
+            phoneNumber,
+            nickName,
+          },
+        })
+        console.log({ nickNamesFound })
+        // alert(response)
+        if (nickNamesFound === 0) {
+          setNickNameError('')
+        } else {
+          setNickNameError('Nickname is already taken')
+        }
+        if (nickNamesFound === 0 && VALID.smsCode(smsCode)) {
+          setCanSubmit(true)
+        } else {
+          setCanSubmit(false)
+        }
+      } catch (err) {
+        console.log({ err })
+        Toast.show({
+          text1: 'Unable to validate nickName',
+          text2: err.toString(),
+          type: 'error',
+        })
+      }
     }
-  }, [phoneNumber])
+    validateTypeAhead()
+    console.log({ nickName })
+  }, [nickName])
 
   useEffect(() => {
     navigation.setOptions({
@@ -145,17 +191,36 @@ function SmsConfirm() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.wrapper}>
+        <Spinner
+          visible={showSpinner}
+          textContent={'Loading...'}
+          // textStyle={styles.spinnerTextStyle}
+        />
         <Input
           ref={input}
           label="Enter sms confirmation code"
           placeholder="4 letter code"
           leftIcon={{ type: 'material-icons', name: 'confirmation-num' }}
           focus={true}
-          keyboardType="numeric"
-          value={phoneNumber}
-          onChangeText={(value) =>
-            value.length <= 10 ? setPhoneNumber(value) : null
-          }
+          //   keyboardType="numeric"
+          value={smsCode}
+          onChangeText={(value) => setSmscode(value)}
+          autoCapitalize={'none'}
+          autoComplete={'off'}
+          autoCorrect={false}
+        />
+        <Input
+          label="Enter Nickname"
+          placeholder="Nickname appears in chats"
+          leftIcon={{ type: 'font-awesome', name: 'user-circle' }}
+          //   keyboardType="numeric"
+          value={nickName}
+          errorStyle={{ color: 'red' }}
+          errorMessage={nickNameError}
+          onChangeText={(value) => setNickName(value)}
+          autoCapitalize={'none'}
+          autoComplete={'off'}
+          autoCorrect={false}
         />
       </SafeAreaView>
     </View>

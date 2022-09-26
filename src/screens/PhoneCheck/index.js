@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, createRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import {
   Alert,
@@ -38,9 +39,11 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
+import * as VALID from '../../valid'
 
 function PhoneCheck() {
   const navigation = useNavigation()
+  const [showSpinner, setShowSpinner] = useState(false)
   const [uuid, setUuid] = useState(null)
 
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -48,11 +51,15 @@ function PhoneCheck() {
   const input = createRef()
 
   const handleSubmit = async () => {
+    setShowSpinner(true)
     try {
       // const response = await
-      CONST.gqlClient.query({
-        query: gql`
-          query generateActivationCode($phoneNumber: String!, $uuid: String!) {
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation generateActivationCode(
+            $phoneNumber: String!
+            $uuid: String!
+          ) {
             generateActivationCode(phoneNumber: $phoneNumber, uuid: $uuid)
           }
         `,
@@ -63,7 +70,7 @@ function PhoneCheck() {
       })
       // console.log({ response })
       // alert(response)
-      navigation.navigate('SmsConfirm')
+      navigation.navigate('SmsConfirm', { uuid, phoneNumber })
     } catch (err) {
       // console.log({ err })
       Toast.show({
@@ -72,6 +79,7 @@ function PhoneCheck() {
         type: 'error',
       })
     }
+    setShowSpinner(false)
   }
 
   const renderHeaderRight = () => (
@@ -120,7 +128,7 @@ function PhoneCheck() {
   }, [])
 
   useEffect(() => {
-    if (phoneNumber.length === 10 && /^-?\d+$/.test(phoneNumber)) {
+    if (VALID.phoneNumber(phoneNumber)) {
       setCanSubmit(true)
     } else {
       setCanSubmit(false)
@@ -147,6 +155,11 @@ function PhoneCheck() {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.wrapper}>
+        <Spinner
+          visible={showSpinner}
+          textContent={'Loading...'}
+          // textStyle={styles.spinnerTextStyle}
+        />
         <Input
           ref={input}
           label="enter 10 digits phone number"
@@ -155,9 +168,7 @@ function PhoneCheck() {
           focus={true}
           keyboardType="numeric"
           value={phoneNumber}
-          onChangeText={(value) =>
-            value.length <= 10 ? setPhoneNumber(value) : null
-          }
+          onChangeText={(value) => setPhoneNumber(value)}
         />
       </SafeAreaView>
     </View>
