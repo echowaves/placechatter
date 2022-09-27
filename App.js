@@ -4,7 +4,6 @@
  * @format
  * @flow strict-local
  */
-
 // eslint-disable-next-line no-unused-vars
 import { NavigationContainer } from '@react-navigation/native'
 
@@ -20,6 +19,8 @@ import {
   MaterialIcons,
 } from '@expo/vector-icons'
 /* eslint-disable import/no-extraneous-dependencies */
+// eslint-disable-next-line no-unused-vars
+import Toast from 'react-native-toast-message'
 
 // eslint-disable-next-line no-unused-vars
 import { ThemeProvider } from '@rneui/themed'
@@ -176,6 +177,7 @@ function App() {
           />
         </Drawer.Navigator>
       </NavigationContainer>
+      <Toast />
     </ThemeProvider>
   )
 }

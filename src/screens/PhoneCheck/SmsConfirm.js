@@ -44,7 +44,7 @@ function SmsConfirm({ route, navigation }) {
   const [showSpinner, setShowSpinner] = useState(false)
 
   const { uuid, phoneNumber } = route.params
-  console.log({ uuid, phoneNumber })
+  // console.log({ uuid, phoneNumber })
 
   //   const navigation = useNavigation()
 
@@ -58,10 +58,20 @@ function SmsConfirm({ route, navigation }) {
   const handleSubmit = async () => {
     setShowSpinner(true)
     try {
-      CONST.gqlClient.mitation({
+      const response = await CONST.gqlClient.mutate({
         mutation: gql`
-          mutation activatePhone($uuid: String!, $phoneNumber: String!, smsCode: String!, nickName: String!) {
-            activatePhone(uuid: $uuid, phoneNumber: $phoneNumber, smsCode: $smsCode, nickName: $nickName)
+          mutation activatePhone(
+            $uuid: String!
+            $phoneNumber: String!
+            $smsCode: String!
+            $nickName: String!
+          ) {
+            activatePhone(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              smsCode: $smsCode
+              nickName: $nickName
+            )
           }
         `,
         variables: {
@@ -71,16 +81,23 @@ function SmsConfirm({ route, navigation }) {
           nickName,
         },
       })
+      // success, validateion passsed
       await UTILS.setNickName(nickName)
       await UTILS.setPhoneNumber(phoneNumber)
 
+      navigation.goBack()
       // console.log({ response })
       // alert(response)
-    } catch (err) {
-      // console.log({ err })
+    } catch (err3) {
+      // console.log({ err3 })
+      await UTILS.setNickName('')
+      await UTILS.setPhoneNumber('')
+      setNickName('')
+      setSmscode('')
+
       Toast.show({
-        text1: 'Unable to activatePhone phone',
-        text2: err.toString(),
+        text1: 'Unable to activatePhone phone, try again.',
+        text2: err3.toString(),
         type: 'error',
       })
     }
@@ -112,6 +129,57 @@ function SmsConfirm({ route, navigation }) {
     />
   )
 
+  async function validate() {
+    if (VALID.nickName(nickName)) {
+      if (VALID.smsCode(smsCode)) {
+        setCanSubmit(true)
+        setNickNameError('')
+        try {
+          const nickNamesFound = await CONST.gqlClient.query({
+            query: gql`
+              query nickNameTypeAhead(
+                $phoneNumber: String!
+                $nickName: String!
+              ) {
+                nickNameTypeAhead(
+                  phoneNumber: $phoneNumber
+                  nickName: $nickName
+                )
+              }
+            `,
+            variables: {
+              phoneNumber,
+              nickName,
+            },
+          })
+          // alert(response)
+          const { nickNameTypeAhead } = nickNamesFound.data
+          // console.log({ nickNamesFound, nickNameTypeAhead })
+
+          if (nickNameTypeAhead !== 0) {
+            setNickNameError('Nickname is already taken')
+            setCanSubmit(false)
+          }
+        } catch (err1) {
+          setNickNameError('Lettters and digits only')
+          setCanSubmit(false)
+          // setCanSubmit(false)
+          // setNickNameError('')
+
+          // Toast.show({
+          //   text1: 'Unable to validate nickName',
+          //   text2: err1.toString(),
+          //   type: 'error',
+          // })
+        }
+      } else {
+        setCanSubmit(false)
+      }
+    } else {
+      setNickNameError('Only Letters and Digits')
+      setCanSubmit(false)
+    }
+  }
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'confirm code',
@@ -130,45 +198,12 @@ function SmsConfirm({ route, navigation }) {
       setNickName(await UTILS.getNickName())
     }
     init()
+    validate()
   }, [])
 
   useEffect(() => {
-    async function validateTypeAhead() {
-      try {
-        const nickNamesFound = await CONST.gqlClient.query({
-          query: gql`
-            query nickNameTypeAhead($phoneNumber: String!, $nickName: String!) {
-              nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
-            }
-          `,
-          variables: {
-            phoneNumber,
-            nickName,
-          },
-        })
-        console.log({ nickNamesFound })
-        // alert(response)
-        if (nickNamesFound === 0) {
-          setNickNameError('')
-        } else {
-          setNickNameError('Nickname is already taken')
-        }
-        if (nickNamesFound === 0 && VALID.smsCode(smsCode)) {
-          setCanSubmit(true)
-        } else {
-          setCanSubmit(false)
-        }
-      } catch (err) {
-        console.log({ err })
-        Toast.show({
-          text1: 'Unable to validate nickName',
-          text2: err.toString(),
-          type: 'error',
-        })
-      }
-    }
-    validateTypeAhead()
-    console.log({ nickName })
+    validate()
+    // console.log({ nickName })
   }, [nickName])
 
   useEffect(() => {
