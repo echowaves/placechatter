@@ -94,7 +94,7 @@ export async function setNickName(nickName) {
 
 export async function getNickName() {
   const nickName = await SecureStore.getItemAsync(CONST.NICK_NAME_KEY)
-  return nickName || ''
+  return nickName
 }
 
 export const setPhoneNumber = async (phoneNumber) => {
@@ -111,5 +111,22 @@ export const setPhoneNumber = async (phoneNumber) => {
 
 export async function getPhoneNumber() {
   const phoneNumber = await SecureStore.getItemAsync(CONST.PHONE_NUMBER_KEY)
-  return phoneNumber || ''
+  return phoneNumber
+}
+
+export const setToken = async (token) => {
+  try {
+    await SecureStore.setItemAsync(CONST.TOKEN_KEY, token)
+  } catch (err) {
+    Toast.show({
+      text1: 'Unable to store token',
+      text2: err.toString(),
+      type: 'error',
+    })
+  }
+}
+
+export async function getToken() {
+  const token = await SecureStore.getItemAsync(CONST.TOKEN_KEY)
+  return token
 }

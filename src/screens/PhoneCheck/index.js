@@ -70,7 +70,7 @@ function PhoneCheck() {
       })
       // console.log({ response })
       // alert(response)
-      navigation.navigate('SmsConfirm', { uuid, phoneNumber })
+      navigation.push('SmsConfirm', { uuid, phoneNumber })
     } catch (err) {
       // console.log({ err })
       Toast.show({

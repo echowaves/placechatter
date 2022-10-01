@@ -28,15 +28,44 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
+import { VALID } from '../../valid'
 
 function AddNewPlace() {
   const navigation = useNavigation()
+  const [token, setToken] = useState(null)
+
   const { width, height } = useDimensions().window
   const [topOffset, setTopOffset] = useState(height / 3)
   const [currentLocation, setCurrentLocation] = useState(null)
   const [locationGeocodedAddress, setLocationGeocodedAddress] = useState(null)
 
   const [canSubmit, setCanSubmit] = useState(false)
+
+  const renderHeaderRight = () => (
+    <Ionicons
+      // onPress={
+      //   canSubmit ? () => handleSubmit() : null
+      // }
+      name="send"
+      size={30}
+      style={{
+        marginRight: 10,
+        color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
+      }}
+    />
+  )
+  const renderHeaderLeft = () => (
+    <FontAwesome
+      name="chevron-left"
+      size={30}
+      style={{
+        marginLeft: 10,
+        color: CONST.MAIN_COLOR,
+        width: 60,
+      }}
+      onPress={() => navigation.goBack()}
+    />
+  )
 
   useEffect(() => {
     navigation.setOptions({
@@ -71,13 +100,22 @@ function AddNewPlace() {
         })
         setLocationGeocodedAddress(geocodedAddress)
       }
+
+      const localToken = await UTILS.getToken()
+      console.log({ localToken })
+      if (!localToken) {
+        navigation.push('PhoneCheck')
+        Toast.show({
+          text1: 'Need to Validate your Phone Number first',
+          type: 'info',
+          topOffset,
+        })
+      } else {
+        setToken(localToken)
+      }
     }
     init()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    // resetFields()
-  }, [navigation])
+  }, [])
 
   const styles = StyleSheet.create({
     container: {
@@ -89,32 +127,6 @@ function AddNewPlace() {
       paddingBottom: 300,
     },
   })
-
-  const renderHeaderRight = () => (
-    <Ionicons
-      // onPress={
-      //   canSubmit ? () => handleSubmit() : null
-      // }
-      name="send"
-      size={30}
-      style={{
-        marginRight: 10,
-        color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
-      }}
-    />
-  )
-  const renderHeaderLeft = () => (
-    <FontAwesome
-      name="chevron-left"
-      size={30}
-      style={{
-        marginLeft: 10,
-        color: CONST.MAIN_COLOR,
-        width: 60,
-      }}
-      onPress={() => navigation.goBack()}
-    />
-  )
 
   if (!currentLocation || !locationGeocodedAddress) {
     return (

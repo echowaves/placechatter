@@ -58,34 +58,39 @@ function SmsConfirm({ route, navigation }) {
   const handleSubmit = async () => {
     setShowSpinner(true)
     try {
-      const response = await CONST.gqlClient.mutate({
-        mutation: gql`
-          mutation activatePhone(
-            $uuid: String!
-            $phoneNumber: String!
-            $smsCode: String!
-            $nickName: String!
-          ) {
-            activatePhone(
-              uuid: $uuid
-              phoneNumber: $phoneNumber
-              smsCode: $smsCode
-              nickName: $nickName
-            )
-          }
-        `,
-        variables: {
-          uuid,
-          phoneNumber,
-          smsCode,
-          nickName,
-        },
-      })
+      const response = (
+        await CONST.gqlClient.mutate({
+          mutation: gql`
+            mutation activatePhone(
+              $uuid: String!
+              $phoneNumber: String!
+              $smsCode: String!
+              $nickName: String!
+            ) {
+              activatePhone(
+                uuid: $uuid
+                phoneNumber: $phoneNumber
+                smsCode: $smsCode
+                nickName: $nickName
+              )
+            }
+          `,
+          variables: {
+            uuid,
+            phoneNumber,
+            smsCode,
+            nickName,
+          },
+        })
+      ).data.activatePhone
+
+      // console.log({ response })
       // success, validateion passsed
       await UTILS.setNickName(nickName)
       await UTILS.setPhoneNumber(phoneNumber)
+      await UTILS.setToken(response)
 
-      navigation.goBack()
+      navigation.pop()
       // console.log({ response })
       // alert(response)
     } catch (err3) {
@@ -125,7 +130,7 @@ function SmsConfirm({ route, navigation }) {
         color: CONST.MAIN_COLOR,
         width: 60,
       }}
-      onPress={() => navigation.goBack()}
+      onPress={() => navigation.pop()}
     />
   )
 
@@ -176,7 +181,7 @@ function SmsConfirm({ route, navigation }) {
         setCanSubmit(false)
       }
     } else {
-      setNickNameError('Only Letters and Digits')
+      setNickNameError('Only Letters and Digits, 4-30 characters')
       setCanSubmit(false)
     }
   }

@@ -27,6 +27,7 @@ export const IS_TANDC_ACCEPTED_KEY = 'IS_TANDC_ACCEPTED_KEY'
 export const UUID_KEY = 'placechatter_device_uuid'
 export const NICK_NAME_KEY = 'placechatter_nick_name'
 export const PHONE_NUMBER_KEY = 'placechatter_phone_number'
+export const TOKEN_KEY = 'placechatter_token'
 
 export const MAIN_COLOR = '#EA5E3D'
 export const EMPHASIZED_COLOR = '#0000CD'
