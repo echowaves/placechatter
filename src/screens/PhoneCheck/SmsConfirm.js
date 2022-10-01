@@ -46,8 +46,6 @@ function SmsConfirm({ route, navigation }) {
   const { uuid, phoneNumber } = route.params
   // console.log({ uuid, phoneNumber })
 
-  //   const navigation = useNavigation()
-
   const [smsCode, setSmscode] = useState('')
   const [nickName, setNickName] = useState('')
   const [nickNameError, setNickNameError] = useState('')
@@ -90,7 +88,7 @@ function SmsConfirm({ route, navigation }) {
       await UTILS.setPhoneNumber(phoneNumber)
       await UTILS.setToken(response)
 
-      navigation.pop()
+      navigation.goBack()
       // console.log({ response })
       // alert(response)
     } catch (err3) {
@@ -130,7 +128,7 @@ function SmsConfirm({ route, navigation }) {
         color: CONST.MAIN_COLOR,
         width: 60,
       }}
-      onPress={() => navigation.pop()}
+      onPress={() => navigation.goBack()}
     />
   )
 

@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, createRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
+
 import Spinner from 'react-native-loading-spinner-overlay'
 
 import {
@@ -70,7 +71,7 @@ function PhoneCheck() {
       })
       // console.log({ response })
       // alert(response)
-      navigation.push('SmsConfirm', { uuid, phoneNumber })
+      navigation.navigate('SmsConfirm', { uuid, phoneNumber })
     } catch (err) {
       // console.log({ err })
       Toast.show({

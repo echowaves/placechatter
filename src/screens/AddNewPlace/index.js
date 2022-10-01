@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
+
 import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
@@ -66,6 +67,47 @@ function AddNewPlace() {
       onPress={() => navigation.goBack()}
     />
   )
+  const init = async function () {
+    let location = null
+    try {
+      location = await UTILS.getLocation()
+      setCurrentLocation(location)
+    } catch (err) {
+      Toast.show({
+        text1: 'Unable to get location',
+        type: 'error',
+        topOffset,
+      })
+    }
+    if (location) {
+      const { latitude, longitude } = location.coords
+
+      const geocodedAddress = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      })
+      setLocationGeocodedAddress(geocodedAddress)
+    }
+
+    const localToken = await UTILS.getToken()
+    console.log({ localToken })
+    if (!localToken) {
+      navigation.navigate('PhoneCheck')
+      Toast.show({
+        text1: 'Need to Validate your Phone Number first',
+        type: 'info',
+        topOffset,
+      })
+    } else {
+      setToken(localToken)
+    }
+  }
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      init()
+    })
+    return unsubscribe
+  }, [navigation])
 
   useEffect(() => {
     navigation.setOptions({
@@ -78,42 +120,6 @@ function AddNewPlace() {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-
-    const init = async function () {
-      let location = null
-      try {
-        location = await UTILS.getLocation()
-        setCurrentLocation(location)
-      } catch (err) {
-        Toast.show({
-          text1: 'Unable to get location',
-          type: 'error',
-          topOffset,
-        })
-      }
-      if (location) {
-        const { latitude, longitude } = location.coords
-
-        const geocodedAddress = await Location.reverseGeocodeAsync({
-          latitude,
-          longitude,
-        })
-        setLocationGeocodedAddress(geocodedAddress)
-      }
-
-      const localToken = await UTILS.getToken()
-      console.log({ localToken })
-      if (!localToken) {
-        navigation.push('PhoneCheck')
-        Toast.show({
-          text1: 'Need to Validate your Phone Number first',
-          type: 'info',
-          topOffset,
-        })
-      } else {
-        setToken(localToken)
-      }
-    }
     init()
   }, [])
 
