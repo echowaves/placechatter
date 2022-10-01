@@ -54,7 +54,7 @@ async function storeUUID(uuid) {
     // console.log({ err1 })
     Toast.show({
       text1: 'Unable to store UUID',
-      text2: err.toString(),
+      text2: err1.toString(),
       type: 'error',
     })
   }

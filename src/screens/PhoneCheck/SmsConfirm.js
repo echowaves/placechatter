@@ -38,7 +38,7 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
-import * as VALID from '../../valid'
+import { VALID } from '../../valid'
 
 function SmsConfirm({ route, navigation }) {
   const [showSpinner, setShowSpinner] = useState(false)
