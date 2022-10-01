@@ -67,7 +67,8 @@ function AddNewPlace() {
       onPress={() => navigation.goBack()}
     />
   )
-  const init = async function () {
+
+  async function init() {
     let location = null
     try {
       location = await UTILS.getLocation()
@@ -90,7 +91,7 @@ function AddNewPlace() {
     }
 
     const localToken = await UTILS.getToken()
-    console.log({ localToken })
+
     if (!localToken) {
       navigation.navigate('PhoneCheck')
       Toast.show({
@@ -102,6 +103,7 @@ function AddNewPlace() {
       setToken(localToken)
     }
   }
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       init()
