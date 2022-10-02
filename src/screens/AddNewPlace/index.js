@@ -39,6 +39,7 @@ function AddNewPlace() {
   const [topOffset, setTopOffset] = useState(height / 3)
   const [currentLocation, setCurrentLocation] = useState(null)
   const [locationGeocodedAddress, setLocationGeocodedAddress] = useState(null)
+  const [formInput, setFormInput] = useState({})
 
   const [canSubmit, setCanSubmit] = useState(false)
 
@@ -88,6 +89,29 @@ function AddNewPlace() {
         longitude,
       })
       setLocationGeocodedAddress(geocodedAddress[0])
+
+      setFormInput({
+        placeName: geocodedAddress[0].name || '',
+        streetAddress1: `${geocodedAddress[0].street || ''} ${
+          geocodedAddress[0].streetNumber || ''
+        }`,
+        streetAddress2: '',
+        city: geocodedAddress[0].city || '',
+
+        region: geocodedAddress[0].region || '',
+
+        subregion: geocodedAddress[0].subregion || '',
+
+        postalCode: geocodedAddress[0].postalCode || '',
+
+        country: geocodedAddress[0].country || '',
+        isoCountryCode: geocodedAddress[0].isoCountryCode || '',
+
+        district: geocodedAddress[0].district || '',
+        timezone: geocodedAddress[0].timezone || '',
+        lat: latitude,
+        lon: longitude,
+      })
     }
 
     const localToken = await UTILS.getToken()
@@ -157,17 +181,75 @@ function AddNewPlace() {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Card>
-          <Card.Title>{`${locationGeocodedAddress.name}`}</Card.Title>
+          <Input
+            label="Place Name"
+            placeholder={`${formInput.placeName}`}
+            value={`${formInput.placeName}`}
+            onChangeText={(value) =>
+              setFormInput({ ...formInput, placeName: value })
+            }
+            autoCapitalize={'none'}
+            autoComplete={'off'}
+            autoCorrect={false}
+          />
+
           <Card.Divider />
-          <Text>{`${locationGeocodedAddress.streetNumber} ${locationGeocodedAddress.street}`}</Text>
-          <Text>{`${locationGeocodedAddress.city}, ${locationGeocodedAddress.region} `}</Text>
-          <Text>{`${locationGeocodedAddress.postalCode}`}</Text>
-          <Text>{`${locationGeocodedAddress.country} (${locationGeocodedAddress.isoCountryCode})`}</Text>
-          <Card.Divider />
-          <Text>{`${locationGeocodedAddress.district}`}</Text>
-          <Text>{`${locationGeocodedAddress.region}`}</Text>
-          <Text>{`${locationGeocodedAddress.subregion}`}</Text>
-          <Text>{`${locationGeocodedAddress.timezone}`}</Text>
+          <Input
+            label="Street Address1"
+            placeholder={`${formInput.streetAddress1}`}
+            value={`${formInput.streetAddress1}`}
+            onChangeText={(value) =>
+              setFormInput({ ...formInput, streetAddress1: value })
+            }
+            autoCapitalize={'none'}
+            autoComplete={'off'}
+            autoCorrect={false}
+          />
+          <Input
+            label="Street Address2"
+            placeholder={`${formInput.streetAddress2}`}
+            value={`${formInput.streetAddress2}`}
+            onChangeText={(value) =>
+              setFormInput({ ...formInput, streetAddress2: value })
+            }
+            autoCapitalize={'none'}
+            autoComplete={'off'}
+            autoCorrect={false}
+          />
+          <Input
+            label="City"
+            placeholder={`${formInput.city}`}
+            value={`${formInput.city}`}
+            onChangeText={(value) =>
+              setFormInput({ ...formInput, city: value })
+            }
+            autoCapitalize={'none'}
+            autoComplete={'off'}
+            autoCorrect={false}
+          />
+          <Input
+            label="State"
+            placeholder={`${formInput.region}`}
+            value={`${formInput.region}`}
+            onChangeText={(value) =>
+              setFormInput({ ...formInput, region: value })
+            }
+            autoCapitalize={'none'}
+            autoComplete={'off'}
+            autoCorrect={false}
+          />
+
+          <Input
+            label="Postal Code"
+            placeholder={`${formInput.postalCode}`}
+            value={`${formInput.postalCode}`}
+            onChangeText={(value) =>
+              setFormInput({ ...formInput, postalCode: value })
+            }
+            autoCapitalize={'none'}
+            autoComplete={'off'}
+            autoCorrect={false}
+          />
         </Card>
       </ScrollView>
     </SafeAreaView>
