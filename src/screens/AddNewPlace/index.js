@@ -42,6 +42,8 @@ function AddNewPlace() {
   const [formInput, setFormInput] = useState({})
 
   const [placeNameError, setPlaceNameError] = useState('')
+  const [streetAddress1Error, setStreetAddress1Error] = useState('')
+  const [streetAddress2Error, setStreetAddress2Error] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(false)
 
@@ -142,10 +144,24 @@ function AddNewPlace() {
 
   function isValidForm() {
     if (!VALID.placeName(formInput.placeName)) {
-      setPlaceNameError('Alpha-Numeric, 4-50 length')
+      setPlaceNameError('4-50 Alpha-Numeric')
       return false
     }
+    if (!VALID.streetAddress(formInput.streetAddress1)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+    if (
+      formInput.streetAddress2.length !== 0 &&
+      !VALID.streetAddress(formInput.streetAddress1)
+    ) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+
     setPlaceNameError('')
+    setStreetAddress1Error('')
+    setStreetAddress2Error('')
     return true
   }
   useEffect(() => {
@@ -216,6 +232,7 @@ function AddNewPlace() {
           <Input
             label="Street Address1"
             placeholder={`${formInput.streetAddress1}`}
+            errorMessage={streetAddress1Error}
             value={`${formInput.streetAddress1}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, streetAddress1: value })
@@ -227,6 +244,7 @@ function AddNewPlace() {
           <Input
             label="Street Address2"
             placeholder={`${formInput.streetAddress2}`}
+            errorMessage={streetAddress2Error}
             value={`${formInput.streetAddress2}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, streetAddress2: value })
