@@ -38,4 +38,13 @@ export const VALID = {
   streetAddress: function (param) {
     return /^([\w_@./#&+-\s]){2,50}$/.test(param)
   },
+  city: function (param) {
+    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+  },
+  region: function (param) {
+    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+  },
+  postalCode: function (param) {
+    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+  },
 }

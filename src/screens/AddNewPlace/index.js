@@ -44,6 +44,9 @@ function AddNewPlace() {
   const [placeNameError, setPlaceNameError] = useState('')
   const [streetAddress1Error, setStreetAddress1Error] = useState('')
   const [streetAddress2Error, setStreetAddress2Error] = useState('')
+  const [cityError, setCityError] = useState('')
+  const [regionError, setRegionError] = useState('')
+  const [postalCodeError, setPostalCodeError] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(false)
 
@@ -86,10 +89,14 @@ function AddNewPlace() {
     if (location) {
       const { latitude, longitude } = location.coords
 
-      const geocodedAddress = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      })
+      const geocodedAddress = await Location.reverseGeocodeAsync(
+        {
+          latitude,
+          longitude,
+        },
+        { useGoogleMaps: false, lang: 'en' },
+      )
+      // console.log({ geocodedAddress })
       setLocationGeocodedAddress(geocodedAddress[0])
 
       setFormInput({
@@ -143,26 +150,49 @@ function AddNewPlace() {
   }, [navigation])
 
   function isValidForm() {
-    if (!VALID.placeName(formInput.placeName)) {
-      setPlaceNameError('4-50 Alpha-Numeric')
-      return false
-    }
-    if (!VALID.streetAddress(formInput.streetAddress1)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
-      return false
-    }
-    if (
-      formInput.streetAddress2.length !== 0 &&
-      !VALID.streetAddress(formInput.streetAddress1)
-    ) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
-      return false
-    }
-
     setPlaceNameError('')
     setStreetAddress1Error('')
     setStreetAddress2Error('')
-    return true
+    setCityError('')
+    setRegionError('')
+    setPostalCodeError('')
+
+    if (!VALID.placeName(formInput.placeName)) {
+      setPlaceNameError('4-50 Alpha-Numeric characters')
+    }
+    if (!VALID.streetAddress(formInput.streetAddress1)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+    }
+    // console.log({ streetAddress2: formInput.streetAddress2 })
+    if (
+      formInput?.streetAddress2 &&
+      formInput?.streetAddress2?.length > 0 &&
+      !VALID.streetAddress(formInput.streetAddress2)
+    ) {
+      setStreetAddress2Error('2-50 Alpha-Numeric characters')
+    }
+
+    if (!VALID.city(formInput.city)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+    }
+    if (!VALID.region(formInput.region)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+    }
+    if (!VALID.postalCode(formInput.postalCode)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+    }
+
+    if (
+      placeNameError === '' &&
+      streetAddress1Error === '' &&
+      streetAddress2Error === '' &&
+      cityError === '' &&
+      regionError === '' &&
+      postalCodeError === ''
+    ) {
+      return true
+    }
+    return false
   }
   useEffect(() => {
     const isValid = isValidForm()
@@ -258,6 +288,7 @@ function AddNewPlace() {
           <Input
             label="City"
             placeholder={`${formInput.city}`}
+            errorMessage={cityError}
             value={`${formInput.city}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, city: value })
@@ -270,6 +301,7 @@ function AddNewPlace() {
           <Input
             label="State"
             placeholder={`${formInput.region}`}
+            errorMessage={regionError}
             value={`${formInput.region}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, region: value })
@@ -282,6 +314,7 @@ function AddNewPlace() {
           <Input
             label="Postal Code"
             placeholder={`${formInput.postalCode}`}
+            errorMessage={postalCodeError}
             value={`${formInput.postalCode}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, postalCode: value })
