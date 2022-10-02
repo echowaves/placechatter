@@ -173,9 +173,9 @@ function AddNewPlace() {
       />
     )
   }
-  console.log({ locationGeocodedAddress })
-  console.log({ currentLocation })
-  console.log({ token })
+  // console.log({ locationGeocodedAddress })
+  // console.log({ currentLocation })
+  // console.log({ token })
 
   return (
     <SafeAreaView style={styles.container}>
@@ -188,12 +188,11 @@ function AddNewPlace() {
             onChangeText={(value) =>
               setFormInput({ ...formInput, placeName: value })
             }
-            autoCapitalize={'none'}
+            autoCapitalize={'words'}
             autoComplete={'off'}
             autoCorrect={false}
+            autoFocus={true}
           />
-
-          <Card.Divider />
           <Input
             label="Street Address1"
             placeholder={`${formInput.streetAddress1}`}
@@ -201,7 +200,7 @@ function AddNewPlace() {
             onChangeText={(value) =>
               setFormInput({ ...formInput, streetAddress1: value })
             }
-            autoCapitalize={'none'}
+            autoCapitalize={'words'}
             autoComplete={'off'}
             autoCorrect={false}
           />
@@ -212,10 +211,12 @@ function AddNewPlace() {
             onChangeText={(value) =>
               setFormInput({ ...formInput, streetAddress2: value })
             }
-            autoCapitalize={'none'}
+            autoCapitalize={'words'}
             autoComplete={'off'}
             autoCorrect={false}
           />
+          <Card.Divider />
+
           <Input
             label="City"
             placeholder={`${formInput.city}`}
@@ -223,9 +224,10 @@ function AddNewPlace() {
             onChangeText={(value) =>
               setFormInput({ ...formInput, city: value })
             }
-            autoCapitalize={'none'}
+            autoCapitalize={'words'}
             autoComplete={'off'}
             autoCorrect={false}
+            editable={false}
           />
           <Input
             label="State"
@@ -237,8 +239,8 @@ function AddNewPlace() {
             autoCapitalize={'none'}
             autoComplete={'off'}
             autoCorrect={false}
+            editable={false}
           />
-
           <Input
             label="Postal Code"
             placeholder={`${formInput.postalCode}`}
@@ -249,6 +251,7 @@ function AddNewPlace() {
             autoCapitalize={'none'}
             autoComplete={'off'}
             autoCorrect={false}
+            editable={false}
           />
         </Card>
       </ScrollView>
