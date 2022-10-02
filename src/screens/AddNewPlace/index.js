@@ -91,7 +91,7 @@ function AddNewPlace() {
       setLocationGeocodedAddress(geocodedAddress[0])
 
       setFormInput({
-        placeName: geocodedAddress[0].name || '',
+        placeName: '',
         streetAddress1: `${geocodedAddress[0].street || ''} ${
           geocodedAddress[0].streetNumber || ''
         }`,
@@ -183,7 +183,7 @@ function AddNewPlace() {
         <Card>
           <Input
             label="Place Name"
-            placeholder={`${formInput.placeName}`}
+            placeholder={`What do you call this place`}
             value={`${formInput.placeName}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, placeName: value })
