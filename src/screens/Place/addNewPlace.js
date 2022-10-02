@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 
-import {
-  Text,
-  Input,
-  LinearProgress,
-  Card,
-  ListItem,
-  Button,
-} from '@rneui/themed'
+import { Input, LinearProgress, Card } from '@rneui/themed'
 
 import { gql } from '@apollo/client'
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -25,7 +18,7 @@ import Toast from 'react-native-toast-message'
 import {
   FontAwesome,
   Ionicons,
-  MaterialCommunityIcons,
+  // MaterialCommunityIcons,
 } from '@expo/vector-icons'
 
 import PropTypes from 'prop-types'
@@ -64,7 +57,7 @@ function AddNewPlace() {
       const response = (
         await CONST.gqlClient.mutate({
           mutation: gql`
-            mutation createPlace(
+            mutation placeCreate(
               $uuid: String!
               $phoneNumber: String!
               $token: String!
@@ -82,7 +75,7 @@ function AddNewPlace() {
               $lat: Float!
               $lon: Float!
             ) {
-              createPlace(
+              placeCreate(
                 uuid: $uuid
                 phoneNumber: $phoneNumber
                 token: $token
@@ -144,13 +137,14 @@ function AddNewPlace() {
             lon: formInput.lon,
           },
         })
-      ).data.createPlace
+      ).data.placeCreate
 
-      console.log({ response: JSON.stringify(response) })
+      // console.log({ response: JSON.stringify(response) })
       const { placeUuid } = response.place
-    } catch (err4) {
-      console.log({ err4 })
 
+      navigation.navigate('EditPlace', { placeUuid })
+    } catch (err4) {
+      // console.log({ err4 })
       Toast.show({
         text1: 'Unable to create Place, try again.',
         text2: err4.toString(),

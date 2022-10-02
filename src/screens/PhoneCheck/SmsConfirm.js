@@ -59,13 +59,13 @@ function SmsConfirm({ route, navigation }) {
       const response = (
         await CONST.gqlClient.mutate({
           mutation: gql`
-            mutation activatePhone(
+            mutation phoneActivate(
               $uuid: String!
               $phoneNumber: String!
               $smsCode: String!
               $nickName: String!
             ) {
-              activatePhone(
+              phoneActivate(
                 uuid: $uuid
                 phoneNumber: $phoneNumber
                 smsCode: $smsCode
@@ -80,7 +80,7 @@ function SmsConfirm({ route, navigation }) {
             nickName,
           },
         })
-      ).data.activatePhone
+      ).data.phoneActivate
 
       // console.log({ response })
       // success, validateion passsed

@@ -57,11 +57,11 @@ function PhoneCheck() {
       // const response = await
       await CONST.gqlClient.mutate({
         mutation: gql`
-          mutation generateActivationCode(
+          mutation activationCodeGenerate(
             $phoneNumber: String!
             $uuid: String!
           ) {
-            generateActivationCode(phoneNumber: $phoneNumber, uuid: $uuid)
+            activationCodeGenerate(phoneNumber: $phoneNumber, uuid: $uuid)
           }
         `,
         variables: {
