@@ -29,7 +29,7 @@ export const VALID = {
   },
 
   token: function (param) {
-    return /^([a-zA-Z0-9]){128}$/.test(param)
+    return /^(\w){128}$/.test(param)
   },
 
   placeName: function (param) {

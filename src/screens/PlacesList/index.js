@@ -33,7 +33,7 @@ import Footer from '../../components/Footer'
 function PlacesList() {
   const navigation = useNavigation()
   const { width, height } = useDimensions().window
-  const [topOffset, setTopOffset] = useState(height / 3)
+  const topOffset = height / 3
   const [currentLocation, setCurrentLocation] = useState(null)
 
   const [isTandcAccepted, setIsTandcAccepted] = useState(false)

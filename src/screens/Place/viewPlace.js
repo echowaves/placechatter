@@ -16,6 +16,9 @@ import {
   Button,
 } from '@rneui/themed'
 
+import { gql } from '@apollo/client'
+import Spinner from 'react-native-loading-spinner-overlay'
+
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
 
@@ -31,12 +34,16 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function AddNewPlace() {
+function ViewPlace() {
   const navigation = useNavigation()
+  const [uuid, setUuid] = useState(null)
+  const [phoneNumber, setPhoneNumber] = useState(null)
   const [token, setToken] = useState(null)
 
+  const [showSpinner, setShowSpinner] = useState(false)
+
   const { width, height } = useDimensions().window
-  const [topOffset, setTopOffset] = useState(height / 3)
+  const topOffset = height / 3
   const [currentLocation, setCurrentLocation] = useState(null)
   const [locationGeocodedAddress, setLocationGeocodedAddress] = useState(null)
   const [formInput, setFormInput] = useState({})
@@ -50,9 +57,113 @@ function AddNewPlace() {
 
   const [canSubmit, setCanSubmit] = useState(false)
 
+  const handleSubmit = async () => {
+    setShowSpinner(true)
+
+    try {
+      const response = (
+        await CONST.gqlClient.mutate({
+          mutation: gql`
+            mutation createPlace(
+              $uuid: String!
+              $phoneNumber: String!
+              $token: String!
+              $placeName: String!
+              $streetAddress1: String!
+              $streetAddress2: String!
+              $city: String!
+              $country: String!
+              $district: String!
+              $isoCountryCode: String!
+              $postalCode: String!
+              $region: String!
+              $subregion: String!
+              $timezone: String!
+              $lat: Float!
+              $lon: Float!
+            ) {
+              createPlace(
+                uuid: $uuid
+                phoneNumber: $phoneNumber
+                token: $token
+                placeName: $placeName
+                streetAddress1: $streetAddress1
+                streetAddress2: $streetAddress2
+                city: $city
+                country: $country
+                district: $district
+                isoCountryCode: $isoCountryCode
+                postalCode: $postalCode
+                region: $region
+                subregion: $subregion
+                timezone: $timezone
+                lat: $lat
+                lon: $lon
+              ) {
+                place {
+                  placeUuid
+                  # placeName
+                  # streetAddress1
+                  # streetAddress2
+                  # city
+                  # country
+                  # district
+                  # isoCountryCode
+                  # postalCode
+                  # region
+                  # subregion
+                  # timezone
+                  # location
+                  # createdAt
+                }
+                # placeOwner {
+                #   placeUuid
+                #   phoneNumber
+                #   role
+                #   createdAt
+                # }
+              }
+            }
+          `,
+          variables: {
+            uuid,
+            phoneNumber,
+            token,
+            placeName: formInput.placeName,
+            streetAddress1: formInput.streetAddress1,
+            streetAddress2: formInput.streetAddress2,
+            city: formInput.city,
+            country: formInput.country,
+            district: formInput.district,
+            isoCountryCode: formInput.isoCountryCode,
+            postalCode: formInput.postalCode,
+            region: formInput.region,
+            subregion: formInput.subregion,
+            timezone: formInput.timezone,
+            lat: formInput.lat,
+            lon: formInput.lon,
+          },
+        })
+      ).data.createPlace
+
+      console.log({ response: JSON.stringify(response) })
+      const { placeUuid } = response.place
+    } catch (err4) {
+      console.log({ err4 })
+
+      Toast.show({
+        text1: 'Unable to create Place, try again.',
+        text2: err4.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+    setShowSpinner(false)
+  }
+
   const renderHeaderRight = () => (
     <Ionicons
-      // onPress={canSubmit ? () => handleSubmit() : null}
+      onPress={canSubmit ? () => handleSubmit() : null}
       name="send"
       size={30}
       style={{
@@ -134,8 +245,11 @@ function AddNewPlace() {
       })
     } else {
       setToken(localToken)
+      setUuid(await UTILS.getUUID())
+      setPhoneNumber(await UTILS.getPhoneNumber())
     }
   }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: renderHeaderRight,
@@ -244,6 +358,11 @@ function AddNewPlace() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Spinner
+        visible={showSpinner}
+        textContent={'Loading...'}
+        // textStyle={styles.spinnerTextStyle}
+      />
       <ScrollView>
         <Card>
           <Input
@@ -329,4 +448,4 @@ function AddNewPlace() {
     </SafeAreaView>
   )
 }
-export default AddNewPlace
+export default ViewPlace

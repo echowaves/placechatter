@@ -29,8 +29,10 @@ import { createStackNavigator } from '@react-navigation/stack'
 import * as CONST from './src/consts'
 
 import PlacesList from './src/screens/PlacesList'
-import AddNewPlace from './src/screens/AddNewPlace'
-// import PlaceDetails from './src/screens/PlaceDetails'
+import AddNewPlace from './src/screens/Place/addNewPlace'
+import EditPlace from './src/screens/Place/editPlace'
+import ViewPlace from './src/screens/Place/viewPlace'
+
 import Feedback from './src/screens/Feedback'
 import PhoneCheck from './src/screens/PhoneCheck'
 import SmsConfirm from './src/screens/PhoneCheck/SmsConfirm'
@@ -89,6 +91,24 @@ function App() {
                 <Stack.Screen
                   name="AddNewPlace"
                   component={AddNewPlace}
+                  options={{
+                    headerTintColor: CONST.MAIN_COLOR,
+                    gestureEnabled: false,
+                  }}
+                  screenOptions={{ headerShown: true }}
+                />
+                <Stack.Screen
+                  name="EditPlace"
+                  component={EditPlace}
+                  options={{
+                    headerTintColor: CONST.MAIN_COLOR,
+                    gestureEnabled: false,
+                  }}
+                  screenOptions={{ headerShown: true }}
+                />
+                <Stack.Screen
+                  name="ViewPlace"
+                  component={ViewPlace}
                   options={{
                     headerTintColor: CONST.MAIN_COLOR,
                     gestureEnabled: false,
