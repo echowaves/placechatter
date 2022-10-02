@@ -6,10 +6,7 @@ export const VALID = {
   dateFormat: 'YYYY-MM-DD HH:mm:ss.SSS',
 
   phoneNumber: function (param) {
-    if (/^([0-9]){10}$/.test(param)) {
-      return true
-    }
-    return false
+    return /^([0-9]){10}$/.test(param)
   },
 
   uuid: function (param) {
@@ -24,23 +21,18 @@ export const VALID = {
   },
 
   nickName: function (param) {
-    if (/^([a-zA-Z0-9_-]){4,30}$/.test(param)) {
-      return true
-    }
-    return false
+    return /^([a-zA-Z0-9_-]){4,30}$/.test(param)
   },
 
   smsCode: function (param) {
-    if (/^([a-zA-Z0-9]){4}$/.test(param)) {
-      return true
-    }
-    return false
+    return /^([a-zA-Z0-9]){4}$/.test(param)
   },
 
   token: function (param) {
-    if (/^([a-zA-Z0-9]){128}$/.test(param)) {
-      return true
-    }
-    return false
+    return /^([a-zA-Z0-9]){128}$/.test(param)
+  },
+
+  placeName: function (param) {
+    return /^([\w_@./#&+-\s]){4,50}$/.test(param)
   },
 }

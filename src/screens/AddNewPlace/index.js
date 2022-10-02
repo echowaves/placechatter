@@ -41,13 +41,13 @@ function AddNewPlace() {
   const [locationGeocodedAddress, setLocationGeocodedAddress] = useState(null)
   const [formInput, setFormInput] = useState({})
 
+  const [placeNameError, setPlaceNameError] = useState('')
+
   const [canSubmit, setCanSubmit] = useState(false)
 
   const renderHeaderRight = () => (
     <Ionicons
-      // onPress={
-      //   canSubmit ? () => handleSubmit() : null
-      // }
+      // onPress={canSubmit ? () => handleSubmit() : null}
       name="send"
       size={30}
       style={{
@@ -127,6 +127,11 @@ function AddNewPlace() {
       setToken(localToken)
     }
   }
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    })
+  }, [canSubmit])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -134,6 +139,20 @@ function AddNewPlace() {
     })
     return unsubscribe
   }, [navigation])
+
+  function isValidForm() {
+    if (!VALID.placeName(formInput.placeName)) {
+      setPlaceNameError('Alpha-Numeric, 4-50 length')
+      return false
+    }
+    setPlaceNameError('')
+    return true
+  }
+  useEffect(() => {
+    const isValid = isValidForm()
+    // console.log({ isValid })
+    setCanSubmit(isValid)
+  }, [formInput])
 
   useEffect(() => {
     navigation.setOptions({
@@ -184,6 +203,7 @@ function AddNewPlace() {
           <Input
             label="Place Name"
             placeholder={`What do you call this place`}
+            errorMessage={placeNameError}
             value={`${formInput.placeName}`}
             onChangeText={(value) =>
               setFormInput({ ...formInput, placeName: value })
