@@ -87,7 +87,7 @@ function AddNewPlace() {
         latitude,
         longitude,
       })
-      setLocationGeocodedAddress(geocodedAddress)
+      setLocationGeocodedAddress(geocodedAddress[0])
     }
 
     const localToken = await UTILS.getToken()
@@ -122,7 +122,7 @@ function AddNewPlace() {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-    init()
+    // init()
   }, [])
 
   const styles = StyleSheet.create({
@@ -136,7 +136,7 @@ function AddNewPlace() {
     },
   })
 
-  if (!currentLocation || !locationGeocodedAddress) {
+  if (!locationGeocodedAddress || !currentLocation || !token) {
     return (
       <LinearProgress
         color={CONST.MAIN_COLOR}
@@ -150,25 +150,25 @@ function AddNewPlace() {
     )
   }
   console.log({ locationGeocodedAddress })
+  console.log({ currentLocation })
+  console.log({ token })
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        {locationGeocodedAddress.map((loc, i) => (
-          <Card key={{ i }}>
-            <Card.Title>{`${loc.name}`}</Card.Title>
-            <Card.Divider />
-            <Text>{`${loc.streetNumber} ${loc.street}`}</Text>
-            <Text>{`${loc.city}, ${loc.region} `}</Text>
-            <Text>{`${loc.postalCode}`}</Text>
-            <Text>{`${loc.country} (${loc.isoCountryCode})`}</Text>
-            <Card.Divider />
-            <Text>{`${loc.district}`}</Text>
-            <Text>{`${loc.region}`}</Text>
-            <Text>{`${loc.subregion}`}</Text>
-            <Text>{`${loc.timezone}`}</Text>
-          </Card>
-        ))}
+        <Card>
+          <Card.Title>{`${locationGeocodedAddress.name}`}</Card.Title>
+          <Card.Divider />
+          <Text>{`${locationGeocodedAddress.streetNumber} ${locationGeocodedAddress.street}`}</Text>
+          <Text>{`${locationGeocodedAddress.city}, ${locationGeocodedAddress.region} `}</Text>
+          <Text>{`${locationGeocodedAddress.postalCode}`}</Text>
+          <Text>{`${locationGeocodedAddress.country} (${locationGeocodedAddress.isoCountryCode})`}</Text>
+          <Card.Divider />
+          <Text>{`${locationGeocodedAddress.district}`}</Text>
+          <Text>{`${locationGeocodedAddress.region}`}</Text>
+          <Text>{`${locationGeocodedAddress.subregion}`}</Text>
+          <Text>{`${locationGeocodedAddress.timezone}`}</Text>
+        </Card>
       </ScrollView>
     </SafeAreaView>
   )
