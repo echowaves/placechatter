@@ -46,11 +46,11 @@ function SmsConfirm({ route, navigation }) {
   const { uuid, phoneNumber } = route.params
   // console.log({ uuid, phoneNumber })
 
-  const [smsCode, setSmscode] = useState('')
-  const [nickName, setNickName] = useState('')
-  const [nickNameError, setNickNameError] = useState('')
+  const [smsCode, setSmscode] = useState()
+  const [nickName, setNickName] = useState()
+  const [nickNameError, setNickNameError] = useState()
 
-  const [canSubmit, setCanSubmit] = useState(false)
+  const [canSubmit, setCanSubmit] = useState(true)
   const input = createRef()
 
   const handleSubmit = async () => {
@@ -133,10 +133,13 @@ function SmsConfirm({ route, navigation }) {
   )
 
   async function validate() {
+    setCanSubmit(false)
+    setNickNameError('')
+
     if (VALID.nickName(nickName)) {
       if (VALID.smsCode(smsCode)) {
         setCanSubmit(true)
-        setNickNameError('')
+        // setNickNameError('')
         try {
           const nickNamesFound = await CONST.gqlClient.query({
             query: gql`
@@ -201,13 +204,14 @@ function SmsConfirm({ route, navigation }) {
       setNickName(await UTILS.getNickName())
     }
     init()
-    validate()
+    // validate()
   }, [])
 
   useEffect(() => {
+    // alert(nickName)
     validate()
     // console.log({ nickName })
-  }, [nickName])
+  }, [nickName, smsCode])
 
   useEffect(() => {
     navigation.setOptions({

@@ -5,7 +5,7 @@ import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
 
-import { StyleSheet } from 'react-native'
+import { StyleSheet, ScrollView, SafeAreaView } from 'react-native'
 
 import { Input, LinearProgress, Card } from '@rneui/themed'
 
@@ -178,6 +178,65 @@ function AddNewPlace() {
       onPress={() => navigation.goBack()}
     />
   )
+  function isValidForm() {
+    setPlaceNameError('')
+    setStreetAddress1Error('')
+    setStreetAddress2Error('')
+    setCityError('')
+    setRegionError('')
+    setPostalCodeError('')
+
+    if (!VALID.placeName(formInput.placeName)) {
+      setPlaceNameError('4-50 Alpha-Numeric characters')
+      return false
+    }
+    if (!VALID.streetAddress(formInput.streetAddress1)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+    // console.log({ streetAddress2: formInput.streetAddress2 })
+    if (
+      formInput?.streetAddress2 &&
+      formInput?.streetAddress2?.length > 0 &&
+      !VALID.streetAddress(formInput.streetAddress2)
+    ) {
+      setStreetAddress2Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+
+    if (!VALID.city(formInput.city)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+    if (!VALID.region(formInput.region)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+    if (!VALID.postalCode(formInput.postalCode)) {
+      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      return false
+    }
+
+    return true
+  }
+
+  useEffect(() => {
+    setCanSubmit(isValidForm())
+  }, [formInput])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: '',
+      headerTintColor: CONST.MAIN_COLOR,
+      headerRight: renderHeaderRight,
+      headerLeft: renderHeaderLeft,
+      headerBackTitle: '',
+      headerStyle: {
+        backgroundColor: CONST.NAV_COLOR,
+      },
+    })
+    // init()
+  }, [])
 
   async function init() {
     let location = null
@@ -226,6 +285,7 @@ function AddNewPlace() {
         lat: latitude,
         lon: longitude,
       })
+      // setCanSubmit(isValidForm())
     }
 
     const localToken = await UTILS.getToken()
@@ -256,71 +316,6 @@ function AddNewPlace() {
     })
     return unsubscribe
   }, [navigation])
-
-  function isValidForm() {
-    setPlaceNameError('')
-    setStreetAddress1Error('')
-    setStreetAddress2Error('')
-    setCityError('')
-    setRegionError('')
-    setPostalCodeError('')
-
-    if (!VALID.placeName(formInput.placeName)) {
-      setPlaceNameError('4-50 Alpha-Numeric characters')
-    }
-    if (!VALID.streetAddress(formInput.streetAddress1)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
-    }
-    // console.log({ streetAddress2: formInput.streetAddress2 })
-    if (
-      formInput?.streetAddress2 &&
-      formInput?.streetAddress2?.length > 0 &&
-      !VALID.streetAddress(formInput.streetAddress2)
-    ) {
-      setStreetAddress2Error('2-50 Alpha-Numeric characters')
-    }
-
-    if (!VALID.city(formInput.city)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
-    }
-    if (!VALID.region(formInput.region)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
-    }
-    if (!VALID.postalCode(formInput.postalCode)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
-    }
-
-    if (
-      placeNameError === '' &&
-      streetAddress1Error === '' &&
-      streetAddress2Error === '' &&
-      cityError === '' &&
-      regionError === '' &&
-      postalCodeError === ''
-    ) {
-      return true
-    }
-    return false
-  }
-  useEffect(() => {
-    const isValid = isValidForm()
-    // console.log({ isValid })
-    setCanSubmit(isValid)
-  }, [formInput])
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: '',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-    // init()
-  }, [])
 
   const styles = StyleSheet.create({
     container: {

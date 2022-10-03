@@ -34,7 +34,7 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function EditPlace() {
+function EditPlace({ placeUuid }) {
   const navigation = useNavigation()
   const [uuid, setUuid] = useState(null)
   const [phoneNumber, setPhoneNumber] = useState(null)
