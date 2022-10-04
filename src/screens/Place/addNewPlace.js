@@ -5,7 +5,8 @@ import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
 
-import { StyleSheet, ScrollView, SafeAreaView } from 'react-native'
+import { StyleSheet, SafeAreaView } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Input, LinearProgress, Card } from '@rneui/themed'
 
@@ -29,9 +30,8 @@ import { VALID } from '../../valid'
 
 function AddNewPlace() {
   const navigation = useNavigation()
-  const [uuid, setUuid] = useState(null)
-  const [phoneNumber, setPhoneNumber] = useState(null)
-  const [token, setToken] = useState(null)
+
+  const [auth, setAuth] = useState()
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -54,6 +54,7 @@ function AddNewPlace() {
     setShowSpinner(true)
 
     try {
+      const { uuid, phoneNumber, token } = auth
       const response = (
         await CONST.gqlClient.mutate({
           mutation: gql`
@@ -285,23 +286,8 @@ function AddNewPlace() {
         lat: latitude,
         lon: longitude,
       })
-      // setCanSubmit(isValidForm())
     }
-
-    const localToken = await UTILS.getToken()
-
-    if (!localToken) {
-      navigation.navigate('PhoneCheck')
-      Toast.show({
-        text1: 'Need to Validate your Phone Number first',
-        type: 'info',
-        topOffset,
-      })
-    } else {
-      setToken(localToken)
-      setUuid(await UTILS.getUUID())
-      setPhoneNumber(await UTILS.getPhoneNumber())
-    }
+    setAuth(await UTILS.checkAuthentication({ navigation, topOffset }))
   }
 
   useEffect(() => {
@@ -328,7 +314,7 @@ function AddNewPlace() {
     },
   })
 
-  if (!locationGeocodedAddress || !currentLocation || !token) {
+  if (!locationGeocodedAddress || !currentLocation || !auth?.token) {
     return (
       <LinearProgress
         color={CONST.MAIN_COLOR}
@@ -352,7 +338,7 @@ function AddNewPlace() {
         textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <Card>
           <Input
             label="Place Name"
@@ -433,7 +419,7 @@ function AddNewPlace() {
             editable={false}
           />
         </Card>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   )
 }

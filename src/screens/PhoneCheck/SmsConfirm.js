@@ -46,14 +46,15 @@ function SmsConfirm({ route, navigation }) {
   const { uuid, phoneNumber } = route.params
   // console.log({ uuid, phoneNumber })
 
-  const [smsCode, setSmscode] = useState()
-  const [nickName, setNickName] = useState()
-  const [nickNameError, setNickNameError] = useState()
+  const [smsCode, setSmsCode] = useState('')
+  const [nickName, setNickName] = useState('')
+  const [nickNameError, setNickNameError] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(true)
   const input = createRef()
 
   const handleSubmit = async () => {
+    // console.log({ smsCode, nickName })
     setShowSpinner(true)
     try {
       const response = (
@@ -92,11 +93,11 @@ function SmsConfirm({ route, navigation }) {
       // console.log({ response })
       // alert(response)
     } catch (err3) {
-      // console.log({ err3 })
+      console.log({ err3 })
       await UTILS.setNickName('')
       await UTILS.setPhoneNumber('')
+      setSmsCode('')
       setNickName('')
-      setSmscode('')
 
       Toast.show({
         text1: 'Unable to activatePhone phone, try again.',
@@ -211,7 +212,7 @@ function SmsConfirm({ route, navigation }) {
     // alert(nickName)
     validate()
     // console.log({ nickName })
-  }, [nickName, smsCode])
+  }, [smsCode, nickName])
 
   useEffect(() => {
     navigation.setOptions({
@@ -246,7 +247,7 @@ function SmsConfirm({ route, navigation }) {
           focus={true}
           //   keyboardType="numeric"
           value={smsCode}
-          onChangeText={(value) => setSmscode(value)}
+          onChangeText={setSmsCode}
           autoCapitalize={'none'}
           autoComplete={'off'}
           autoCorrect={false}
@@ -259,7 +260,7 @@ function SmsConfirm({ route, navigation }) {
           value={nickName}
           errorStyle={{ color: 'red' }}
           errorMessage={nickNameError}
-          onChangeText={(value) => setNickName(value)}
+          onChangeText={setNickName}
           autoCapitalize={'none'}
           autoComplete={'off'}
           autoCorrect={false}

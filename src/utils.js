@@ -130,3 +130,23 @@ export async function getToken() {
   const token = await SecureStore.getItemAsync(CONST.TOKEN_KEY)
   return token
 }
+
+export async function checkAuthentication({ navigation, topOffset }) {
+  const localToken = await getToken()
+
+  if (!localToken) {
+    navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Need to Validate your Phone Number first',
+      type: 'info',
+      topOffset,
+    })
+    return null
+  }
+
+  return {
+    token: localToken,
+    uuid: await getUUID(),
+    phoneNumber: await getPhoneNumber(),
+  }
+}

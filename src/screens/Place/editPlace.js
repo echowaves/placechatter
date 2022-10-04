@@ -6,6 +6,7 @@ import { useDimensions } from '@react-native-community/hooks'
 import * as Location from 'expo-location'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import {
   Text,
@@ -36,18 +37,16 @@ import { VALID } from '../../valid'
 
 function EditPlace({ placeUuid }) {
   const navigation = useNavigation()
-  const [uuid, setUuid] = useState(null)
-  const [phoneNumber, setPhoneNumber] = useState(null)
-  const [token, setToken] = useState(null)
+  const [auth, setAuth] = useState()
 
   const [showSpinner, setShowSpinner] = useState(false)
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  const [descriptionError, setDescriptionError] = useState('')
+  const [description, setDescription] = useState()
 
-  const [canSubmit, setCanSubmit] = useState(false)
+  const [descriptionError, setDescriptionError] = useState('')
 
   // const handleSubmit = async () => {
   //   setShowSpinner(true)
@@ -177,34 +176,8 @@ function EditPlace({ placeUuid }) {
   )
 
   async function init() {
-    const localToken = await UTILS.getToken()
-
-    if (!localToken) {
-      navigation.navigate('PhoneCheck')
-      Toast.show({
-        text1: 'Need to Validate your Phone Number first',
-        type: 'info',
-        topOffset,
-      })
-    } else {
-      setToken(localToken)
-      setUuid(await UTILS.getUUID())
-      setPhoneNumber(await UTILS.getPhoneNumber())
-    }
+    setAuth(await UTILS.checkAuthentication({ navigation, topOffset }))
   }
-
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: renderHeaderRight,
-  //   })
-  // }, [canSubmit])
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      init()
-    })
-    return unsubscribe
-  }, [navigation])
 
   useEffect(() => {
     navigation.setOptions({
@@ -217,7 +190,7 @@ function EditPlace({ placeUuid }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-    // init()
+    init()
   }, [])
 
   const styles = StyleSheet.create({
@@ -238,88 +211,23 @@ function EditPlace({ placeUuid }) {
         textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <Card>
           <Input
             label="Place Name"
             placeholder={`What do you call this place`}
-            errorMessage={placeNameError}
-            value={`${formInput.placeName}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, placeName: value })
-            }
-            autoCapitalize={'words'}
+            errorMessage={descriptionError}
+            value={`${description}`}
+            onChangeText={(value) => setDescription(value)}
+            multiline
+            autoCapitalize={'sentences'}
             autoComplete={'off'}
             autoCorrect={false}
             autoFocus={true}
           />
-          <Input
-            label="Street Address1"
-            placeholder={`${formInput.streetAddress1}`}
-            errorMessage={streetAddress1Error}
-            value={`${formInput.streetAddress1}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, streetAddress1: value })
-            }
-            autoCapitalize={'words'}
-            autoComplete={'off'}
-            autoCorrect={false}
-          />
-          <Input
-            label="Street Address2"
-            placeholder={`${formInput.streetAddress2}`}
-            errorMessage={streetAddress2Error}
-            value={`${formInput.streetAddress2}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, streetAddress2: value })
-            }
-            autoCapitalize={'words'}
-            autoComplete={'off'}
-            autoCorrect={false}
-          />
-          <Card.Divider />
-
-          <Input
-            label="City"
-            placeholder={`${formInput.city}`}
-            errorMessage={cityError}
-            value={`${formInput.city}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, city: value })
-            }
-            autoCapitalize={'words'}
-            autoComplete={'off'}
-            autoCorrect={false}
-            editable={false}
-          />
-          <Input
-            label="State"
-            placeholder={`${formInput.region}`}
-            errorMessage={regionError}
-            value={`${formInput.region}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, region: value })
-            }
-            autoCapitalize={'none'}
-            autoComplete={'off'}
-            autoCorrect={false}
-            editable={false}
-          />
-          <Input
-            label="Postal Code"
-            placeholder={`${formInput.postalCode}`}
-            errorMessage={postalCodeError}
-            value={`${formInput.postalCode}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, postalCode: value })
-            }
-            autoCapitalize={'none'}
-            autoComplete={'off'}
-            autoCorrect={false}
-            editable={false}
-          />
+          <Button size="lg">save</Button>
         </Card>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   )
 }
