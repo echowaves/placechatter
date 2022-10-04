@@ -46,15 +46,15 @@ function SmsConfirm({ route, navigation }) {
   const { uuid, phoneNumber } = route.params
   // console.log({ uuid, phoneNumber })
 
-  const [smsCode, setSmsCode] = useState('')
-  const [nickName, setNickName] = useState('')
+  const [formInput, setFormInput] = useState({})
   const [nickNameError, setNickNameError] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(true)
-  const input = createRef()
+  // const input = createRef()
 
-  const handleSubmit = async () => {
-    // console.log({ smsCode, nickName })
+  async function handleSubmit() {
+    const { smsCode, nickName } = formInput
+    console.log({ smsCode, nickName })
     setShowSpinner(true)
     try {
       const response = (
@@ -96,8 +96,10 @@ function SmsConfirm({ route, navigation }) {
       console.log({ err3 })
       await UTILS.setNickName('')
       await UTILS.setPhoneNumber('')
-      setSmsCode('')
-      setNickName('')
+      setFormInput({
+        smsCode: '',
+        nickName: '',
+      })
 
       Toast.show({
         text1: 'Unable to activatePhone phone, try again.',
@@ -110,7 +112,8 @@ function SmsConfirm({ route, navigation }) {
 
   const renderHeaderRight = () => (
     <Ionicons
-      onPress={canSubmit ? () => handleSubmit() : null}
+      onPress={canSubmit ? handleSubmit : null}
+      // onPress={handleSubmit}
       name="send"
       size={30}
       style={{
@@ -133,13 +136,12 @@ function SmsConfirm({ route, navigation }) {
     />
   )
 
-  async function validate() {
-    setCanSubmit(false)
+  async function valid() {
     setNickNameError('')
+    const { smsCode, nickName } = formInput
 
     if (VALID.nickName(nickName)) {
       if (VALID.smsCode(smsCode)) {
-        setCanSubmit(true)
         // setNickNameError('')
         try {
           const nickNamesFound = await CONST.gqlClient.query({
@@ -165,28 +167,24 @@ function SmsConfirm({ route, navigation }) {
 
           if (nickNameTypeAhead !== 0) {
             setNickNameError('Nickname is already taken')
-            setCanSubmit(false)
+            return false
           }
+          return true
         } catch (err1) {
           setNickNameError('Lettters and digits only')
-          setCanSubmit(false)
-          // setCanSubmit(false)
-          // setNickNameError('')
-
-          // Toast.show({
-          //   text1: 'Unable to validate nickName',
-          //   text2: err1.toString(),
-          //   type: 'error',
-          // })
+          return false
         }
-      } else {
-        setCanSubmit(false)
       }
-    } else {
-      setNickNameError('Only Letters and Digits, 4-30 characters')
-      setCanSubmit(false)
+      return false
     }
+    setNickNameError('Only Letters and Digits, 4-30 characters')
+    return false
   }
+
+  async function valAsync() {
+    setCanSubmit(await valid())
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'confirm code',
@@ -198,27 +196,28 @@ function SmsConfirm({ route, navigation }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-    input.current.focus()
-    input.current.clear()
+    // input.current.focus()
+    // input.current.clear()
 
     async function init() {
-      setNickName(await UTILS.getNickName())
+      setFormInput({ ...formInput, nickName: await UTILS.getNickName() })
     }
     init()
-    // validate()
   }, [])
-
-  useEffect(() => {
-    // alert(nickName)
-    validate()
-    // console.log({ nickName })
-  }, [smsCode, nickName])
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: renderHeaderRight,
     })
   }, [canSubmit])
+
+  useEffect(() => {
+    // console.log({ smsCode, nickName })
+    valAsync()
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    })
+  }, [formInput])
 
   const styles = StyleSheet.create({
     container: {
@@ -240,14 +239,16 @@ function SmsConfirm({ route, navigation }) {
           // textStyle={styles.spinnerTextStyle}
         />
         <Input
-          ref={input}
+          // ref={input}
           label="Enter sms confirmation code"
           placeholder="4 letter code"
           leftIcon={{ type: 'material-icons', name: 'confirmation-num' }}
           focus={true}
           //   keyboardType="numeric"
-          value={smsCode}
-          onChangeText={setSmsCode}
+          value={formInput.smsCode}
+          onChangeText={(value) =>
+            setFormInput({ ...formInput, smsCode: value })
+          }
           autoCapitalize={'none'}
           autoComplete={'off'}
           autoCorrect={false}
@@ -257,10 +258,12 @@ function SmsConfirm({ route, navigation }) {
           placeholder="Nickname appears in chats"
           leftIcon={{ type: 'font-awesome', name: 'user-circle' }}
           //   keyboardType="numeric"
-          value={nickName}
+          value={formInput.nickName}
+          onChangeText={(value) =>
+            setFormInput({ ...formInput, nickName: value })
+          }
           errorStyle={{ color: 'red' }}
           errorMessage={nickNameError}
-          onChangeText={setNickName}
           autoCapitalize={'none'}
           autoComplete={'off'}
           autoCorrect={false}
