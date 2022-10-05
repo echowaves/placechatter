@@ -100,28 +100,7 @@ function ViewPlace() {
                 lat: $lat
                 lon: $lon
               ) {
-                place {
-                  placeUuid
-                  # placeName
-                  # streetAddress1
-                  # streetAddress2
-                  # city
-                  # country
-                  # district
-                  # isoCountryCode
-                  # postalCode
-                  # region
-                  # subregion
-                  # timezone
-                  # location
-                  # createdAt
-                }
-                # placeOwner {
-                #   placeUuid
-                #   phoneNumber
-                #   role
-                #   createdAt
-                # }
+                placeUuid
               }
             }
           `,
@@ -147,7 +126,7 @@ function ViewPlace() {
       ).data.createPlace
 
       console.log({ response: JSON.stringify(response) })
-      const { placeUuid } = response.place
+      const { placeUuid } = response
     } catch (err4) {
       console.log({ err4 })
 

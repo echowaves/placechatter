@@ -35,8 +35,9 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function EditPlace({ placeUuid }) {
-  const navigation = useNavigation()
+function EditPlace({ route, navigation }) {
+  const { placeUuid } = route.params
+
   const [auth, setAuth] = useState()
 
   const [showSpinner, setShowSpinner] = useState(false)
@@ -44,113 +45,12 @@ function EditPlace({ placeUuid }) {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  const [description, setDescription] = useState('')
-  const [descriptionError, setDescriptionError] = useState('')
+  // const [placeDetails, setPlaceDetails] = useState({})
+  const [loadedPlaceDescription, setLoadedPlaceDescription] = useState('')
+
+  const [placeDescription, setPlaceDescription] = useState('')
+  const [placeDescriptionError, setPlaceDescriptionError] = useState('')
   const [canSubmit, setCanSubmit] = useState(false)
-
-  // const handleSubmit = async () => {
-  //   setShowSpinner(true)
-
-  //   try {
-  //     const response = (
-  //       await CONST.gqlClient.mutate({
-  //         mutation: gql`
-  //           mutation createPlace(
-  //             $uuid: String!
-  //             $phoneNumber: String!
-  //             $token: String!
-  //             $placeName: String!
-  //             $streetAddress1: String!
-  //             $streetAddress2: String!
-  //             $city: String!
-  //             $country: String!
-  //             $district: String!
-  //             $isoCountryCode: String!
-  //             $postalCode: String!
-  //             $region: String!
-  //             $subregion: String!
-  //             $timezone: String!
-  //             $lat: Float!
-  //             $lon: Float!
-  //           ) {
-  //             createPlace(
-  //               uuid: $uuid
-  //               phoneNumber: $phoneNumber
-  //               token: $token
-  //               placeName: $placeName
-  //               streetAddress1: $streetAddress1
-  //               streetAddress2: $streetAddress2
-  //               city: $city
-  //               country: $country
-  //               district: $district
-  //               isoCountryCode: $isoCountryCode
-  //               postalCode: $postalCode
-  //               region: $region
-  //               subregion: $subregion
-  //               timezone: $timezone
-  //               lat: $lat
-  //               lon: $lon
-  //             ) {
-  //               place {
-  //                 placeUuid
-  //                 # placeName
-  //                 # streetAddress1
-  //                 # streetAddress2
-  //                 # city
-  //                 # country
-  //                 # district
-  //                 # isoCountryCode
-  //                 # postalCode
-  //                 # region
-  //                 # subregion
-  //                 # timezone
-  //                 # location
-  //                 # createdAt
-  //               }
-  //               # placeOwner {
-  //               #   placeUuid
-  //               #   phoneNumber
-  //               #   role
-  //               #   createdAt
-  //               # }
-  //             }
-  //           }
-  //         `,
-  //         variables: {
-  //           uuid,
-  //           phoneNumber,
-  //           token,
-  //           placeName: formInput.placeName,
-  //           streetAddress1: formInput.streetAddress1,
-  //           streetAddress2: formInput.streetAddress2,
-  //           city: formInput.city,
-  //           country: formInput.country,
-  //           district: formInput.district,
-  //           isoCountryCode: formInput.isoCountryCode,
-  //           postalCode: formInput.postalCode,
-  //           region: formInput.region,
-  //           subregion: formInput.subregion,
-  //           timezone: formInput.timezone,
-  //           lat: formInput.lat,
-  //           lon: formInput.lon,
-  //         },
-  //       })
-  //     ).data.createPlace
-
-  //     console.log({ response: JSON.stringify(response) })
-  //     const { placeUuid } = response.place
-  //   } catch (err4) {
-  //     console.log({ err4 })
-
-  //     Toast.show({
-  //       text1: 'Unable to create Place, try again.',
-  //       text2: err4.toString(),
-  //       type: 'error',
-  //       topOffset,
-  //     })
-  //   }
-  //   setShowSpinner(false)
-  // }
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -176,16 +76,131 @@ function EditPlace({ placeUuid }) {
   )
 
   async function init() {
-    setAuth(await UTILS.checkAuthentication({ navigation, topOffset }))
+    setShowSpinner(true)
+
+    const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
+      navigation,
+      topOffset,
+    })
+
+    setAuth({ token, uuid, phoneNumber })
+
+    try {
+      const place = (
+        await CONST.gqlClient.query({
+          query: gql`
+            query placeRead(
+              $uuid: String!
+              $phoneNumber: String!
+              $token: String!
+              $placeUuid: String!
+            ) {
+              placeRead(
+                uuid: $uuid
+                phoneNumber: $phoneNumber
+                token: $token
+                placeUuid: $placeUuid
+              ) {
+                placeUuid
+                placeName
+                placeDescription
+              }
+            }
+          `,
+          variables: {
+            uuid,
+            phoneNumber,
+            token,
+            placeUuid,
+          },
+        })
+      ).data.placeRead
+      // alert(response)
+
+      navigation.setOptions({
+        headerTitle: place.placeName,
+      })
+
+      setLoadedPlaceDescription(place.placeDescription)
+
+      // console.log({ place })
+    } catch (err7) {
+      console.log({ err7 })
+      Toast.show({
+        text1: 'Unable to load Place info, try again.',
+        text2: err7.toString(),
+        type: 'error',
+        topOffset,
+      })
+
+      // setNickNameError('Lettters and digits only')
+    }
+    setShowSpinner(false)
   }
 
   function isValid() {
-    if (!VALID.placeDescription(description)) {
-      setDescriptionError('100-1000 Alpha-Numeric characters')
+    if (placeDescription === loadedPlaceDescription) {
+      setPlaceDescriptionError('')
       return false
     }
-    setDescriptionError('')
-    return true
+    if (VALID.placeDescription(placeDescription)) {
+      setPlaceDescriptionError('')
+      return true
+    }
+    setPlaceDescriptionError('100-1000 Alpha-Numeric characters')
+    return false
+  }
+
+  const handleUpdateDescription = async () => {
+    setShowSpinner(true)
+    const { token, uuid, phoneNumber } = auth
+
+    try {
+      const response = (
+        await CONST.gqlClient.mutate({
+          mutation: gql`
+            mutation placeDescriptionUpdate(
+              $uuid: String!
+              $phoneNumber: String!
+              $token: String!
+              $placeUuid: String!
+              $placeDescription: String!
+            ) {
+              placeDescriptionUpdate(
+                uuid: $uuid
+                phoneNumber: $phoneNumber
+                token: $token
+                placeUuid: $placeUuid
+                placeDescription: $placeDescription
+              )
+            }
+          `,
+          variables: {
+            uuid,
+            phoneNumber,
+            token,
+            placeUuid,
+            placeDescription,
+          },
+        })
+      ).data.placeDescriptionUpdate
+
+      setLoadedPlaceDescription(placeDescription)
+      setCanSubmit(false)
+
+      // console.log({ response: JSON.stringify(response) })
+    } catch (err8) {
+      console.log({ err8 })
+
+      Toast.show({
+        text1: 'Unable to update Place description, try again.',
+        text2: err8.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+    setShowSpinner(false)
+    // await init()
   }
 
   useEffect(() => {
@@ -204,7 +219,7 @@ function EditPlace({ placeUuid }) {
 
   useEffect(() => {
     setCanSubmit(isValid())
-  }, [description])
+  }, [placeDescription])
 
   const styles = StyleSheet.create({
     container: {
@@ -230,9 +245,9 @@ function EditPlace({ placeUuid }) {
             label="Place Description"
             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
             placeholder={`What do you call this place`}
-            errorMessage={descriptionError}
-            value={`${description}`}
-            onChangeText={(value) => setDescription(value)}
+            errorMessage={placeDescriptionError}
+            value={`${placeDescription}`}
+            onChangeText={(value) => setPlaceDescription(value)}
             multiline
             autoCapitalize={'sentences'}
             autoComplete={'off'}
@@ -240,19 +255,19 @@ function EditPlace({ placeUuid }) {
             autoFocus={true}
           />
           <Button
+            onPress={() => handleUpdateDescription()}
             size="lg"
             icon={{
               name: 'send',
               type: 'Ionicons',
               size: 25,
-              marginLeft: 20,
               color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
             }}
             iconRight
             // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
             disabled={!canSubmit}
           >
-            {`${description.length} save`}
+            {`save ${placeDescription.length} `}
           </Button>
         </Card>
       </KeyboardAwareScrollView>

@@ -94,28 +94,20 @@ function AddNewPlace() {
                 lat: $lat
                 lon: $lon
               ) {
-                place {
-                  placeUuid
-                  # placeName
-                  # streetAddress1
-                  # streetAddress2
-                  # city
-                  # country
-                  # district
-                  # isoCountryCode
-                  # postalCode
-                  # region
-                  # subregion
-                  # timezone
-                  # location
-                  # createdAt
-                }
-                # placeOwner {
-                #   placeUuid
-                #   phoneNumber
-                #   role
-                #   createdAt
-                # }
+                placeUuid
+                # placeName
+                # streetAddress1
+                # streetAddress2
+                # city
+                # country
+                # district
+                # isoCountryCode
+                # postalCode
+                # region
+                # subregion
+                # timezone
+                # location
+                # createdAt
               }
             }
           `,
@@ -141,11 +133,11 @@ function AddNewPlace() {
       ).data.placeCreate
 
       // console.log({ response: JSON.stringify(response) })
-      const { placeUuid } = response.place
+      const { placeUuid } = response
 
       navigation.navigate('EditPlace', { placeUuid })
     } catch (err4) {
-      // console.log({ err4 })
+      console.log({ err4 })
       Toast.show({
         text1: 'Unable to create Place, try again.',
         text2: err4.toString(),
@@ -223,6 +215,9 @@ function AddNewPlace() {
 
   useEffect(() => {
     setCanSubmit(isValidForm())
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    })
   }, [formInput])
 
   useEffect(() => {
