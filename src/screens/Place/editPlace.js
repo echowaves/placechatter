@@ -38,7 +38,7 @@ import { VALID } from '../../valid'
 function EditPlace({ route, navigation }) {
   const { placeUuid } = route.params
 
-  const [auth, setAuth] = useState()
+  const [auth, setAuth] = useState({})
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -247,15 +247,15 @@ function EditPlace({ route, navigation }) {
             placeholder={`What do you call this place`}
             errorMessage={placeDescriptionError}
             value={`${placeDescription}`}
-            onChangeText={(value) => setPlaceDescription(value)}
+            onChangeText={setPlaceDescription}
             multiline
             autoCapitalize={'sentences'}
             autoComplete={'off'}
             autoCorrect={true}
-            autoFocus={true}
+            // autoFocus={true}
           />
           <Button
-            onPress={() => handleUpdateDescription()}
+            onPress={handleUpdateDescription}
             size="lg"
             icon={{
               name: 'send',

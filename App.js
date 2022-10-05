@@ -8,6 +8,7 @@
 import { NavigationContainer } from '@react-navigation/native'
 
 import { createDrawerNavigator } from '@react-navigation/drawer'
+// import { enableFreeze } from 'react-native-screens'
 
 /* eslint-disable import/no-extraneous-dependencies */
 import {
@@ -26,6 +27,7 @@ import Toast from 'react-native-toast-message'
 import { ThemeProvider } from '@rneui/themed'
 
 import { createStackNavigator } from '@react-navigation/stack'
+
 import * as CONST from './src/consts'
 
 import PlacesList from './src/screens/PlacesList'
@@ -46,13 +48,14 @@ import 'react-native-gesture-handler'
 const Drawer = createDrawerNavigator()
 // eslint-disable-next-line no-unused-vars
 const Stack = createStackNavigator()
+// enableFreeze(true)
 
 function App() {
   return (
     <ThemeProvider>
       <NavigationContainer>
         <Drawer.Navigator
-          useLegacyImplementation={false}
+          // useLegacyImplementation={false}
           screenOptions={{ gestureEnabled: true, headerShown: false }}
         >
           <Drawer.Screen
