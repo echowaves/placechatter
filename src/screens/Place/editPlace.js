@@ -44,9 +44,9 @@ function EditPlace({ placeUuid }) {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  const [description, setDescription] = useState()
-
+  const [description, setDescription] = useState('')
   const [descriptionError, setDescriptionError] = useState('')
+  const [canSubmit, setCanSubmit] = useState(false)
 
   // const handleSubmit = async () => {
   //   setShowSpinner(true)
@@ -179,6 +179,15 @@ function EditPlace({ placeUuid }) {
     setAuth(await UTILS.checkAuthentication({ navigation, topOffset }))
   }
 
+  function isValid() {
+    if (!VALID.placeDescription(description)) {
+      setDescriptionError('100-1000 Alpha-Numeric characters')
+      return false
+    }
+    setDescriptionError('')
+    return true
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: '',
@@ -192,6 +201,10 @@ function EditPlace({ placeUuid }) {
     })
     init()
   }, [])
+
+  useEffect(() => {
+    setCanSubmit(isValid())
+  }, [description])
 
   const styles = StyleSheet.create({
     container: {
@@ -214,7 +227,8 @@ function EditPlace({ placeUuid }) {
       <KeyboardAwareScrollView>
         <Card>
           <Input
-            label="Place Name"
+            label="Place Description"
+            // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
             placeholder={`What do you call this place`}
             errorMessage={descriptionError}
             value={`${description}`}
@@ -222,10 +236,24 @@ function EditPlace({ placeUuid }) {
             multiline
             autoCapitalize={'sentences'}
             autoComplete={'off'}
-            autoCorrect={false}
+            autoCorrect={true}
             autoFocus={true}
           />
-          <Button size="lg">save</Button>
+          <Button
+            size="lg"
+            icon={{
+              name: 'send',
+              type: 'Ionicons',
+              size: 25,
+              marginLeft: 20,
+              color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
+            }}
+            iconRight
+            // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
+            disabled={!canSubmit}
+          >
+            {`${description.length} save`}
+          </Button>
         </Card>
       </KeyboardAwareScrollView>
     </SafeAreaView>

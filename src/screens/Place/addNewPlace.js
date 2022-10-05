@@ -384,39 +384,42 @@ function AddNewPlace() {
             placeholder={`${formInput.city}`}
             errorMessage={cityError}
             value={`${formInput.city}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, city: value })
-            }
+            // onChangeText={(value) =>
+            //   setFormInput({ ...formInput, city: value })
+            // }
             autoCapitalize={'words'}
             autoComplete={'off'}
             autoCorrect={false}
             editable={false}
+            disabled={true}
           />
           <Input
             label="State"
             placeholder={`${formInput.region}`}
             errorMessage={regionError}
             value={`${formInput.region}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, region: value })
-            }
+            // onChangeText={(value) =>
+            //   setFormInput({ ...formInput, region: value })
+            // }
             autoCapitalize={'none'}
             autoComplete={'off'}
             autoCorrect={false}
             editable={false}
+            disabled={true}
           />
           <Input
             label="Postal Code"
             placeholder={`${formInput.postalCode}`}
             errorMessage={postalCodeError}
             value={`${formInput.postalCode}`}
-            onChangeText={(value) =>
-              setFormInput({ ...formInput, postalCode: value })
-            }
+            // onChangeText={(value) =>
+            //   setFormInput({ ...formInput, postalCode: value })
+            // }
             autoCapitalize={'none'}
             autoComplete={'off'}
             autoCorrect={false}
             editable={false}
+            disabled={true}
           />
         </Card>
       </KeyboardAwareScrollView>

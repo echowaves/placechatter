@@ -36,7 +36,7 @@ export const VALID = {
     return /^([\w_@./#&+-\s]){4,50}$/.test(param)
   },
   placeDescription: function (param) {
-    return /^([\w_@./#&+-\s]){10,1024}$/.test(param)
+    return /^(.|\s){100,1024}$/.test(param)
   },
   streetAddress: function (param) {
     return /^([\w_@./#&+-\s]){2,50}$/.test(param)
