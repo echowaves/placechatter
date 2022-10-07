@@ -4,7 +4,18 @@ import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  FlatList,
+  RefreshControl,
+} from 'react-native'
+import TouchableScale from 'react-native-touchable-scale' // https://github.com/kohver/react-native-touchable-scale
+import { LinearGradient } from 'expo-linear-gradient'
+
 import * as SecureStore from 'expo-secure-store'
 
 import {
@@ -12,10 +23,11 @@ import {
   Input,
   LinearProgress,
   Card,
-  ListItem,
   Button,
   Overlay,
   Divider,
+  ListItem,
+  Avatar,
 } from '@rneui/themed'
 
 import { gql } from '@apollo/client'
@@ -37,9 +49,12 @@ function PlacesList() {
   const navigation = useNavigation()
   const { width, height } = useDimensions().window
   const topOffset = height / 3
-  const [currentLocation, setCurrentLocation] = useState(null)
+  const [currentLocation, setCurrentLocation] = useState()
 
   const [isTandcAccepted, setIsTandcAccepted] = useState(false)
+
+  const [places, setPlaces] = useState()
+  const [refreshing, setRefreshing] = useState(false)
 
   const init = async function () {
     try {
@@ -70,7 +85,7 @@ function PlacesList() {
     }
     const { latitude, longitude } = currentLocation.coords
     try {
-      const places = (
+      const loadedPlaces = (
         await CONST.gqlClient.query({
           query: gql`
             query placesFeed($lat: Float!, $lon: Float!) {
@@ -79,6 +94,9 @@ function PlacesList() {
                   place {
                     distance
                     placeName
+                    streetAddress1
+                    city
+                    region
                   }
                   photos {
                     photoUuid
@@ -93,8 +111,9 @@ function PlacesList() {
             lon: longitude,
           },
         })
-      ).data.placesFeed
-      // console.log({ places: JSON.stringify(places) })
+      ).data.placesFeed.places
+      setPlaces(loadedPlaces)
+      // console.log({ places: JSON.stringify(loadedPlaces) })
     } catch (err9) {
       console.log('failed to load places')
       Toast.show({
@@ -108,6 +127,12 @@ function PlacesList() {
 
   const renderHeaderRight = () => null
   const renderHeaderLeft = () => {}
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true)
+    init()
+    setRefreshing(false)
+  }, [])
 
   useEffect(() => {
     navigation.setOptions({
@@ -204,10 +229,59 @@ function PlacesList() {
     )
   }
 
+  if (!places || places?.length === 0 || !currentLocation) {
+    return (
+      <View style={styles.container}>
+        <LinearProgress color={CONST.MAIN_COLOR} />
+      </View>
+    )
+  }
+
+  const keyExtractor = (item, index) => index.toString()
+
+  const renderItem = ({ item }) => (
+    <ListItem
+      style={{ paddingVertical: 8 }}
+      Component={TouchableScale}
+      friction={90} //
+      tension={100} // These props are passed to the parent component (here TouchableScale)
+      activeScale={0.95} //
+      linearGradientProps={{
+        colors: ['#FF9800', '#F44336'],
+        start: { x: 1, y: 0 },
+        end: { x: 0.2, y: 0 },
+      }}
+      ViewComponent={LinearGradient} // Only if no expo
+    >
+      {/* <Avatar rounded source={{ uri: avatar_url }} /> */}
+      <ListItem.Content>
+        <ListItem.Title style={{ color: 'white', fontWeight: 'bold' }}>
+          {`${item.place.placeName}`}
+        </ListItem.Title>
+        <ListItem.Subtitle style={{ color: 'white' }}>
+          {`${item.place.streetAddress1} ${item.place.city} ${item.place.region}`}
+        </ListItem.Subtitle>
+      </ListItem.Content>
+      <ListItem.Content right>
+        <ListItem.Chevron color="white" />
+        <ListItem.Subtitle>
+          {`${(item.place.distance * 0.000621371192).toFixed(1)} miles`}
+        </ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
+  )
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>List of places</Text>
-      <Footer />
+      <FlatList
+        data={places}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        // extraData={selectedId}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      />
     </SafeAreaView>
   )
 }

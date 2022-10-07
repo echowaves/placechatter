@@ -77,28 +77,27 @@ function EditPlace({ route, navigation }) {
 
   async function init() {
     setShowSpinner(true)
-
     const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
       navigation,
       topOffset,
     })
 
-    setAuth({ token, uuid, phoneNumber })
+    setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
 
     try {
       const place = (
         await CONST.gqlClient.query({
           query: gql`
             query placeRead(
-              $uuid: String!
-              $phoneNumber: String!
-              $token: String!
+              # $uuid: String!
+              # $phoneNumber: String!
+              # $token: String!
               $placeUuid: String!
             ) {
               placeRead(
-                uuid: $uuid
-                phoneNumber: $phoneNumber
-                token: $token
+                # uuid: $uuid
+                # phoneNumber: $phoneNumber
+                # token: $token
                 placeUuid: $placeUuid
               ) {
                 placeUuid
@@ -108,9 +107,9 @@ function EditPlace({ route, navigation }) {
             }
           `,
           variables: {
-            uuid,
-            phoneNumber,
-            token,
+            // uuid,
+            // phoneNumber,
+            // token,
             placeUuid,
           },
         })

@@ -261,8 +261,8 @@ function AddNewPlace() {
 
       setFormInput({
         placeName: '',
-        streetAddress1: `${geocodedAddress[0].street || ''} ${
-          geocodedAddress[0].streetNumber || ''
+        streetAddress1: `${geocodedAddress[0].streetNumber || ''} ${
+          geocodedAddress[0].street || ''
         }`,
         streetAddress2: '',
         city: geocodedAddress[0].city || '',
