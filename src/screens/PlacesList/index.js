@@ -43,7 +43,7 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 import * as utils from '../../utils'
 
-import Footer from '../../components/Footer'
+import listItem from './listItem'
 
 function PlacesList() {
   const navigation = useNavigation()
@@ -239,43 +239,11 @@ function PlacesList() {
 
   const keyExtractor = (item, index) => index.toString()
 
-  const renderItem = ({ item }) => (
-    <ListItem
-      style={{ paddingVertical: 8 }}
-      Component={TouchableScale}
-      friction={90} //
-      tension={100} // These props are passed to the parent component (here TouchableScale)
-      activeScale={0.95} //
-      linearGradientProps={{
-        colors: ['#FF9800', '#F44336'],
-        start: { x: 1, y: 0 },
-        end: { x: 0.2, y: 0 },
-      }}
-      ViewComponent={LinearGradient} // Only if no expo
-    >
-      {/* <Avatar rounded source={{ uri: avatar_url }} /> */}
-      <ListItem.Content>
-        <ListItem.Title style={{ color: 'white', fontWeight: 'bold' }}>
-          {`${item.place.placeName}`}
-        </ListItem.Title>
-        <ListItem.Subtitle style={{ color: 'white' }}>
-          {`${item.place.streetAddress1} ${item.place.city} ${item.place.region}`}
-        </ListItem.Subtitle>
-      </ListItem.Content>
-      <ListItem.Content right>
-        <ListItem.Chevron color="white" />
-        <ListItem.Subtitle>
-          {`${(item.place.distance * 0.000621371192).toFixed(1)} miles`}
-        </ListItem.Subtitle>
-      </ListItem.Content>
-    </ListItem>
-  )
-
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={places}
-        renderItem={renderItem}
+        renderItem={listItem}
         keyExtractor={keyExtractor}
         // extraData={selectedId}
         refreshControl={
