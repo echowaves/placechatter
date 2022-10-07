@@ -18,6 +18,9 @@ import {
   Divider,
 } from '@rneui/themed'
 
+import { gql } from '@apollo/client'
+import Spinner from 'react-native-loading-spinner-overlay'
+
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
 
@@ -25,8 +28,8 @@ import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts.js'
-import * as utils from '../../utils.js'
+import * as CONST from '../../consts'
+import * as utils from '../../utils'
 
 import Footer from '../../components/Footer'
 
@@ -37,6 +40,74 @@ function PlacesList() {
   const [currentLocation, setCurrentLocation] = useState(null)
 
   const [isTandcAccepted, setIsTandcAccepted] = useState(false)
+
+  const init = async function () {
+    try {
+      setIsTandcAccepted(
+        (await SecureStore.getItemAsync(CONST.IS_TANDC_ACCEPTED_KEY)) ===
+          'true',
+      )
+    } catch (err) {
+      console.log('failed to setIsTandcAccepted')
+    }
+
+    try {
+      const location = await utils.getLocation()
+      setCurrentLocation(location)
+    } catch (err) {
+      Toast.show({
+        text1: 'Unable to get location',
+        type: 'error',
+        topOffset,
+      })
+    }
+  }
+
+  const load = async function () {
+    console.log({ currentLocation })
+    if (!currentLocation) {
+      return
+    }
+    const { latitude, longitude } = currentLocation.coords
+    try {
+      const places = (
+        await CONST.gqlClient.query({
+          query: gql`
+            query placesFeed($lat: Float!, $lon: Float!) {
+              placesFeed(lat: $lat, lon: $lon) {
+                places {
+                  place {
+                    distance
+                    placeName
+                  }
+                  photos {
+                    photoUuid
+                    phoneNumber
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            lat: latitude,
+            lon: longitude,
+          },
+        })
+      ).data.placesFeed
+      // console.log({ places: JSON.stringify(places) })
+    } catch (err9) {
+      console.log('failed to load places')
+      Toast.show({
+        text1: 'Unable to load Places',
+        text2: err9.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+  }
+
+  const renderHeaderRight = () => null
+  const renderHeaderLeft = () => {}
 
   useEffect(() => {
     navigation.setOptions({
@@ -50,29 +121,12 @@ function PlacesList() {
       },
     })
 
-    const init = async function () {
-      try {
-        setIsTandcAccepted(
-          (await SecureStore.getItemAsync(CONST.IS_TANDC_ACCEPTED_KEY)) ===
-            'true',
-        )
-      } catch (err) {
-        console.log('failed to setIsTandcAccepted')
-      }
-
-      try {
-        const location = await utils.getLocation()
-        setCurrentLocation(location)
-      } catch (err) {
-        Toast.show({
-          text1: 'Unable to get location',
-          type: 'error',
-          topOffset,
-        })
-      }
-    }
     init()
   }, [])
+
+  useEffect(() => {
+    load()
+  }, [currentLocation])
 
   useEffect(() => {
     // resetFields()
@@ -87,10 +141,6 @@ function PlacesList() {
       paddingTop: 50,
     },
   })
-
-  const renderHeaderRight = () => null
-
-  const renderHeaderLeft = () => {}
 
   if (!isTandcAccepted) {
     return (
