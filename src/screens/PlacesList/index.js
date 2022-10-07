@@ -40,6 +40,8 @@ import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 
 import PropTypes from 'prop-types'
 
+import Footer from '../../components/Footer'
+
 import * as CONST from '../../consts'
 import * as utils from '../../utils'
 
@@ -92,6 +94,7 @@ function PlacesList() {
               placesFeed(lat: $lat, lon: $lon) {
                 places {
                   place {
+                    placeUuid
                     distance
                     placeName
                     streetAddress1
@@ -243,13 +246,14 @@ function PlacesList() {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={places}
-        renderItem={listItem}
+        renderItem={(item, index) => listItem({ item: item.item, navigation })}
         keyExtractor={keyExtractor}
         // extraData={selectedId}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
+      <Footer />
     </SafeAreaView>
   )
 }

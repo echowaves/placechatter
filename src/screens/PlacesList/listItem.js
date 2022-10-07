@@ -39,11 +39,14 @@ import Toast from 'react-native-toast-message'
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 
 function listItem(props) {
-  const { item } = props
+  const { item, navigation } = props
 
   console.log({ item })
   return (
     <ListItem
+      onPress={() =>
+        navigation.navigate('ViewPlace', { placeUuid: item.place.placeUuid })
+      }
       style={{ paddingVertical: 8 }}
       Component={TouchableScale}
       friction={90} //
@@ -66,9 +69,9 @@ function listItem(props) {
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Content right>
-        <ListItem.Chevron color="white" />
         <ListItem.Subtitle>
-          {`${(item.place.distance * 0.000621371192).toFixed(1)} miles`}
+          <ListItem.Chevron color="white" />
+          {`${(item.place.distance * 0.000621371192).toFixed(1)}mi`}
         </ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>

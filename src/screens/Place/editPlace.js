@@ -146,7 +146,7 @@ function EditPlace({ route, navigation }) {
       setPlaceDescriptionError('')
       return true
     }
-    setPlaceDescriptionError('100-1000 Alpha-Numeric characters')
+    setPlaceDescriptionError('10-1000 Alpha-Numeric characters')
     return false
   }
 
