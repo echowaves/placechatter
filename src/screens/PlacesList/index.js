@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
@@ -51,7 +51,6 @@ function PlacesList() {
   const navigation = useNavigation()
   const { width, height } = useDimensions().window
   const topOffset = height / 3
-  const [currentLocation, setCurrentLocation] = useState()
 
   const [isTandcAccepted, setIsTandcAccepted] = useState(false)
 
@@ -67,26 +66,24 @@ function PlacesList() {
     } catch (err) {
       console.log('failed to setIsTandcAccepted')
     }
+  }
 
+  const load = async function () {
+    let location
     try {
-      const location = await utils.getLocation()
-      setCurrentLocation(location)
+      location = await utils.getLocation()
     } catch (err) {
       Toast.show({
         text1: 'Unable to get location',
         type: 'error',
         topOffset,
       })
-    }
-  }
-
-  const load = async function () {
-    console.log({ currentLocation })
-    if (!currentLocation) {
       return
     }
-    const { latitude, longitude } = currentLocation.coords
+
+    const { latitude, longitude } = location.coords
     try {
+      await CONST.gqlClient.clearStore()
       const loadedPlaces = (
         await CONST.gqlClient.query({
           query: gql`
@@ -115,6 +112,7 @@ function PlacesList() {
           },
         })
       ).data.placesFeed.places
+      console.log('loadedPlaces.length:', loadedPlaces.length)
       setPlaces(loadedPlaces)
       // console.log({ places: JSON.stringify(loadedPlaces) })
     } catch (err9) {
@@ -131,34 +129,32 @@ function PlacesList() {
   const renderHeaderRight = () => null
   const renderHeaderLeft = () => {}
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true)
-    init()
+    load()
     setRefreshing(false)
   }, [])
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'places near me',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
+  useFocusEffect(
+    useCallback(() => {
+      navigation.setOptions({
+        headerTitle: 'places near me',
+        headerTintColor: CONST.MAIN_COLOR,
+        headerRight: renderHeaderRight,
+        headerLeft: renderHeaderLeft,
+        headerBackTitle: '',
+        headerStyle: {
+          backgroundColor: CONST.NAV_COLOR,
+        },
+      })
+      init()
+      load()
+    }, []),
+  )
 
-    init()
-  }, [])
-
-  useEffect(() => {
-    load()
-  }, [currentLocation])
-
-  useEffect(() => {
-    // resetFields()
-  }, [navigation])
+  // useEffect(() => {
+  //   // resetFields()
+  // }, [navigation])
 
   const styles = StyleSheet.create({
     container: {
@@ -232,7 +228,7 @@ function PlacesList() {
     )
   }
 
-  if (!places || places?.length === 0 || !currentLocation) {
+  if (!places || places?.length === 0) {
     return (
       <View style={styles.container}>
         <LinearProgress color={CONST.MAIN_COLOR} />

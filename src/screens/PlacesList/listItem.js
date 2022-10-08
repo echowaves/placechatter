@@ -41,7 +41,7 @@ import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 function listItem(props) {
   const { item, navigation } = props
 
-  console.log({ item })
+  // console.log({ item })
   return (
     <ListItem
       onPress={() =>
