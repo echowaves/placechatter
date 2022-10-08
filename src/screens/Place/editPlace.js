@@ -315,6 +315,7 @@ function EditPlace({ route, navigation }) {
       />
       <KeyboardAwareScrollView>
         <Card>
+          <Card.Title>place photos</Card.Title>
           <Icon name="add-circle" color={CONST.MAIN_COLOR} />
         </Card>
 
