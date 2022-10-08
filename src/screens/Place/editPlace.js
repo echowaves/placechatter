@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
+import * as ImagePicker from 'expo-image-picker'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -15,6 +16,7 @@ import {
   Card,
   ListItem,
   Button,
+  Icon,
 } from '@rneui/themed'
 
 import { gql } from '@apollo/client'
@@ -233,6 +235,77 @@ function EditPlace({ route, navigation }) {
     },
   })
 
+  const checkPermissionsForPhotoTaking = async ({ cameraType }) => {
+    // const locationPermission = await checkPermission({
+    //   permissionFunction: Location.requestForegroundPermissionsAsync,
+    //   alertHeader:
+    //     'Placechatter shows you place closest on your current location.',
+    //   alertBody: 'You need to enable Location in Settings and Try Again.',
+    // })
+    // if (locationPermission === 'granted') {
+    //   const location = await Location.getCurrentPositionAsync({
+    //     accuracy: Location.Accuracy.BestForNavigation,
+    //   })
+    //   // console.log({ location })
+    //   return location
+    //   // initially set the location that is last known -- works much faster this way
+    // }
+    // return null
+    // const cameraPermission = await _checkPermission({
+    //   permissionFunction: ImagePicker.requestCameraPermissionsAsync,
+    //   alertHeader: 'Do you want to take photo with wisaw?',
+    //   alertBody: "Why don't you enable photo permission?",
+    // })
+    // if (cameraPermission === 'granted') {
+    //   const photoAlbomPermission = await _checkPermission({
+    //     permissionFunction: ImagePicker.requestMediaLibraryPermissionsAsync,
+    //     alertHeader: 'Do you want to save photo on your device?',
+    //     alertBody: "Why don't you enable the permission?",
+    //     permissionFunctionArgument: true,
+    //   })
+    //   if (photoAlbomPermission === 'granted') {
+    //     await takePhoto({ cameraType })
+    //   }
+    // }
+  }
+
+  const takePhoto = async ({ cameraType }) => {
+    let cameraReturn
+    if (cameraType === 'camera') {
+      // launch photo capturing
+      cameraReturn = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        // allowsEditing: true,
+        quality: 1.0,
+        exif: false,
+      })
+    } else {
+      // launch video capturing
+      cameraReturn = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        // allowsEditing: true,
+        videoMaxDuration: 5,
+        quality: 1.0,
+        exif: false,
+      })
+    }
+
+    // alert(`cameraReturn.cancelled ${cameraReturn.cancelled}`)
+    if (cameraReturn.cancelled === false) {
+      await MediaLibrary.saveToLibraryAsync(cameraReturn.uri)
+      // have to wait, otherwise the upload will not start
+      await dispatch(
+        reducer.queueFileForUpload({
+          cameraImgUrl: cameraReturn.uri,
+          type: cameraReturn.type,
+          location,
+        }),
+      )
+
+      dispatch(reducer.uploadPendingPhotos())
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Spinner
@@ -241,6 +314,10 @@ function EditPlace({ route, navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>
+        <Card>
+          <Icon name="add-circle" color={CONST.MAIN_COLOR} />
+        </Card>
+
         <Card>
           <Input
             label="Place Description"
