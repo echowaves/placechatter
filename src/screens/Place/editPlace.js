@@ -243,7 +243,7 @@ function EditPlace({ route, navigation }) {
           <Input
             label="Place Description"
             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
-            placeholder={`What do you call this place`}
+            placeholder={`What is so special about this place`}
             errorMessage={placeDescriptionError}
             value={`${placeDescription}`}
             onChangeText={setPlaceDescription}

@@ -112,7 +112,7 @@ function PlacesList() {
           },
         })
       ).data.placesFeed.places
-      console.log('loadedPlaces.length:', loadedPlaces.length)
+      // console.log('loadedPlaces.length:', loadedPlaces.length)
       setPlaces(loadedPlaces)
       // console.log({ places: JSON.stringify(loadedPlaces) })
     } catch (err9) {

@@ -349,6 +349,7 @@ function AddNewPlace() {
             autoFocus={true}
           />
           <Input
+            disabled={true} // can't modify it, has to come from GPS
             label="Street Address1"
             placeholder={`${formInput.streetAddress1}`}
             errorMessage={streetAddress1Error}
@@ -375,6 +376,7 @@ function AddNewPlace() {
           <Card.Divider />
 
           <Input
+            disabled={true} // can't modify it, has to come from GPS
             label="City"
             placeholder={`${formInput.city}`}
             errorMessage={cityError}
@@ -384,11 +386,10 @@ function AddNewPlace() {
             // }
             autoCapitalize={'words'}
             autoComplete={'off'}
-            autoCorrect={false}
-            editable={false}
-            disabled={true}
+            autoCorrect={false} //
           />
           <Input
+            disabled={true} // can't modify it, has to come from GPS
             label="State"
             placeholder={`${formInput.region}`}
             errorMessage={regionError}
@@ -400,9 +401,9 @@ function AddNewPlace() {
             autoComplete={'off'}
             autoCorrect={false}
             editable={false}
-            disabled={true}
           />
           <Input
+            disabled={true} // can't modify it, has to come from GPS
             label="Postal Code"
             placeholder={`${formInput.postalCode}`}
             errorMessage={postalCodeError}
@@ -413,8 +414,6 @@ function AddNewPlace() {
             autoCapitalize={'none'}
             autoComplete={'off'}
             autoCorrect={false}
-            editable={false}
-            disabled={true}
           />
         </Card>
       </KeyboardAwareScrollView>
