@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -15,6 +15,7 @@ import {
   Card,
   ListItem,
   Button,
+  Icon,
 } from '@rneui/themed'
 
 import { gql } from '@apollo/client'
@@ -38,16 +39,16 @@ import { VALID } from '../../valid'
 function ViewPlace({ route, navigation }) {
   const { placeUuid } = route.params
 
-  const [auth, setAuth] = useState({})
+  // const [auth, setAuth] = useState({})
 
-  const [showSpinner, setShowSpinner] = useState(false)
+  // const [showSpinner, setShowSpinner] = useState(false)
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
   // const [placeDetails, setPlaceDetails] = useState({})
 
-  const [placeDescription, setPlaceDescription] = useState('')
+  const [place, setPlace] = useState()
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -72,17 +73,19 @@ function ViewPlace({ route, navigation }) {
     />
   )
 
-  async function init() {
-    setShowSpinner(true)
-    const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
-      navigation,
-      topOffset,
-    })
+  async function load() {
+    // setShowSpinner(true)
+    // const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
+    //   navigation,
+    //   topOffset,
+    // })
 
-    setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
+    // setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
 
     try {
-      const place = (
+      await CONST.gqlClient.clearStore()
+
+      const loadedPlace = (
         await CONST.gqlClient.query({
           query: gql`
             query placeRead(
@@ -100,6 +103,12 @@ function ViewPlace({ route, navigation }) {
                 placeUuid
                 placeName
                 placeDescription
+                streetAddress1
+                streetAddress2
+                city
+                district
+                postalCode
+                region
               }
             }
           `,
@@ -112,12 +121,12 @@ function ViewPlace({ route, navigation }) {
         })
       ).data.placeRead
       // alert(response)
-
+      // console.log({ loadedPlace })
       navigation.setOptions({
-        headerTitle: place.placeName,
+        headerTitle: loadedPlace.placeName,
       })
 
-      setPlaceDescription(place.placeDescription)
+      setPlace(loadedPlace)
 
       // console.log({ place })
     } catch (err7) {
@@ -131,22 +140,24 @@ function ViewPlace({ route, navigation }) {
 
       // setNickNameError('Lettters and digits only')
     }
-    setShowSpinner(false)
+    // setShowSpinner(false)
   }
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: '',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-    init()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      navigation.setOptions({
+        headerTitle: '',
+        headerTintColor: CONST.MAIN_COLOR,
+        headerRight: renderHeaderRight,
+        headerLeft: renderHeaderLeft,
+        headerBackTitle: '',
+        headerStyle: {
+          backgroundColor: CONST.NAV_COLOR,
+        },
+      })
+      load()
+    }, []),
+  )
 
   const styles = StyleSheet.create({
     container: {
@@ -159,6 +170,14 @@ function ViewPlace({ route, navigation }) {
     },
   })
 
+  if (!place) {
+    return (
+      <View style={styles.container}>
+        <LinearProgress color={CONST.MAIN_COLOR} />
+      </View>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* <Spinner
@@ -168,8 +187,37 @@ function ViewPlace({ route, navigation }) {
       /> */}
       <KeyboardAwareScrollView>
         <Card>
+          <Card.Title>Address</Card.Title>
+          <Text>{place.streetAddress1}</Text>
+          <Text>{place.streetAddress2}</Text>
+          <Text>
+            {place.city} {place.region} {place.postalCode}
+          </Text>
+        </Card>
+        <Card>
           <Card.Title>Place Description</Card.Title>
-          <Text>{placeDescription}</Text>
+          <Text>{place.placeDescription}</Text>
+        </Card>
+        <Card>
+          <Button
+            onPress={() => navigation.navigate('EditPlace', { placeUuid })}
+            size="lg"
+            iconRight
+          >
+            {`edit`}
+            <Icon name="edit" color="white" />
+          </Button>
+        </Card>
+        <Card>
+          <Button
+            onPress={() => navigation.navigate('EditPlace', { placeUuid })}
+            size="lg"
+            color="red"
+            iconRight
+          >
+            {`delete`}
+            <Icon name="delete" color="white" />
+          </Button>
         </Card>
       </KeyboardAwareScrollView>
     </SafeAreaView>

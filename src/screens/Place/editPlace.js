@@ -45,10 +45,10 @@ function EditPlace({ route, navigation }) {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  // const [placeDetails, setPlaceDetails] = useState({})
-  const [loadedPlaceDescription, setLoadedPlaceDescription] = useState('')
+  const [place, setPlace] = useState()
 
-  const [placeDescription, setPlaceDescription] = useState('')
+  const [loadedPlaceDescription, setLoadedPlaceDescription] = useState()
+
   const [placeDescriptionError, setPlaceDescriptionError] = useState('')
   const [canSubmit, setCanSubmit] = useState(false)
 
@@ -85,7 +85,7 @@ function EditPlace({ route, navigation }) {
     setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
 
     try {
-      const place = (
+      const loadedPlace = (
         await CONST.gqlClient.query({
           query: gql`
             query placeRead(
@@ -117,10 +117,12 @@ function EditPlace({ route, navigation }) {
       // alert(response)
 
       navigation.setOptions({
-        headerTitle: place.placeName,
+        headerTitle: place?.placeName,
       })
 
-      setLoadedPlaceDescription(place.placeDescription)
+      setPlace(loadedPlace)
+
+      setLoadedPlaceDescription(loadedPlace?.placeDescription)
 
       // console.log({ place })
     } catch (err7) {
@@ -138,11 +140,11 @@ function EditPlace({ route, navigation }) {
   }
 
   function isValid() {
-    if (placeDescription === loadedPlaceDescription) {
+    if (place?.placeDescription === loadedPlaceDescription) {
       setPlaceDescriptionError('')
       return false
     }
-    if (VALID.placeDescription(placeDescription)) {
+    if (VALID.placeDescription(place?.placeDescription)) {
       setPlaceDescriptionError('')
       return true
     }
@@ -179,12 +181,12 @@ function EditPlace({ route, navigation }) {
             phoneNumber,
             token,
             placeUuid,
-            placeDescription,
+            placeDescription: place?.placeDescription,
           },
         })
       ).data.placeDescriptionUpdate
 
-      setLoadedPlaceDescription(placeDescription)
+      setLoadedPlaceDescription(place?.placeDescription)
       setCanSubmit(false)
 
       // console.log({ response: JSON.stringify(response) })
@@ -218,7 +220,7 @@ function EditPlace({ route, navigation }) {
 
   useEffect(() => {
     setCanSubmit(isValid())
-  }, [placeDescription])
+  }, [place?.placeDescription])
 
   const styles = StyleSheet.create({
     container: {
@@ -245,14 +247,18 @@ function EditPlace({ route, navigation }) {
             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
             placeholder={`What is so special about this place`}
             errorMessage={placeDescriptionError}
-            value={`${placeDescription}`}
-            onChangeText={setPlaceDescription}
+            value={`${place?.placeDescription}`}
+            onChangeText={(value) => {
+              setPlace({ ...place, placeDescription: value })
+            }}
             multiline
             autoCapitalize={'sentences'}
             autoComplete={'off'}
             autoCorrect={true}
             // autoFocus={true}
           />
+        </Card>
+        <Card>
           <Button
             onPress={handleUpdateDescription}
             size="lg"
@@ -266,7 +272,7 @@ function EditPlace({ route, navigation }) {
             // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
             disabled={!canSubmit}
           >
-            {`save ${placeDescription.length} `}
+            {`save ${place?.placeDescription.length} `}
           </Button>
         </Card>
       </KeyboardAwareScrollView>
