@@ -134,6 +134,8 @@ export async function getToken() {
 export async function checkAuthentication({ navigation, topOffset }) {
   const localToken = await getToken()
 
+  // console.log({ localToken })
+
   if (!localToken) {
     navigation.navigate('PhoneCheck')
     Toast.show({
@@ -141,7 +143,12 @@ export async function checkAuthentication({ navigation, topOffset }) {
       type: 'info',
       topOffset,
     })
-    return null
+
+    return {
+      token: null,
+      uuid: null,
+      phoneNumber: null,
+    }
   }
 
   return {

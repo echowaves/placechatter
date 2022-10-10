@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
+import * as FileSystem from 'expo-file-system'
 
 import * as Location from 'expo-location'
 import * as ImagePicker from 'expo-image-picker'
+import { v4 as uuidv4 } from 'uuid'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import * as Linking from 'expo-linking'
 
 import {
   Text,
@@ -30,6 +33,8 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons'
+import * as ImageManipulator from 'expo-image-manipulator'
+import * as MediaLibrary from 'expo-media-library'
 
 import PropTypes from 'prop-types'
 
@@ -48,6 +53,7 @@ function EditPlace({ route, navigation }) {
   const topOffset = height / 3
 
   const [place, setPlace] = useState()
+  const [photos, setPhotos] = useState()
 
   const [loadedPlaceDescription, setLoadedPlaceDescription] = useState()
 
@@ -102,9 +108,23 @@ function EditPlace({ route, navigation }) {
                 # token: $token
                 placeUuid: $placeUuid
               ) {
-                placeUuid
-                placeName
-                placeDescription
+                place {
+                  placeUuid
+                  placeName
+                  placeDescription
+                  streetAddress1
+                  streetAddress2
+                  city
+                  district
+                  postalCode
+                  region
+                }
+                photos {
+                  photoUuid
+                  phoneNumber
+                  imgUrl
+                  thumbUrl
+                }
               }
             }
           `,
@@ -119,12 +139,13 @@ function EditPlace({ route, navigation }) {
       // alert(response)
 
       navigation.setOptions({
-        headerTitle: place?.placeName,
+        headerTitle: loadedPlace?.place.placeName,
       })
 
-      setPlace(loadedPlace)
+      setPlace(loadedPlace.place)
+      setLoadedPlaceDescription(loadedPlace?.place.placeDescription)
 
-      setLoadedPlaceDescription(loadedPlace?.placeDescription)
+      setPhotos(loadedPlace.photos)
 
       // console.log({ place })
     } catch (err7) {
@@ -235,74 +256,164 @@ function EditPlace({ route, navigation }) {
     },
   })
 
-  const checkPermissionsForPhotoTaking = async ({ cameraType }) => {
-    // const locationPermission = await checkPermission({
-    //   permissionFunction: Location.requestForegroundPermissionsAsync,
-    //   alertHeader:
-    //     'Placechatter shows you place closest on your current location.',
-    //   alertBody: 'You need to enable Location in Settings and Try Again.',
-    // })
-    // if (locationPermission === 'granted') {
-    //   const location = await Location.getCurrentPositionAsync({
-    //     accuracy: Location.Accuracy.BestForNavigation,
-    //   })
-    //   // console.log({ location })
-    //   return location
-    //   // initially set the location that is last known -- works much faster this way
-    // }
-    // return null
-    // const cameraPermission = await _checkPermission({
-    //   permissionFunction: ImagePicker.requestCameraPermissionsAsync,
-    //   alertHeader: 'Do you want to take photo with wisaw?',
-    //   alertBody: "Why don't you enable photo permission?",
-    // })
-    // if (cameraPermission === 'granted') {
-    //   const photoAlbomPermission = await _checkPermission({
-    //     permissionFunction: ImagePicker.requestMediaLibraryPermissionsAsync,
-    //     alertHeader: 'Do you want to save photo on your device?',
-    //     alertBody: "Why don't you enable the permission?",
-    //     permissionFunctionArgument: true,
-    //   })
-    //   if (photoAlbomPermission === 'granted') {
-    //     await takePhoto({ cameraType })
-    //   }
-    // }
+  const uploadImage = async ({ contentType, assetUri }) => {
+    const photoUuid = uuidv4()
+    const { uuid, phoneNumber, token } = auth
+
+    // console.log({ assetKey })
+    const uploadUrl = (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation generateUploadUrl(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $assetKey: String!
+            $contentType: String!
+            $placeUuid: String
+          ) {
+            generateUploadUrl(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              assetKey: $assetKey
+              contentType: $contentType
+              placeUuid: $placeUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          assetKey: photoUuid,
+          contentType,
+          placeUuid,
+        },
+      })
+    ).data.generateUploadUrl
+
+    // console.log({ uploadUrl })
+
+    const responseData = await FileSystem.uploadAsync(
+      uploadUrl,
+      `${assetUri}`,
+      {
+        httpMethod: 'PUT',
+        headers: {
+          'Content-Type': contentType,
+        },
+      },
+    )
+    // console.log({ responseData })
+    return { responseData }
   }
 
-  const takePhoto = async ({ cameraType }) => {
-    let cameraReturn
-    if (cameraType === 'camera') {
-      // launch photo capturing
-      cameraReturn = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        // allowsEditing: true,
-        quality: 1.0,
-        exif: false,
-      })
-    } else {
-      // launch video capturing
-      cameraReturn = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-        // allowsEditing: true,
-        videoMaxDuration: 5,
-        quality: 1.0,
-        exif: false,
-      })
+  const takePhoto = async () => {
+    // launch photo capturing
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync()
+    // console.log({ cameraPermission })
+
+    if (!cameraPermission?.granted) {
+      Alert.alert(
+        'Photo permission is not granted',
+        'Allow photo taking in settings',
+        [
+          {
+            text: 'Open Settings',
+            onPress: () => {
+              Linking.openSettings()
+            },
+          },
+        ],
+      )
+      return
     }
+    const mediaPermission =
+      await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (!mediaPermission?.granted) {
+      Alert.alert(
+        'Photo library permission is not granted',
+        'Allow photos to be saved  on your device in settings',
+        [
+          {
+            text: 'Open Settings',
+            onPress: () => {
+              Linking.openSettings()
+            },
+          },
+        ],
+      )
+      return
+    }
+
+    const cameraReturn = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1.0,
+      // allowsEditing: true,
+      // aspect: [1, 1],
+      exif: false,
+    })
 
     // alert(`cameraReturn.cancelled ${cameraReturn.cancelled}`)
     if (cameraReturn.cancelled === false) {
-      await MediaLibrary.saveToLibraryAsync(cameraReturn.uri)
+      setShowSpinner(true)
+
       // have to wait, otherwise the upload will not start
-      await dispatch(
-        reducer.queueFileForUpload({
-          cameraImgUrl: cameraReturn.uri,
-          type: cameraReturn.type,
-          location,
-        }),
+      // await dispatch(
+      //   reducer.queueFileForUpload({
+      //     cameraImgUrl: cameraReturn.uri,
+      //     type: cameraReturn.type,
+      //     location,
+      //   }),
+      // )
+      // dispatch(reducer.uploadPendingPhotos())
+      // console.log({ cameraReturn })
+      const imageWidth = cameraReturn.width
+      const imageHeight = cameraReturn.height
+      const imageCropDim = imageWidth < imageHeight ? imageWidth : imageHeight
+
+      const croppedImage = await ImageManipulator.manipulateAsync(
+        cameraReturn.uri,
+        [
+          {
+            crop: {
+              originX: (imageWidth - imageCropDim) / 2,
+              originY: (imageHeight - imageCropDim) / 2,
+              height: imageCropDim,
+              width: imageCropDim,
+            },
+          },
+        ],
+        { compress: 1, format: ImageManipulator.SaveFormat.PNG },
       )
 
-      dispatch(reducer.uploadPendingPhotos())
+      await MediaLibrary.saveToLibraryAsync(croppedImage.uri)
+
+      // const manipResult = await ImageManipulator.manipulateAsync(
+      //   localImgUrl,
+      //   [{ resize: { height: 300 } }],
+      //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+      // )
+      // return manipResult.uri
+
+      // console.log('cancelled not')
+      try {
+        const response = await uploadImage({
+          contentType: 'image/jpeg',
+          assetUri: croppedImage.uri,
+        })
+      } catch (err10) {
+        Toast.show({
+          text1: 'Unable to add photo',
+          text2: err10.toString(),
+          type: 'error',
+          topOffset,
+        })
+      }
+      // console.log({ responseData: response.responseData })
+
+      setShowSpinner(false)
     }
   }
 
@@ -316,7 +427,11 @@ function EditPlace({ route, navigation }) {
       <KeyboardAwareScrollView>
         <Card>
           <Card.Title>place photos</Card.Title>
-          <Icon name="add-circle" color={CONST.MAIN_COLOR} />
+          <Icon
+            name="add-circle"
+            color={CONST.MAIN_COLOR}
+            onPress={takePhoto}
+          />
         </Card>
 
         <Card>

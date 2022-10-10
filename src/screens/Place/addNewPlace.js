@@ -171,6 +171,7 @@ function AddNewPlace() {
       onPress={() => navigation.goBack()}
     />
   )
+
   function isValidForm() {
     setPlaceNameError('')
     setStreetAddress1Error('')

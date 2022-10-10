@@ -101,6 +101,8 @@ function PlacesList() {
                   photos {
                     photoUuid
                     phoneNumber
+                    # imgUrl
+                    thumbUrl
                   }
                 }
               }
@@ -112,10 +114,12 @@ function PlacesList() {
           },
         })
       ).data.placesFeed.places
+      // console.log({ loadedPlaces })
       // console.log('loadedPlaces.length:', loadedPlaces.length)
       setPlaces(loadedPlaces)
       // console.log({ places: JSON.stringify(loadedPlaces) })
     } catch (err9) {
+      console.log({ err9 })
       console.log('failed to load places')
       Toast.show({
         text1: 'Unable to load Places',
@@ -228,7 +232,7 @@ function PlacesList() {
     )
   }
 
-  if (!places || places?.length === 0) {
+  if (!places) {
     return (
       <View style={styles.container}>
         <LinearProgress color={CONST.MAIN_COLOR} />

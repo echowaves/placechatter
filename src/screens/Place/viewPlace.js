@@ -49,6 +49,7 @@ function ViewPlace({ route, navigation }) {
   // const [placeDetails, setPlaceDetails] = useState({})
 
   const [place, setPlace] = useState()
+  const [photos, setPhotos] = useState()
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -100,15 +101,23 @@ function ViewPlace({ route, navigation }) {
                 # token: $token
                 placeUuid: $placeUuid
               ) {
-                placeUuid
-                placeName
-                placeDescription
-                streetAddress1
-                streetAddress2
-                city
-                district
-                postalCode
-                region
+                place {
+                  placeUuid
+                  placeName
+                  placeDescription
+                  streetAddress1
+                  streetAddress2
+                  city
+                  district
+                  postalCode
+                  region
+                }
+                photos {
+                  photoUuid
+                  phoneNumber
+                  imgUrl
+                  thumbUrl
+                }
               }
             }
           `,
@@ -123,10 +132,11 @@ function ViewPlace({ route, navigation }) {
       // alert(response)
       // console.log({ loadedPlace })
       navigation.setOptions({
-        headerTitle: loadedPlace.placeName,
+        headerTitle: loadedPlace.place.placeName,
       })
 
-      setPlace(loadedPlace)
+      setPlace(loadedPlace.place)
+      setPhotos(loadedPlace.photos)
 
       // console.log({ place })
     } catch (err7) {

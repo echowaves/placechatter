@@ -14,6 +14,15 @@ export default {
     packagerOpts: {
       sourceExts: ['js', 'json', 'ts', 'tsx', 'jsx', 'vue'],
     },
+    plugins: [
+      [
+        'expo-image-picker',
+        {
+          cameraPermission:
+            'Allow $(PRODUCT_NAME) to access your camera, so that you can describe your place in pictures.',
+        },
+      ],
+    ],
     extra: {
       API_URI: process.env.API_URI,
       REALTIME_API_URI: process.env.REALTIME_API_URI,
@@ -50,6 +59,12 @@ export default {
           'You need to enable your location, in order to see places that are closest to you.',
         NSMotionUsageDescription:
           'This will help us to improve the relevance of places that you can see related to you location.',
+        NSPhotoLibraryAddUsageDescription:
+          'In order to store Photos on your device, you need to allow access to Photos in settings.',
+        NSPhotoLibraryUsageDescription:
+          'This will allow to store photos in photo album on your device.',
+        // NSMicrophoneUsageDescription:
+        //   'WiSaw allows your to record video with sound. In order for the sound to be captured, you need to allow access to the microphone.',
       },
     },
     android: {
