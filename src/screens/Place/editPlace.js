@@ -33,11 +33,13 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons'
+
 import * as ImageManipulator from 'expo-image-manipulator'
 import * as MediaLibrary from 'expo-media-library'
 
 import PropTypes from 'prop-types'
 
+import PhotosCard from './photosCard'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
@@ -139,7 +141,7 @@ function EditPlace({ route, navigation }) {
       // alert(response)
 
       navigation.setOptions({
-        headerTitle: loadedPlace?.place.placeName,
+        headerTitle: `edit: ${loadedPlace?.place.placeName}`,
       })
 
       setPlace(loadedPlace.place)
@@ -425,14 +427,7 @@ function EditPlace({ route, navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>
-        <Card>
-          <Card.Title>place photos</Card.Title>
-          <Icon
-            name="add-circle"
-            color={CONST.MAIN_COLOR}
-            onPress={takePhoto}
-          />
-        </Card>
+        <PhotosCard photos={photos} takePhoto={takePhoto} />
 
         <Card>
           <Input
@@ -455,17 +450,12 @@ function EditPlace({ route, navigation }) {
           <Button
             onPress={handleUpdateDescription}
             size="lg"
-            icon={{
-              name: 'send',
-              type: 'Ionicons',
-              size: 25,
-              color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
-            }}
             iconRight
             // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
             disabled={!canSubmit}
           >
             {`save ${place?.placeDescription.length} `}
+            <Icon type="FontAwesome" name="save" color="white" />
           </Button>
         </Card>
       </KeyboardAwareScrollView>

@@ -32,6 +32,8 @@ import {
 
 import PropTypes from 'prop-types'
 
+import PhotosCard from './photosCard'
+
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
@@ -130,7 +132,7 @@ function ViewPlace({ route, navigation }) {
         })
       ).data.placeRead
       // alert(response)
-      // console.log({ loadedPlace })
+      console.log({ loadedPlace })
       navigation.setOptions({
         headerTitle: loadedPlace.place.placeName,
       })
@@ -196,6 +198,7 @@ function ViewPlace({ route, navigation }) {
         // textStyle={styles.spinnerTextStyle}
       /> */}
       <KeyboardAwareScrollView>
+        <PhotosCard photos={photos} takePhoto={null} />
         <Card>
           <Card.Title>Address</Card.Title>
           <Text>{place.streetAddress1}</Text>
