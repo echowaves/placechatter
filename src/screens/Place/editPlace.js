@@ -50,6 +50,7 @@ function EditPlace({ route, navigation }) {
   const [auth, setAuth] = useState({})
 
   const [showSpinner, setShowSpinner] = useState(false)
+  const [spinnerText, setSpinnerText] = useState()
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
@@ -87,6 +88,7 @@ function EditPlace({ route, navigation }) {
 
   async function init() {
     setShowSpinner(true)
+    setSpinnerText('loading...')
     const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
       navigation,
       topOffset,
@@ -179,6 +181,7 @@ function EditPlace({ route, navigation }) {
 
   const handleUpdateDescription = async () => {
     setShowSpinner(true)
+    setSpinnerText('loading...')
     const { token, uuid, phoneNumber } = auth
 
     try {
@@ -360,6 +363,7 @@ function EditPlace({ route, navigation }) {
     // alert(`cameraReturn.cancelled ${cameraReturn.cancelled}`)
     if (cameraReturn.cancelled === false) {
       setShowSpinner(true)
+      setSpinnerText('Uploading photo...')
 
       // have to wait, otherwise the upload will not start
       // await dispatch(
@@ -416,6 +420,7 @@ function EditPlace({ route, navigation }) {
       // console.log({ responseData: response.responseData })
 
       setShowSpinner(false)
+      init()
     }
   }
 

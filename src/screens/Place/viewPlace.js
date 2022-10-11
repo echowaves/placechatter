@@ -132,7 +132,7 @@ function ViewPlace({ route, navigation }) {
         })
       ).data.placeRead
       // alert(response)
-      console.log({ loadedPlace })
+      // console.log({ loadedPlace })
       navigation.setOptions({
         headerTitle: loadedPlace.place.placeName,
       })

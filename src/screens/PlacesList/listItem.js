@@ -37,9 +37,44 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import Toast from 'react-native-toast-message'
 
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
+import CachedImage from 'expo-cached-image'
 
 function listItem(props) {
-  const { item, navigation } = props
+  const {
+    item,
+    item: { photos },
+    navigation,
+  } = props
+
+  // eslint-disable-next-line no-shadow
+  const renderItem = function ({ item, index }) {
+    const { photoUuid, thumbUrl } = item
+    // console.log({ index })
+    return (
+      <View
+        key={index}
+        style={{
+          padding: 5,
+        }}
+      >
+        <CachedImage
+          source={{
+            uri: `${thumbUrl}`,
+            // expiresIn: 5, // seconds. This field is optional
+          }}
+          cacheKey={`${photoUuid}-thumb`}
+          resizeMode="contain"
+          style={{
+            flex: 1,
+            alignSelf: 'stretch',
+            width: 100,
+            height: 100,
+            borderRadius: 10,
+          }}
+        />
+      </View>
+    )
+  }
 
   // console.log({ item })
   return (
@@ -60,7 +95,15 @@ function listItem(props) {
       ViewComponent={LinearGradient} // Only if no expo
     >
       {/* <Avatar rounded source={{ uri: avatar_url }} /> */}
+
       <ListItem.Content>
+        <FlatList
+          horizontal={true}
+          data={photos}
+          renderItem={renderItem}
+          // keyExtractor={(item) => item.id}
+          // extraData={selectedId}
+        />
         <ListItem.Title style={{ color: 'white', fontWeight: 'bold' }}>
           {`${item.place.placeName}`}
         </ListItem.Title>
@@ -68,12 +111,10 @@ function listItem(props) {
           {`${item.place.streetAddress1} ${item.place.city} ${item.place.region}`}
         </ListItem.Subtitle>
       </ListItem.Content>
-      <ListItem.Content right>
-        <ListItem.Subtitle>
-          <ListItem.Chevron color="white" />
-          {`${(item.place.distance * 0.000621371192).toFixed(1)}mi`}
-        </ListItem.Subtitle>
-      </ListItem.Content>
+      <ListItem.Subtitle>
+        <ListItem.Chevron color="white" />
+        {`${(item.place.distance * 0.000621371192).toFixed(1)}mi`}
+      </ListItem.Subtitle>
     </ListItem>
   )
 }
