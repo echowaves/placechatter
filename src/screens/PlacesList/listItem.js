@@ -99,6 +99,18 @@ function listItem(props) {
       {/* <Avatar rounded source={{ uri: avatar_url }} /> */}
 
       <ListItem.Content>
+        <ListItem.Title
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+          }}
+        >
+          <Text style={{ position: 'absolute', right: 0 }}>{`${(
+            item.place.distance * 0.000621371192
+          ).toFixed(1)}mi`}</Text>
+          {/* <ListItem.Chevron color="white" /> */}
+        </ListItem.Title>
+
         <FlatList
           horizontal={true}
           data={photos}
@@ -112,11 +124,6 @@ function listItem(props) {
             fontWeight: 'bold',
           }}
         >
-          <Text style={{ position: 'absolute', right: 0 }}>{`${(
-            item.place.distance * 0.000621371192
-          ).toFixed(1)}mi`}</Text>
-          <ListItem.Chevron color="white" />
-
           {`${item.place.placeName}`}
         </ListItem.Title>
         <ListItem.Subtitle style={{ color: 'white' }}>
