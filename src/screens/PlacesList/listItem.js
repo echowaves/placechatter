@@ -37,6 +37,8 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import Toast from 'react-native-toast-message'
 
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { Col, Row, Grid } from 'react-native-easy-grid'
+
 import CachedImage from 'expo-cached-image'
 
 function listItem(props) {
@@ -104,17 +106,23 @@ function listItem(props) {
           // keyExtractor={(item) => item.id}
           // extraData={selectedId}
         />
-        <ListItem.Title style={{ color: 'white', fontWeight: 'bold' }}>
+        <ListItem.Title
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+          }}
+        >
+          <Text style={{ position: 'absolute', right: 0 }}>{`${(
+            item.place.distance * 0.000621371192
+          ).toFixed(1)}mi`}</Text>
+          <ListItem.Chevron color="white" />
+
           {`${item.place.placeName}`}
         </ListItem.Title>
         <ListItem.Subtitle style={{ color: 'white' }}>
-          {`${item.place.streetAddress1} ${item.place.city} ${item.place.region}`}
+          {`${item.place.streetAddress1}, ${item.place.city}, ${item.place.region}`}
         </ListItem.Subtitle>
       </ListItem.Content>
-      <ListItem.Subtitle>
-        <ListItem.Chevron color="white" />
-        {`${(item.place.distance * 0.000621371192).toFixed(1)}mi`}
-      </ListItem.Subtitle>
     </ListItem>
   )
 }
