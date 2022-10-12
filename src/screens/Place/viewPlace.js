@@ -1,12 +1,16 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import React, { useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
+import * as FileSystem from 'expo-file-system'
 
 import * as Location from 'expo-location'
 
+import { v4 as uuidv4 } from 'uuid'
+
 import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import * as Linking from 'expo-linking'
 
 import {
   Text,
@@ -33,7 +37,6 @@ import {
 import PropTypes from 'prop-types'
 
 import PhotosCard from './photosCard'
-
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
@@ -41,17 +44,20 @@ import { VALID } from '../../valid'
 function ViewPlace({ route, navigation }) {
   const { placeUuid } = route.params
 
-  // const [auth, setAuth] = useState({})
+  const [auth, setAuth] = useState({})
 
-  // const [showSpinner, setShowSpinner] = useState(false)
+  const [showSpinner, setShowSpinner] = useState(false)
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  // const [placeDetails, setPlaceDetails] = useState({})
-
   const [place, setPlace] = useState()
   const [photos, setPhotos] = useState()
+
+  const [loadedPlaceDescription, setLoadedPlaceDescription] = useState()
+
+  const [placeDescriptionError, setPlaceDescriptionError] = useState('')
+  const [canSubmit, setCanSubmit] = useState(false)
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -76,18 +82,18 @@ function ViewPlace({ route, navigation }) {
     />
   )
 
-  async function load() {
-    // setShowSpinner(true)
-    // const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
-    //   navigation,
-    //   topOffset,
-    // })
+  async function init() {
+    console.log('initializing................................')
+    setShowSpinner(true)
+    const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
+      navigation,
+      topOffset,
+    })
 
-    // setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
+    setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
 
     try {
       await CONST.gqlClient.clearStore()
-
       const loadedPlace = (
         await CONST.gqlClient.query({
           query: gql`
@@ -132,12 +138,15 @@ function ViewPlace({ route, navigation }) {
         })
       ).data.placeRead
       // alert(response)
-      // console.log({ loadedPlace })
+
       navigation.setOptions({
-        headerTitle: loadedPlace.place.placeName,
+        headerTitle: `${loadedPlace?.place.placeName}`,
       })
 
       setPlace(loadedPlace.place)
+      setLoadedPlaceDescription(loadedPlace?.place.placeDescription)
+
+      setPhotos([])
       setPhotos(loadedPlace.photos)
 
       // console.log({ place })
@@ -152,24 +161,91 @@ function ViewPlace({ route, navigation }) {
 
       // setNickNameError('Lettters and digits only')
     }
-    // setShowSpinner(false)
+    setShowSpinner(false)
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      navigation.setOptions({
-        headerTitle: '',
-        headerTintColor: CONST.MAIN_COLOR,
-        headerRight: renderHeaderRight,
-        headerLeft: renderHeaderLeft,
-        headerBackTitle: '',
-        headerStyle: {
-          backgroundColor: CONST.NAV_COLOR,
-        },
+  function isValid() {
+    if (place?.placeDescription === loadedPlaceDescription) {
+      setPlaceDescriptionError('')
+      return false
+    }
+    if (VALID.placeDescription(place?.placeDescription)) {
+      setPlaceDescriptionError('')
+      return true
+    }
+    setPlaceDescriptionError('10-1000 Alpha-Numeric characters')
+    return false
+  }
+
+  const handleUpdateDescription = async () => {
+    setShowSpinner(true)
+    const { token, uuid, phoneNumber } = auth
+
+    try {
+      const response = (
+        await CONST.gqlClient.mutate({
+          mutation: gql`
+            mutation placeDescriptionUpdate(
+              $uuid: String!
+              $phoneNumber: String!
+              $token: String!
+              $placeUuid: String!
+              $placeDescription: String!
+            ) {
+              placeDescriptionUpdate(
+                uuid: $uuid
+                phoneNumber: $phoneNumber
+                token: $token
+                placeUuid: $placeUuid
+                placeDescription: $placeDescription
+              )
+            }
+          `,
+          variables: {
+            uuid,
+            phoneNumber,
+            token,
+            placeUuid,
+            placeDescription: place?.placeDescription,
+          },
+        })
+      ).data.placeDescriptionUpdate
+
+      setLoadedPlaceDescription(place?.placeDescription)
+      setCanSubmit(false)
+
+      // console.log({ response: JSON.stringify(response) })
+    } catch (err8) {
+      console.log({ err8 })
+
+      Toast.show({
+        text1: 'Unable to update Place description, try again.',
+        text2: err8.toString(),
+        type: 'error',
+        topOffset,
       })
-      load()
-    }, []),
-  )
+    }
+    setShowSpinner(false)
+    // await init()
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: '',
+      headerTintColor: CONST.MAIN_COLOR,
+      headerRight: renderHeaderRight,
+      headerLeft: renderHeaderLeft,
+      headerBackTitle: '',
+      headerStyle: {
+        backgroundColor: CONST.NAV_COLOR,
+      },
+    })
+    init()
+  }, [])
+
+  useEffect(() => {
+    setCanSubmit(isValid())
+  }, [place?.placeDescription])
 
   const styles = StyleSheet.create({
     container: {
@@ -182,53 +258,63 @@ function ViewPlace({ route, navigation }) {
     },
   })
 
-  if (!place) {
-    return (
-      <View style={styles.container}>
-        <LinearProgress color={CONST.MAIN_COLOR} />
-      </View>
-    )
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Spinner
+      <Spinner
         visible={showSpinner}
         textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
-      /> */}
+      />
       <KeyboardAwareScrollView>
-        <PhotosCard photos={photos} takePhoto={null} />
+        <PhotosCard
+          photos={photos}
+          auth={auth}
+          placeUuid={placeUuid}
+          reloadFunction={init}
+        />
         <Card>
           <Card.Title>Address</Card.Title>
-          <Text>{place.streetAddress1}</Text>
-          <Text>{place.streetAddress2}</Text>
+          <Text>{place?.streetAddress1}</Text>
+          <Text>{place?.streetAddress2}</Text>
           <Text>
-            {place.city} {place.region} {place.postalCode}
+            {place?.city}, {place?.region} {place?.postalCode}
           </Text>
         </Card>
         <Card>
-          <Card.Title>Place Description</Card.Title>
-          <Text>{place.placeDescription}</Text>
-        </Card>
-        <Card>
+          <Input
+            label="Place Description"
+            // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
+            placeholder={`What is so special about this place`}
+            errorMessage={placeDescriptionError}
+            value={`${place?.placeDescription}`}
+            onChangeText={(value) => {
+              setPlace({ ...place, placeDescription: value })
+            }}
+            multiline
+            autoCapitalize={'sentences'}
+            autoComplete={'off'}
+            autoCorrect={true}
+            // autoFocus={true}
+          />
           <Button
-            onPress={() => navigation.navigate('EditPlace', { placeUuid })}
+            onPress={handleUpdateDescription}
             size="lg"
             iconRight
+            // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
+            disabled={!canSubmit}
           >
-            {`edit`}
-            <Icon name="edit" color="white" />
+            {`  Save ${place?.placeDescription.length} `}
+            <Icon type="FontAwesome" name="save" color="white" />
           </Button>
         </Card>
         <Card>
           <Button
-            onPress={() => navigation.navigate('EditPlace', { placeUuid })}
+            onPress={() => navigation.navigate('ViewPlace', { placeUuid })}
             size="lg"
             color="red"
             iconRight
           >
-            {`delete`}
+            {`  Delete`}
             <Icon name="delete" color="white" />
           </Button>
         </Card>
