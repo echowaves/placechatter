@@ -24,53 +24,54 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 
-const FOOTER_HEIGHT = 70
-
 function Footer() {
   const { width, height } = useDimensions().window
   const navigation = useNavigation()
 
   return (
-    <SafeAreaView
+    // <SafeAreaView
+    //   style={{
+    //     backgroundColor: CONST.FOOTER_COLOR,
+    //     width,
+    //     height: FOOTER_HEIGHT,
+    //     position: 'absolute',
+    //     bottom: 0,
+    //     right: 0,
+    //     left: 0,
+    //   }}
+    // >
+    <Grid
       style={{
-        backgroundColor: CONST.FOOTER_COLOR,
-        width,
-        height: FOOTER_HEIGHT,
         position: 'absolute',
-        bottom: 0,
+        bottom: 35,
         right: 0,
         left: 0,
+        backgroundColor: CONST.FOOTER_COLOR,
+        width,
+        height: CONST.FOOTER_HEIGHT,
       }}
     >
-      <Grid
+      {/* drawer button */}
+      <Col
         style={{
-          position: 'absolute',
-          bottom: 30,
-          right: 0,
-          left: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        {/* drawer button */}
-        <Col
+        <FontAwesome
+          onPress={() => navigation.openDrawer()}
+          name="navicon"
+          size={25}
           style={{
-            justifyContent: 'center',
-            alignItems: 'center',
+            color: CONST.MAIN_COLOR,
+            position: 'absolute',
+            bottom: 0,
+            left: 15,
           }}
-        >
-          <FontAwesome
-            onPress={() => navigation.openDrawer()}
-            name="navicon"
-            size={25}
-            style={{
-              color: CONST.MAIN_COLOR,
-              position: 'absolute',
-              bottom: 0,
-              left: 15,
-            }}
-          />
-        </Col>
-      </Grid>
-    </SafeAreaView>
+        />
+      </Col>
+    </Grid>
+    // </SafeAreaView>
   )
 }
 

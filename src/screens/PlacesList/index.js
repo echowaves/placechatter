@@ -40,7 +40,7 @@ import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 
 import PropTypes from 'prop-types'
 
-import Footer from '../../components/Footer'
+import Footer from './footer'
 
 import * as CONST from '../../consts'
 import * as utils from '../../utils'
@@ -163,10 +163,11 @@ function PlacesList() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      // marginBottom: CONST.FOOTER_HEIGHT,
     },
     scrollView: {
       marginHorizontal: 0,
-      paddingTop: 50,
+      // paddingTop: 50,
     },
   })
 
@@ -253,6 +254,7 @@ function PlacesList() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
+      <View style={{ width, height: CONST.FOOTER_HEIGHT }}></View>
       <Footer />
     </SafeAreaView>
   )
