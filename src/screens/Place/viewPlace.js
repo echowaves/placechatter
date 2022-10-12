@@ -52,12 +52,12 @@ function ViewPlace({ route, navigation }) {
   const topOffset = height / 3
 
   const [place, setPlace] = useState()
-  const [photos, setPhotos] = useState()
 
+  const [placeDescription, setPlaceDescription] = useState()
   const [loadedPlaceDescription, setLoadedPlaceDescription] = useState()
 
   const [placeDescriptionError, setPlaceDescriptionError] = useState('')
-  const [canSubmit, setCanSubmit] = useState(false)
+  const [canSubmitDescription, setCanSubmitDescription] = useState(false)
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -82,8 +82,58 @@ function ViewPlace({ route, navigation }) {
     />
   )
 
+  async function loadPlace({ placeUuidToLoad }) {
+    // console.log({ placeUuidToLoad })
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query placeRead(
+            # $uuid: String!
+            # $phoneNumber: String!
+            # $token: String!
+            $placeUuid: String!
+          ) {
+            placeRead(
+              # uuid: $uuid
+              # phoneNumber: $phoneNumber
+              # token: $token
+              placeUuid: $placeUuid
+            ) {
+              place {
+                placeUuid
+                placeName
+                placeDescription
+                streetAddress1
+                streetAddress2
+                city
+                district
+                postalCode
+                region
+              }
+              photos {
+                photoUuid
+                phoneNumber
+                imgUrl
+                thumbUrl
+              }
+            }
+          }
+        `,
+        variables: {
+          // uuid,
+          // phoneNumber,
+          // token,
+          placeUuid: placeUuidToLoad,
+        },
+        // fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
+      })
+    ).data.placeRead
+    // alert(response)
+  }
+
   async function init() {
-    console.log('initializing................................')
+    // console.log('initializing................................')
     setShowSpinner(true)
     const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
       navigation,
@@ -93,61 +143,14 @@ function ViewPlace({ route, navigation }) {
     setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
 
     try {
-      await CONST.gqlClient.clearStore()
-      const loadedPlace = (
-        await CONST.gqlClient.query({
-          query: gql`
-            query placeRead(
-              # $uuid: String!
-              # $phoneNumber: String!
-              # $token: String!
-              $placeUuid: String!
-            ) {
-              placeRead(
-                # uuid: $uuid
-                # phoneNumber: $phoneNumber
-                # token: $token
-                placeUuid: $placeUuid
-              ) {
-                place {
-                  placeUuid
-                  placeName
-                  placeDescription
-                  streetAddress1
-                  streetAddress2
-                  city
-                  district
-                  postalCode
-                  region
-                }
-                photos {
-                  photoUuid
-                  phoneNumber
-                  imgUrl
-                  thumbUrl
-                }
-              }
-            }
-          `,
-          variables: {
-            // uuid,
-            // phoneNumber,
-            // token,
-            placeUuid,
-          },
-        })
-      ).data.placeRead
-      // alert(response)
-
+      const loadedPlace = await loadPlace({ placeUuidToLoad: placeUuid })
       navigation.setOptions({
         headerTitle: `${loadedPlace?.place.placeName}`,
       })
-
-      setPlace(loadedPlace.place)
+      // console.log({ loadedPlace })
+      setPlace(loadedPlace)
       setLoadedPlaceDescription(loadedPlace?.place.placeDescription)
-
-      setPhotos([])
-      setPhotos(loadedPlace.photos)
+      setPlaceDescription(loadedPlace?.place.placeDescription)
 
       // console.log({ place })
     } catch (err7) {
@@ -165,11 +168,11 @@ function ViewPlace({ route, navigation }) {
   }
 
   function isValid() {
-    if (place?.placeDescription === loadedPlaceDescription) {
+    if (placeDescription === loadedPlaceDescription) {
       setPlaceDescriptionError('')
       return false
     }
-    if (VALID.placeDescription(place?.placeDescription)) {
+    if (VALID.placeDescription(placeDescription)) {
       setPlaceDescriptionError('')
       return true
     }
@@ -206,13 +209,13 @@ function ViewPlace({ route, navigation }) {
             phoneNumber,
             token,
             placeUuid,
-            placeDescription: place?.placeDescription,
+            placeDescription,
           },
         })
       ).data.placeDescriptionUpdate
 
-      setLoadedPlaceDescription(place?.placeDescription)
-      setCanSubmit(false)
+      setLoadedPlaceDescription(placeDescription)
+      setCanSubmitDescription(false)
 
       // console.log({ response: JSON.stringify(response) })
     } catch (err8) {
@@ -244,8 +247,8 @@ function ViewPlace({ route, navigation }) {
   }, [])
 
   useEffect(() => {
-    setCanSubmit(isValid())
-  }, [place?.placeDescription])
+    setCanSubmitDescription(isValid())
+  }, [placeDescription])
 
   const styles = StyleSheet.create({
     container: {
@@ -266,18 +269,13 @@ function ViewPlace({ route, navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>
-        <PhotosCard
-          photos={photos}
-          auth={auth}
-          placeUuid={placeUuid}
-          reloadFunction={init}
-        />
+        {place && <PhotosCard place={place} auth={auth} />}
         <Card>
           <Card.Title>Address</Card.Title>
-          <Text>{place?.streetAddress1}</Text>
-          <Text>{place?.streetAddress2}</Text>
+          <Text>{place?.place.streetAddress1}</Text>
+          <Text>{place?.place.streetAddress2}</Text>
           <Text>
-            {place?.city}, {place?.region} {place?.postalCode}
+            {place?.place.city}, {place?.place.region} {place?.place.postalCode}
           </Text>
         </Card>
         <Card>
@@ -286,9 +284,9 @@ function ViewPlace({ route, navigation }) {
             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
             placeholder={`What is so special about this place`}
             errorMessage={placeDescriptionError}
-            value={`${place?.placeDescription}`}
+            value={`${placeDescription}`}
             onChangeText={(value) => {
-              setPlace({ ...place, placeDescription: value })
+              setPlaceDescription(value)
             }}
             multiline
             autoCapitalize={'sentences'}
@@ -301,9 +299,9 @@ function ViewPlace({ route, navigation }) {
             size="lg"
             iconRight
             // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
-            disabled={!canSubmit}
+            disabled={!canSubmitDescription}
           >
-            {`  Save ${place?.placeDescription.length} `}
+            {`  Save ${placeDescription?.length} `}
             <Icon type="FontAwesome" name="save" color="white" />
           </Button>
         </Card>

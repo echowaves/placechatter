@@ -1,4 +1,4 @@
-import React, { useRef, useState /* useEffect */ } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
@@ -34,7 +34,7 @@ import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker'
 import * as Linking from 'expo-linking'
 
-import CachedImage from 'expo-cached-image'
+import CachedImage, { CacheManager } from 'expo-cached-image'
 import * as FileSystem from 'expo-file-system'
 
 import { v4 as uuidv4 } from 'uuid'
@@ -47,20 +47,27 @@ import * as CONST from '../../consts'
 const FOOTER_HEIGHT = 70
 
 function PhotosCard(props) {
-  const { photos, auth, placeUuid, reloadFunction } = props
+  const { place, auth } = props
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
   const navigation = useNavigation()
   const [showSpinner, setShowSpinner] = useState(false)
+  const [photos, setPhotos] = useState()
+  // console.log({ place })
+  // console.log({ photos })
 
-  const uploadImage = async ({ contentType, assetUri }) => {
+  useEffect(() => {
+    // console.log({ photos_length: place?.photos?.length })
+    setPhotos(place.photos)
+  }, [])
+
+  const uploadImage = async ({ placeUuid, contentType, assetUri }) => {
     const photoUuid = uuidv4()
     const { uuid, phoneNumber, token } = auth
 
-    // console.log({ assetKey })
-    const uploadUrl = (
+    const photoForUpload = (
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation generateUploadUrl(
@@ -78,7 +85,13 @@ function PhotosCard(props) {
               assetKey: $assetKey
               contentType: $contentType
               placeUuid: $placeUuid
-            )
+            ) {
+              photo {
+                thumbUrl
+                photoUuid
+              }
+              uploadUrl
+            }
           }
         `,
         variables: {
@@ -92,20 +105,27 @@ function PhotosCard(props) {
       })
     ).data.generateUploadUrl
 
-    // console.log({ uploadUrl })
+    // console.log({ photoForUpload })
+    // console.log({ assetUri })
+    // CacheManager.addToCache({
+    //   file: assetUri,
+    //   key: `${photoUuid}`,
+    // })
+    // CacheManager.addToCache({
+    //   file: assetUri,
+    //   key: `${photoUuid}-thumb`,
+    // })
 
-    const responseData = await FileSystem.uploadAsync(
-      uploadUrl,
-      `${assetUri}`,
-      {
-        httpMethod: 'PUT',
-        headers: {
-          'Content-Type': contentType,
-        },
+    const { uploadUrl, photo } = photoForUpload
+
+    const responseData = await FileSystem.uploadAsync(uploadUrl, assetUri, {
+      httpMethod: 'PUT',
+      headers: {
+        'Content-Type': contentType,
       },
-    )
+    })
     // console.log({ responseData })
-    return { responseData }
+    return { responseData, photo }
   }
 
   const takePhoto = async () => {
@@ -187,7 +207,13 @@ function PhotosCard(props) {
         { compress: 1, format: ImageManipulator.SaveFormat.PNG },
       )
 
-      await MediaLibrary.saveToLibraryAsync(croppedImage.uri)
+      MediaLibrary.saveToLibraryAsync(croppedImage.uri)
+
+      const locallyThumbedImage = await ImageManipulator.manipulateAsync(
+        croppedImage.uri,
+        [{ resize: { height: 300 } }],
+        { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+      )
 
       // const manipResult = await ImageManipulator.manipulateAsync(
       //   localImgUrl,
@@ -195,14 +221,29 @@ function PhotosCard(props) {
       //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
       // )
       // return manipResult.uri
-
       // console.log('cancelled not')
       try {
         const response = await uploadImage({
-          contentType: 'image/jpeg',
+          placeUuid: place.place.placeUuid,
+          contentType: 'image/png',
           assetUri: croppedImage.uri,
         })
+        // console.log({ response })
+
+        await CacheManager.addToCache({
+          file: croppedImage.uri,
+          key: `${response.photo.photoUuid}`,
+        })
+        await CacheManager.addToCache({
+          file: locallyThumbedImage.uri,
+          key: `${response.photo.photoUuid}-thumb`,
+        })
+
+        const photosClone = photos
+        await setPhotos([])
+        await setPhotos([response.photo, ...photosClone])
       } catch (err10) {
+        console.log({ err10 })
         Toast.show({
           text1: 'Unable to add photo',
           text2: err10.toString(),
@@ -211,16 +252,18 @@ function PhotosCard(props) {
         })
       }
       // console.log({ responseData: response.responseData })
+      // init()
+      // console.log(reloadedPlace.photos[0])
+      // setShowSpinner(false)
+      // console.log({ reloadedPlace })
 
       setShowSpinner(false)
-      await reloadFunction()
-      // init()
     }
   }
 
   const renderItem = function ({ item, index }) {
     const { photoUuid, thumbUrl } = item
-    // console.log({ index })
+    // console.log({ index, item })
     return (
       <View
         key={index}

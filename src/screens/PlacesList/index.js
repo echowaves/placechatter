@@ -69,6 +69,7 @@ function PlacesList() {
   }
 
   const load = async function () {
+    setPlaces(null)
     let location
     try {
       location = await utils.getLocation()
@@ -83,7 +84,6 @@ function PlacesList() {
 
     const { latitude, longitude } = location.coords
     try {
-      await CONST.gqlClient.clearStore()
       const loadedPlaces = (
         await CONST.gqlClient.query({
           query: gql`
@@ -112,6 +112,8 @@ function PlacesList() {
             lat: latitude,
             lon: longitude,
           },
+          // fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
         })
       ).data.placesFeed.places
       // console.log({ loadedPlaces })
