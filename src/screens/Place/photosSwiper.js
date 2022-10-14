@@ -10,7 +10,7 @@ import Toast from 'react-native-toast-message'
 import // View,
 'react-native'
 
-import { Text } from '@rneui/themed'
+import { Text, Card, Icon, Button } from '@rneui/themed'
 
 import Swiper from 'react-native-swiper'
 
@@ -38,7 +38,7 @@ const PhotosSwiper = ({ route, navigation }) => {
     />
   )
 
-  const renderHeaderTitle = () => <Text>{`photo: ${currentIndex}`}</Text>
+  const renderHeaderTitle = () => <Text>{`photo: ${currentIndex + 1}`}</Text>
 
   useEffect(() => {
     navigation.setOptions({
@@ -78,7 +78,34 @@ const PhotosSwiper = ({ route, navigation }) => {
       pagingEnabled
     >
       {photos.map((photo) => (
-        <Photo photo={photo} />
+        <>
+          <Photo photo={photo} />
+          {currentIndex !== 0 && (
+            <Card>
+              <Button
+                // onPress={takePhoto}
+                size="lg"
+                iconRight
+                // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
+                // disabled={!canSubmit}
+              >
+                {`  Sort Up`}
+                <Icon type="font-awesome" name="sort-up" color="white" />
+              </Button>
+            </Card>
+          )}
+          <Card>
+            <Button
+              // onPress={() => navigation.navigate('Place', { placeUuid })}
+              size="lg"
+              color="red"
+              iconRight
+            >
+              {`  Delete`}
+              <Icon name="delete" color="white" />
+            </Button>
+          </Card>
+        </>
       ))}
     </Swiper>
     // </GestureHandlerRootView>

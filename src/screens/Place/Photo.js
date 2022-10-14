@@ -37,10 +37,16 @@ const Photo = ({ photo }) => {
 
   const styles = StyleSheet.create({
     photoContainer: {
+      width,
+      height: width + 10,
+
+      //   backgroundColor: '#333399',
+    },
+    photo: {
       width: width - 10,
       height: width - 10,
       position: 'absolute',
-      top: 50,
+      top: 10,
       bottom: 0,
       right: 5,
       left: 5,
@@ -50,7 +56,7 @@ const Photo = ({ photo }) => {
   })
 
   return (
-    <View>
+    <View style={styles.photoContainer}>
       <CachedImage
         source={{
           uri: `${photo.thumbUrl}`,
@@ -58,7 +64,7 @@ const Photo = ({ photo }) => {
         }}
         cacheKey={`${photo.photoUuid}-thumb`}
         resizeMode="contain"
-        style={styles.photoContainer}
+        style={styles.photo}
       />
       <CachedImage
         source={{
@@ -77,7 +83,7 @@ const Photo = ({ photo }) => {
           />
         }
         resizeMode="contain"
-        style={styles.photoContainer}
+        style={styles.photo}
       />
     </View>
   )
