@@ -135,7 +135,7 @@ function AddNewPlace() {
       // console.log({ response: JSON.stringify(response) })
       const { placeUuid } = response
 
-      navigation.navigate('ViewPlace', { placeUuid })
+      navigation.navigate('Place', { placeUuid })
     } catch (err4) {
       console.log({ err4 })
       Toast.show({

@@ -41,13 +41,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 
 import CachedImage from 'expo-cached-image'
 
-function listItem(props) {
-  const {
-    item,
-    item: { photos },
-    navigation,
-  } = props
-
+function listItem({ item, item: { photos }, navigation }) {
   // eslint-disable-next-line no-shadow
   const renderItem = function ({ item, index }) {
     const { photoUuid, thumbUrl } = item
@@ -82,7 +76,7 @@ function listItem(props) {
   return (
     <ListItem
       onPress={() =>
-        navigation.navigate('ViewPlace', { placeUuid: item.place.placeUuid })
+        navigation.navigate('Place', { placeUuid: item.place.placeUuid })
       }
       style={{ paddingVertical: 8 }}
       Component={TouchableScale}

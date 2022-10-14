@@ -95,12 +95,13 @@ function PlacesList() {
                     distance
                     placeName
                     streetAddress1
+                    streetAddress2
                     city
                     region
                   }
                   photos {
                     photoUuid
-                    phoneNumber
+                    # phoneNumber
                     # imgUrl
                     thumbUrl
                   }

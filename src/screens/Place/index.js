@@ -41,7 +41,7 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function ViewPlace({ route, navigation }) {
+function Place({ route, navigation }) {
   const { placeUuid } = route.params
 
   const [auth, setAuth] = useState({})
@@ -307,7 +307,7 @@ function ViewPlace({ route, navigation }) {
         </Card>
         <Card>
           <Button
-            onPress={() => navigation.navigate('ViewPlace', { placeUuid })}
+            onPress={() => navigation.navigate('Place', { placeUuid })}
             size="lg"
             color="red"
             iconRight
@@ -320,4 +320,4 @@ function ViewPlace({ route, navigation }) {
     </SafeAreaView>
   )
 }
-export default ViewPlace
+export default Place

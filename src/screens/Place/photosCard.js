@@ -44,11 +44,7 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 
-const FOOTER_HEIGHT = 70
-
-function PhotosCard(props) {
-  const { place, auth } = props
-
+function PhotosCard({ place, auth }) {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
@@ -261,11 +257,12 @@ function PhotosCard(props) {
     }
   }
 
-  const renderItem = function ({ item, index }) {
+  const renderItem = ({ item, index }) => {
     const { photoUuid, thumbUrl } = item
     // console.log({ index, item })
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => navigation.navigate('PhotosSwiper', { photos, index })}
         key={index}
         style={{
           padding: 5,
@@ -286,7 +283,7 @@ function PhotosCard(props) {
             borderRadius: 10,
           }}
         />
-      </View>
+      </TouchableOpacity>
     )
   }
 

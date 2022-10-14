@@ -32,7 +32,8 @@ import * as CONST from './src/consts'
 
 import PlacesList from './src/screens/PlacesList'
 import AddNewPlace from './src/screens/Place/addNewPlace'
-import ViewPlace from './src/screens/Place/viewPlace'
+import Place from './src/screens/Place'
+import PhotosSwiper from './src/screens/Place/photosSwiper'
 
 import Feedback from './src/screens/Feedback'
 import PhoneCheck from './src/screens/PhoneCheck'
@@ -100,8 +101,17 @@ function App() {
                   screenOptions={{ headerShown: true }}
                 />
                 <Stack.Screen
-                  name="ViewPlace"
-                  component={ViewPlace}
+                  name="Place"
+                  component={Place}
+                  options={{
+                    headerTintColor: CONST.MAIN_COLOR,
+                    gestureEnabled: false,
+                  }}
+                  screenOptions={{ headerShown: true }}
+                />
+                <Stack.Screen
+                  name="PhotosSwiper"
+                  component={PhotosSwiper}
                   options={{
                     headerTintColor: CONST.MAIN_COLOR,
                     gestureEnabled: false,
