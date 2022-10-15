@@ -125,6 +125,15 @@ function PhotosCard({ place, auth }) {
   }
 
   const takePhoto = async () => {
+    if (photos?.length > 10) {
+      Toast.show({
+        text1: 'More than 10 photos.',
+        text2: 'Delete some photos first',
+        type: 'info',
+        topOffset,
+      })
+      return
+    }
     // launch photo capturing
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync()
     // console.log({ cameraPermission })
@@ -309,9 +318,8 @@ function PhotosCard({ place, auth }) {
           size="lg"
           iconRight
           // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
-          // disabled={!canSubmit}
         >
-          {`  Take Photo`}
+          {`  Add Photo`}
           <Icon type="MaterialIcons" name="add-a-photo" color="white" />
         </Button>
       </Card>

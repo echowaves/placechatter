@@ -89,8 +89,12 @@ const PhotosSwiper = ({ route, navigation }) => {
                 // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
                 // disabled={!canSubmit}
               >
-                {`  Sort Up`}
-                <Icon type="font-awesome" name="sort-up" color="white" />
+                {`  Push to Front`}
+                <Icon
+                  type="material-community"
+                  name="page-first"
+                  color="white"
+                />
               </Button>
             </Card>
           )}
