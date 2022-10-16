@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
@@ -44,24 +44,32 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 
-function PhotosCard({ place, auth }) {
+function PhotosCard({ photos }) {
   const { width, height } = useDimensions().window
+
+  const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
+  const [authContext, setAuthContext] = useContext(CONST.AuthContext)
+
   const topOffset = height / 3
 
   const navigation = useNavigation()
   const [showSpinner, setShowSpinner] = useState(false)
-  const [photos, setPhotos] = useState()
   // console.log({ place })
   // console.log({ photos })
 
-  useEffect(() => {
-    // console.log({ photos_length: place?.photos?.length })
-    setPhotos(place.photos)
-  }, [])
+  // useEffect(() => {
+  //   // console.log({ photos_length: place?.photos?.length })
+  //   // setPhotos(place.photos)
+  // }, [])
+
+  // useEffect(() => {
+  //   // console.log({ photos_length: place?.photos?.length })
+  //   setPhotos(placeContext.photos)
+  // }, [placeContext])
 
   const uploadImage = async ({ placeUuid, contentType, assetUri }) => {
     const photoUuid = uuidv4()
-    const { uuid, phoneNumber, token } = auth
+    const { uuid, phoneNumber, token } = authContext
 
     const photoForUpload = (
       await CONST.gqlClient.mutate({
@@ -125,7 +133,7 @@ function PhotosCard({ place, auth }) {
   }
 
   const takePhoto = async () => {
-    if (photos?.length > 10) {
+    if (photos.length > 10) {
       Toast.show({
         text1: 'More than 10 photos.',
         text2: 'Delete some photos first',
@@ -229,7 +237,7 @@ function PhotosCard({ place, auth }) {
       // console.log('cancelled not')
       try {
         const response = await uploadImage({
-          placeUuid: place.place.placeUuid,
+          placeUuid: placeContext?.place?.placeUuid,
           contentType: 'image/png',
           assetUri: croppedImage.uri,
         })
@@ -244,9 +252,13 @@ function PhotosCard({ place, auth }) {
           key: `${response.photo.photoUuid}-thumb`,
         })
 
-        const photosClone = photos
-        await setPhotos([])
-        await setPhotos([response.photo, ...photosClone])
+        // const photosClone = photos
+        // await setPhotos([])
+        // await setPhotos([response.photo, ...photosClone])
+        setPlaceContext({
+          ...placeContext,
+          photos: [response.photo, ...photos],
+        })
       } catch (err10) {
         console.log({ err10 })
         Toast.show({
@@ -271,7 +283,7 @@ function PhotosCard({ place, auth }) {
     // console.log({ index, item })
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('PhotosSwiper', { photos, index })}
+        onPress={() => navigation.navigate('PhotosSwiper', { index })}
         key={index}
         style={{
           padding: 5,

@@ -1,3 +1,5 @@
+import { createContext } from 'react'
+
 import * as FileSystem from 'expo-file-system'
 
 // import { WebSocketLink } from '@apollo/client/link/ws'
@@ -7,13 +9,16 @@ import {
   ApolloClient,
   InMemoryCache,
   HttpLink,
-  // from,
+  // from,import React, { useEffect, useState, createContext } from 'react'
   // split,
 } from '@apollo/client'
 
 // import { getMainDefinition } from '@apollo/client/utilities'
 
 import Constants from 'expo-constants'
+
+export const PlaceContext = createContext() // {place}
+export const AuthContext = createContext() // {auth}
 
 export const { API_URI, API_KEY, PRIVATE_IMG_HOST } = Constants.manifest.extra
 // alert(JSON.stringify({ API_URI, API_KEY }))

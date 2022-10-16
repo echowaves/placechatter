@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
@@ -43,15 +43,15 @@ import { VALID } from '../../valid'
 
 function Place({ route, navigation }) {
   const { placeUuid } = route.params
-
-  const [auth, setAuth] = useState({})
+  const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
+  const [authContext, setAuthContext] = useContext(CONST.AuthContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  const [place, setPlace] = useState()
+  // const [place, setPlace] = useState()
 
   const [placeDescription, setPlaceDescription] = useState()
   const [loadedPlaceDescription, setLoadedPlaceDescription] = useState()
@@ -82,7 +82,8 @@ function Place({ route, navigation }) {
     />
   )
 
-  async function loadPlace({ placeUuidToLoad }) {
+  async function loadPlace() {
+    // console.log('loading place')
     // console.log({ placeUuidToLoad })
     return (
       await CONST.gqlClient.query({
@@ -123,7 +124,7 @@ function Place({ route, navigation }) {
           // uuid,
           // phoneNumber,
           // token,
-          placeUuid: placeUuidToLoad,
+          placeUuid,
         },
         // fetchPolicy: 'network-only',
         fetchPolicy: 'no-cache',
@@ -132,25 +133,26 @@ function Place({ route, navigation }) {
     // alert(response)
   }
 
-  async function init() {
+  const init = async () => {
     // console.log('initializing................................')
     setShowSpinner(true)
     const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
       navigation,
       topOffset,
     })
-
-    setAuth({ token, uuid, phoneNumber }) // the auth will be used later by mutators, but has to be initialized here once
+    setAuthContext({ token, uuid, phoneNumber })
 
     try {
-      const loadedPlace = await loadPlace({ placeUuidToLoad: placeUuid })
+      const loadedPlace = await loadPlace()
       navigation.setOptions({
         headerTitle: `${loadedPlace?.place.placeName}`,
       })
       // console.log({ loadedPlace })
-      setPlace(loadedPlace)
-      setLoadedPlaceDescription(loadedPlace?.place.placeDescription)
-      setPlaceDescription(loadedPlace?.place.placeDescription)
+      const { place, photos } = loadedPlace
+      setPlaceContext({})
+      setPlaceContext({ ...placeContext, place, photos })
+      setLoadedPlaceDescription(place.placeDescription)
+      setPlaceDescription(place.placeDescription)
 
       // console.log({ place })
     } catch (err7) {
@@ -182,7 +184,7 @@ function Place({ route, navigation }) {
 
   const handleUpdateDescription = async () => {
     setShowSpinner(true)
-    const { token, uuid, phoneNumber } = auth
+    const { token, uuid, phoneNumber } = authContext
 
     try {
       const response = (
@@ -261,6 +263,16 @@ function Place({ route, navigation }) {
     },
   })
 
+  const { place } = placeContext
+  if (!place) {
+    return (
+      <Spinner
+        visible={true}
+        textContent={'Loading...'}
+        // textStyle={styles.spinnerTextStyle}
+      />
+    )
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Spinner
@@ -269,13 +281,13 @@ function Place({ route, navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>
-        {place && <PhotosCard place={place} auth={auth} />}
+        <PhotosCard photos={placeContext.photos} />
         <Card>
           <Card.Title>Address</Card.Title>
-          <Text>{place?.place.streetAddress1}</Text>
-          <Text>{place?.place.streetAddress2}</Text>
+          <Text>{place.streetAddress1}</Text>
+          <Text>{place.streetAddress2}</Text>
           <Text>
-            {place?.place.city}, {place?.place.region} {place?.place.postalCode}
+            {place.city}, {place.region} {place.postalCode}
           </Text>
         </Card>
         <Card>
