@@ -221,10 +221,21 @@ function Place({ route, navigation }) {
           <Button
             onPress={() => navigation.navigate('Place', { placeUuid })}
             size="lg"
+            color="green"
+            iconRight
+          >
+            {`  Add Card`}
+            <Icon name="delete" color="white" />
+          </Button>
+        </Card>
+        <Card>
+          <Button
+            onPress={() => navigation.navigate('Place', { placeUuid })}
+            size="lg"
             color="red"
             iconRight
           >
-            {`  Delete`}
+            {`  Delete Place`}
             <Icon name="delete" color="white" />
           </Button>
         </Card>

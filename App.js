@@ -33,8 +33,9 @@ import { createStackNavigator } from '@react-navigation/stack'
 import * as CONST from './src/consts'
 
 import PlacesList from './src/screens/PlacesList'
-import AddNewPlace from './src/screens/Place/addNewPlace'
+import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
+import PlaceCardAdd from './src/screens/Place/placeCardAdd'
 import PhotosSwiper from './src/screens/Place/photosSwiper'
 
 import Feedback from './src/screens/Feedback'
@@ -107,8 +108,8 @@ function App() {
                       }}
                     />
                     <Stack.Screen
-                      name="AddNewPlace"
-                      component={AddNewPlace}
+                      name="PlaceAdd"
+                      component={PlaceAdd}
                       options={{
                         headerTintColor: CONST.MAIN_COLOR,
                         gestureEnabled: false,
@@ -118,6 +119,15 @@ function App() {
                     <Stack.Screen
                       name="Place"
                       component={Place}
+                      options={{
+                        headerTintColor: CONST.MAIN_COLOR,
+                        gestureEnabled: false,
+                      }}
+                      screenOptions={{ headerShown: true }}
+                    />
+                    <Stack.Screen
+                      name="PlaceCardAdd"
+                      component={PlaceCardAdd}
                       options={{
                         headerTintColor: CONST.MAIN_COLOR,
                         gestureEnabled: false,
@@ -175,8 +185,8 @@ function App() {
               />
 
               <Drawer.Screen
-                name="AddNewPlace"
-                component={AddNewPlace}
+                name="PlaceAdd"
+                component={PlaceAdd}
                 options={{
                   drawerIcon: () => (
                     <MaterialIcons

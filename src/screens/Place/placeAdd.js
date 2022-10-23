@@ -28,7 +28,7 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function AddNewPlace() {
+function PlaceAdd() {
   const navigation = useNavigation()
 
   const [auth, setAuth] = useState()
@@ -421,4 +421,4 @@ function AddNewPlace() {
     </SafeAreaView>
   )
 }
-export default AddNewPlace
+export default PlaceAdd
