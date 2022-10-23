@@ -99,11 +99,10 @@ function PlacesList() {
                     city
                     region
                   }
-                  photos {
+                  cards {
+                    cardTitle
+                    cardText
                     photoUuid
-                    # phoneNumber
-                    # imgUrl
-                    thumbUrl
                   }
                 }
               }

@@ -36,7 +36,7 @@ import {
 
 import PropTypes from 'prop-types'
 
-import PhotosCard from './photosCard'
+import PhotosCard from './placeCard'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
@@ -52,12 +52,6 @@ function Place({ route, navigation }) {
   const topOffset = height / 3
 
   // const [place, setPlace] = useState()
-
-  const [placeDescription, setPlaceDescription] = useState()
-  const [loadedPlaceDescription, setLoadedPlaceDescription] = useState()
-
-  const [placeDescriptionError, setPlaceDescriptionError] = useState('')
-  const [canSubmitDescription, setCanSubmitDescription] = useState(false)
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -83,7 +77,7 @@ function Place({ route, navigation }) {
   )
 
   async function loadPlace() {
-    // console.log('loading place')
+    console.log('loading place')
     // console.log({ placeUuidToLoad })
     return (
       await CONST.gqlClient.query({
@@ -103,7 +97,6 @@ function Place({ route, navigation }) {
               place {
                 placeUuid
                 placeName
-                placeDescription
                 streetAddress1
                 streetAddress2
                 city
@@ -111,11 +104,10 @@ function Place({ route, navigation }) {
                 postalCode
                 region
               }
-              photos {
+              cards {
+                cardTitle
+                cardText
                 photoUuid
-                phoneNumber
-                imgUrl
-                thumbUrl
               }
             }
           }
@@ -151,9 +143,6 @@ function Place({ route, navigation }) {
       const { place, photos } = loadedPlace
       setPlaceContext({})
       setPlaceContext({ ...placeContext, place, photos })
-      setLoadedPlaceDescription(place.placeDescription)
-      setPlaceDescription(place.placeDescription)
-
       // console.log({ place })
     } catch (err7) {
       console.log({ err7 })
@@ -169,70 +158,7 @@ function Place({ route, navigation }) {
     setShowSpinner(false)
   }
 
-  function isValid() {
-    if (placeDescription === loadedPlaceDescription) {
-      setPlaceDescriptionError('')
-      return false
-    }
-    if (VALID.placeDescription(placeDescription)) {
-      setPlaceDescriptionError('')
-      return true
-    }
-    setPlaceDescriptionError('10-1000 Alpha-Numeric characters')
-    return false
-  }
-
-  const handleUpdateDescription = async () => {
-    setShowSpinner(true)
-    const { token, uuid, phoneNumber } = authContext
-
-    try {
-      const response = (
-        await CONST.gqlClient.mutate({
-          mutation: gql`
-            mutation placeDescriptionUpdate(
-              $uuid: String!
-              $phoneNumber: String!
-              $token: String!
-              $placeUuid: String!
-              $placeDescription: String!
-            ) {
-              placeDescriptionUpdate(
-                uuid: $uuid
-                phoneNumber: $phoneNumber
-                token: $token
-                placeUuid: $placeUuid
-                placeDescription: $placeDescription
-              )
-            }
-          `,
-          variables: {
-            uuid,
-            phoneNumber,
-            token,
-            placeUuid,
-            placeDescription,
-          },
-        })
-      ).data.placeDescriptionUpdate
-
-      setLoadedPlaceDescription(placeDescription)
-      setCanSubmitDescription(false)
-
-      // console.log({ response: JSON.stringify(response) })
-    } catch (err8) {
-      console.log({ err8 })
-
-      Toast.show({
-        text1: 'Unable to update Place description, try again.',
-        text2: err8.toString(),
-        type: 'error',
-        topOffset,
-      })
-    }
-    setShowSpinner(false)
-    // await init()
-  }
+  function isValid() {}
 
   useEffect(() => {
     navigation.setOptions({
@@ -248,10 +174,6 @@ function Place({ route, navigation }) {
     init()
   }, [])
 
-  useEffect(() => {
-    setCanSubmitDescription(isValid())
-  }, [placeDescription])
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -263,7 +185,7 @@ function Place({ route, navigation }) {
     },
   })
 
-  const { place } = placeContext
+  const { place, photos } = placeContext
   if (!place) {
     return (
       <Spinner
@@ -273,6 +195,8 @@ function Place({ route, navigation }) {
       />
     )
   }
+
+  console.log('re-render')
   return (
     <SafeAreaView style={styles.container}>
       <Spinner
@@ -281,7 +205,7 @@ function Place({ route, navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>
-        <PhotosCard photos={placeContext.photos} />
+        <PhotosCard photos={photos} />
         <Card>
           <Card.Title>Address</Card.Title>
           <Text>{place.streetAddress1}</Text>
@@ -289,33 +213,6 @@ function Place({ route, navigation }) {
           <Text>
             {place.city}, {place.region} {place.postalCode}
           </Text>
-        </Card>
-        <Card>
-          <Input
-            label="Place Description"
-            // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
-            placeholder={`What is so special about this place`}
-            errorMessage={placeDescriptionError}
-            value={`${placeDescription}`}
-            onChangeText={(value) => {
-              setPlaceDescription(value)
-            }}
-            multiline
-            autoCapitalize={'sentences'}
-            autoComplete={'off'}
-            autoCorrect={true}
-            // autoFocus={true}
-          />
-          <Button
-            onPress={handleUpdateDescription}
-            size="lg"
-            iconRight
-            // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
-            disabled={!canSubmitDescription}
-          >
-            {`  Save ${placeDescription?.length} `}
-            <Icon type="FontAwesome" name="save" color="white" />
-          </Button>
         </Card>
         <Card>
           <Button

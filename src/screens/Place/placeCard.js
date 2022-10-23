@@ -44,7 +44,7 @@ import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 
-function PhotosCard({ photos }) {
+function PlaceCard({ photos }) {
   const { width, height } = useDimensions().window
 
   const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
@@ -339,4 +339,4 @@ function PhotosCard({ photos }) {
   )
 }
 
-export default PhotosCard
+export default PlaceCard
