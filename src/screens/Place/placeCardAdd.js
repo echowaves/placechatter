@@ -112,7 +112,61 @@ function PlaceCardAdd() {
     valid()
   }, [cardTitle, cardText])
 
-  const addCard = () => {}
+  const addCard = async () => {
+    setShowSpinner(true)
+
+    try {
+      const { uuid, phoneNumber, token } = authContext
+      const response = (
+        await CONST.gqlClient.mutate({
+          mutation: gql`
+            mutation placeCardCreate(
+              $uuid: String!
+              $phoneNumber: String!
+              $token: String!
+              $placeUuid: String!
+              $cardTitle: String!
+              $cardText: String!
+            ) {
+              placeCardCreate(
+                uuid: $uuid
+                phoneNumber: $phoneNumber
+                token: $token
+                placeUuid: $placeUuid
+                cardTitle: $cardTitle
+                cardText: $cardText
+              ) {
+                cardTitle
+                cardText
+                active
+              }
+            }
+          `,
+          variables: {
+            uuid,
+            phoneNumber,
+            token,
+            placeUuid: placeContext.place.placeUuid,
+            cardTitle,
+            cardText,
+          },
+        })
+      ).data.placeCardCreate
+
+      // console.log({ response: JSON.stringify(response) })
+
+      navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
+    } catch (err11) {
+      console.log({ err11 })
+      Toast.show({
+        text1: 'Unable to create Place, try again.',
+        text2: err11.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+    setShowSpinner(false)
+  }
 
   return (
     <>
