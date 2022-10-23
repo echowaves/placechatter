@@ -117,7 +117,7 @@ function PlaceCardAdd() {
 
     try {
       const { uuid, phoneNumber, token } = authContext
-      const response = (
+      const placeCard = (
         await CONST.gqlClient.mutate({
           mutation: gql`
             mutation placeCardCreate(
@@ -154,6 +154,11 @@ function PlaceCardAdd() {
       ).data.placeCardCreate
 
       // console.log({ response: JSON.stringify(response) })
+      setPlaceContext({ place: {}, cards: [] })
+      setPlaceContext({
+        ...placeContext,
+        cards: [placeCard, ...placeContext.cards],
+      })
 
       navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
     } catch (err11) {

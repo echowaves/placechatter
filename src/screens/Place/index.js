@@ -36,7 +36,6 @@ import {
 
 import PropTypes from 'prop-types'
 
-import PlaceCard from './placeCard'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
@@ -77,7 +76,6 @@ function Place({ route, navigation }) {
   )
 
   async function loadPlace() {
-    console.log('loading place')
     // console.log({ placeUuidToLoad })
     return (
       await CONST.gqlClient.query({
@@ -139,13 +137,14 @@ function Place({ route, navigation }) {
 
     try {
       const loadedPlace = await loadPlace()
+      // console.log({ loadedPlace })
 
       navigation.setOptions({
         headerTitle: `${loadedPlace?.place.placeName}`,
       })
       // console.log({ loadedPlace })
       const { place, cards } = loadedPlace
-      setPlaceContext({})
+      setPlaceContext({ place: {}, cards: [] })
       setPlaceContext({ ...placeContext, place, cards })
       // console.log({ place })
     } catch (err7) {
@@ -200,7 +199,7 @@ function Place({ route, navigation }) {
     )
   }
 
-  console.log('re-render')
+  // console.log('re-render')
   return (
     <SafeAreaView style={styles.container}>
       <Spinner
@@ -217,6 +216,7 @@ function Place({ route, navigation }) {
             {place.city}, {place.region} {place.postalCode}
           </Text>
         </Card>
+
         <Card>
           <Button
             onPress={() => navigation.navigate('PlaceCardAdd')}
@@ -228,6 +228,15 @@ function Place({ route, navigation }) {
             <Icon name="add" color="white" />
           </Button>
         </Card>
+
+        {placeContext.cards.map((card, index) => (
+          <Card key={index}>
+            <Card.Title>{card.cardTitle}</Card.Title>
+            {/* {card.photoUuid && } */}
+            <Text>{card.cardText}</Text>
+          </Card>
+        ))}
+
         <Card>
           <Button
             onPress={() => navigation.navigate('Place', { placeUuid })}

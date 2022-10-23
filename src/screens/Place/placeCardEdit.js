@@ -257,7 +257,7 @@ function PlaceCardEdit({ photos }) {
         // await setPhotos([response.photo, ...photosClone])
         setPlaceContext({
           ...placeContext,
-          photos: [response.photo, ...photos],
+          cards: [response.photo, ...photos],
         })
       } catch (err10) {
         console.log({ err10 })
