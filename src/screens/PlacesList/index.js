@@ -102,7 +102,10 @@ function PlacesList() {
                   cards {
                     cardTitle
                     cardText
-                    photoUuid
+                    photo {
+                      imgUrl
+                      thumbUrl
+                    }
                   }
                 }
               }
