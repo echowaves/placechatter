@@ -144,9 +144,9 @@ function Place({ route, navigation }) {
         headerTitle: `${loadedPlace?.place.placeName}`,
       })
       // console.log({ loadedPlace })
-      const { place, photos } = loadedPlace
+      const { place, cards } = loadedPlace
       setPlaceContext({})
-      setPlaceContext({ ...placeContext, place, photos })
+      setPlaceContext({ ...placeContext, place, cards })
       // console.log({ place })
     } catch (err7) {
       console.log({ err7 })
@@ -189,7 +189,7 @@ function Place({ route, navigation }) {
     },
   })
 
-  const { place, photos } = placeContext
+  const { place, cards } = placeContext
   if (!place) {
     return (
       <Spinner
@@ -219,13 +219,13 @@ function Place({ route, navigation }) {
         </Card>
         <Card>
           <Button
-            onPress={() => navigation.navigate('Place', { placeUuid })}
+            onPress={() => navigation.navigate('PlaceCardAdd')}
             size="lg"
             color="green"
             iconRight
           >
             {`  Add Card`}
-            <Icon name="delete" color="white" />
+            <Icon name="add" color="white" />
           </Button>
         </Card>
         <Card>

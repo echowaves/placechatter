@@ -36,6 +36,7 @@ import PlacesList from './src/screens/PlacesList'
 import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
 import PlaceCardAdd from './src/screens/Place/placeCardAdd'
+import PlaceCardEdit from './src/screens/Place/placeCardEdit'
 import PhotosSwiper from './src/screens/Place/photosSwiper'
 
 import Feedback from './src/screens/Feedback'
@@ -57,7 +58,7 @@ const { AuthContext, PlaceContext } = CONST
 function App() {
   const [placeContext, setPlaceContext] = useState({
     place: {},
-    photos: [],
+    cards: [],
   })
   const [authContext, setAuthContext] = useState({
     token: {},
@@ -128,6 +129,15 @@ function App() {
                     <Stack.Screen
                       name="PlaceCardAdd"
                       component={PlaceCardAdd}
+                      options={{
+                        headerTintColor: CONST.MAIN_COLOR,
+                        gestureEnabled: false,
+                      }}
+                      screenOptions={{ headerShown: true }}
+                    />
+                    <Stack.Screen
+                      name="PlaceCardEdit"
+                      component={PlaceCardEdit}
                       options={{
                         headerTintColor: CONST.MAIN_COLOR,
                         gestureEnabled: false,

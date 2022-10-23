@@ -52,6 +52,6 @@ export const VALID = {
     return /^([\w\s'/_@.#&+-;~]){4,50}$/.test(param)
   },
   cardText: function (param) {
-    return /^(.|\s){10,1024}$/.test(param)
+    return /^(.|\s){4,1024}$/.test(param)
   },
 }

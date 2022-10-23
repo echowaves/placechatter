@@ -66,41 +66,6 @@ const PhotosSwiper = ({ route, navigation }) => {
     })
   }, [currentIndex])
 
-  const pushToFront = async () => {
-    console.log({ currentIndex })
-    const { photos } = placeContext
-    await setPlaceContext({
-      ...placeContext,
-      photos: [],
-    })
-    await setPlaceContext({
-      ...placeContext,
-      photos: [
-        photos[currentIndex],
-        ...photos.slice(0, currentIndex),
-        ...photos.slice(currentIndex + 1),
-      ],
-    })
-    navigation.goBack()
-  }
-
-  const deleteCurrentPhoto = async () => {
-    const { photos } = placeContext
-    await setPlaceContext({
-      ...placeContext,
-      photos: [],
-    })
-
-    await setPlaceContext({
-      ...placeContext,
-      photos: [
-        ...photos.slice(0, currentIndex),
-        ...photos.slice(currentIndex + 1),
-      ],
-    })
-    navigation.goBack()
-  }
-
   return (
     // <GestureHandlerRootView>
     <Swiper
@@ -122,38 +87,9 @@ const PhotosSwiper = ({ route, navigation }) => {
       showsPagination={false}
       pagingEnabled
     >
-      {placeContext?.photos.map((photo) => (
-        <View key={photo.photoUuid}>
-          <Photo photo={photo} />
-          {currentIndex !== 0 && (
-            <Card>
-              <Button
-                onPress={pushToFront}
-                size="lg"
-                iconRight
-                // color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
-                // disabled={!canSubmit}
-              >
-                {`  Push to Front`}
-                <Icon
-                  type="material-community"
-                  name="page-first"
-                  color="white"
-                />
-              </Button>
-            </Card>
-          )}
-          <Card>
-            <Button
-              onPress={deleteCurrentPhoto}
-              size="lg"
-              color="red"
-              iconRight
-            >
-              {`  Delete`}
-              <Icon name="delete" color="white" />
-            </Button>
-          </Card>
+      {placeContext?.cards.map((card) => (
+        <View key={card?.photo?.photoUuid}>
+          <Photo photo={card?.photo} />
         </View>
       ))}
     </Swiper>
