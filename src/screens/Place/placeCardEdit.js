@@ -77,21 +77,23 @@ function PlaceCardEdit({ route, navigation }) {
     const photoForUpload = (
       await CONST.gqlClient.mutate({
         mutation: gql`
-          mutation generateUploadUrl(
+          mutation generateUploadUrlForCard(
             $uuid: String!
             $phoneNumber: String!
             $token: String!
             $assetKey: String!
             $contentType: String!
-            $placeUuid: String
+            $placeUuid: String!
+            $cardUuid: String!
           ) {
-            generateUploadUrl(
+            generateUploadUrlForCard(
               uuid: $uuid
               phoneNumber: $phoneNumber
               token: $token
               assetKey: $assetKey
               contentType: $contentType
               placeUuid: $placeUuid
+              cardUuid: $cardUuid
             ) {
               photo {
                 thumbUrl
@@ -108,9 +110,10 @@ function PlaceCardEdit({ route, navigation }) {
           assetKey: photoUuid,
           contentType,
           placeUuid,
+          cardUuid,
         },
       })
-    ).data.generateUploadUrl
+    ).data.generateUploadUrlForCard
 
     // console.log({ photoForUpload })
     // console.log({ assetUri })
@@ -199,46 +202,47 @@ function PlaceCardEdit({ route, navigation }) {
       const imageHeight = cameraReturn.height
       const imageCropDim = imageWidth < imageHeight ? imageWidth : imageHeight
 
-      const croppedImage = await ImageManipulator.manipulateAsync(
-        cameraReturn.uri,
-        [
-          {
-            crop: {
-              originX: (imageWidth - imageCropDim) / 2,
-              originY: (imageHeight - imageCropDim) / 2,
-              height: imageCropDim,
-              width: imageCropDim,
-            },
-          },
-        ],
-        { compress: 1, format: ImageManipulator.SaveFormat.PNG },
-      )
+      // const croppedImage = await ImageManipulator.manipulateAsync(
+      //   cameraReturn.uri,
+      //   [
+      //     {
+      //       crop: {
+      //         originX: (imageWidth - imageCropDim) / 2,
+      //         originY: (imageHeight - imageCropDim) / 2,
+      //         height: imageCropDim,
+      //         width: imageCropDim,
+      //       },
+      //     },
+      //   ],
+      //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+      // )
 
-      MediaLibrary.saveToLibraryAsync(croppedImage.uri)
+      // MediaLibrary.saveToLibraryAsync(croppedImage.uri)
+
+      // const locallyThumbedImage = await ImageManipulator.manipulateAsync(
+      //   croppedImage.uri,
+      //   [{ resize: { height: 300 } }],
+      //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+      // )
+
+      MediaLibrary.saveToLibraryAsync(cameraReturn.uri)
 
       const locallyThumbedImage = await ImageManipulator.manipulateAsync(
-        croppedImage.uri,
+        cameraReturn.uri,
         [{ resize: { height: 300 } }],
         { compress: 1, format: ImageManipulator.SaveFormat.PNG },
       )
 
-      // const manipResult = await ImageManipulator.manipulateAsync(
-      //   localImgUrl,
-      //   [{ resize: { height: 300 } }],
-      //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
-      // )
-      // return manipResult.uri
-      // console.log('cancelled not')
       try {
         const response = await uploadImage({
           placeUuid: placeContext?.place?.placeUuid,
           contentType: 'image/png',
-          assetUri: croppedImage.uri,
+          assetUri: cameraReturn.uri,
         })
         // console.log({ response })
 
         await CacheManager.addToCache({
-          file: croppedImage.uri,
+          file: cameraReturn.uri,
           key: `${response.photo.photoUuid}`,
         })
         await CacheManager.addToCache({
@@ -368,7 +372,7 @@ function PlaceCardEdit({ route, navigation }) {
 
     try {
       const loadedCard = await loadCard()
-      // console.log({ loadedCard })
+      console.log({ loadedCard })
 
       // console.log({ loadedPlace })
       // const { place, cards } = loadedCard

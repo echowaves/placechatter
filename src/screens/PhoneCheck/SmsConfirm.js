@@ -54,7 +54,7 @@ function SmsConfirm({ route, navigation }) {
 
   async function handleSubmit() {
     const { smsCode, nickName } = formInput
-    console.log({ smsCode, nickName })
+    // console.log({ smsCode, nickName })
     setShowSpinner(true)
     try {
       const response = (

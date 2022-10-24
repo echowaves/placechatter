@@ -138,7 +138,7 @@ function Place({ route, navigation }) {
 
     try {
       const loadedPlace = await loadPlace()
-      // console.log({ loadedPlace })
+      console.log({ loadedPlace: JSON.stringify(loadedPlace) })
 
       navigation.setOptions({
         headerTitle: `${loadedPlace?.place.placeName}`,
