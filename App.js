@@ -74,6 +74,7 @@ function App() {
             <Drawer.Navigator
               // useLegacyImplementation={false}
               screenOptions={{ gestureEnabled: true, headerShown: false }}
+              initialRouteName="Home"
             >
               <Drawer.Screen
                 name="Home"
@@ -97,6 +98,7 @@ function App() {
                     // headerMode="none"
                     // initialRouteName="PhotosList"
                     screenOptions={{ gestureEnabled: true, headerShown: true }}
+                    initialRouteName="Home"
                   >
                     <Stack.Screen
                       name="PlacesList"
