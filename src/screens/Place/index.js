@@ -103,6 +103,7 @@ function Place({ route, navigation }) {
                 region
               }
               cards {
+                cardUuid
                 cardTitle
                 cardText
                 photo {
@@ -160,8 +161,6 @@ function Place({ route, navigation }) {
     }
     setShowSpinner(false)
   }
-
-  function isValid() {}
 
   useEffect(() => {
     navigation.setOptions({
@@ -234,6 +233,19 @@ function Place({ route, navigation }) {
             <Card.Title>{card.cardTitle}</Card.Title>
             {/* {card.photoUuid && } */}
             <Text>{card.cardText}</Text>
+            <Button
+              onPress={() =>
+                navigation.navigate('PlaceCardEdit', {
+                  cardUuid: card.cardUuid,
+                })
+              }
+              size="sm"
+              // color="red"
+              iconRight
+            >
+              {`  Edit Card`}
+              <Icon name="edit" color="white" />
+            </Button>
           </Card>
         ))}
 

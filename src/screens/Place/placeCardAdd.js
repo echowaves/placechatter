@@ -154,12 +154,8 @@ function PlaceCardAdd() {
       ).data.placeCardCreate
 
       // console.log({ response: JSON.stringify(response) })
-      setPlaceContext({ place: {}, cards: [] })
-      setPlaceContext({
-        ...placeContext,
-        cards: [placeCard, ...placeContext.cards],
-      })
 
+      await navigation.popToTop()
       navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
     } catch (err11) {
       console.log({ err11 })
@@ -191,7 +187,7 @@ function PlaceCardAdd() {
             value={`${cardTitle}`}
             onChangeText={(value) => {
               setCardTitle(value)
-              valid()
+              // valid()
             }}
             multiline={false}
             autoCapitalize={'sentences'}
@@ -207,7 +203,7 @@ function PlaceCardAdd() {
             value={`${cardText}`}
             onChangeText={(value) => {
               setCardText(value)
-              valid()
+              // valid()
             }}
             multiline
             autoCapitalize={'sentences'}
