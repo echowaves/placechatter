@@ -484,7 +484,8 @@ function PlaceCardEdit({ route, navigation }) {
         })
       ).data.placeCardSave
 
-      await navigation.setOptions({
+      navigation.setOptions({
+        headerTitle: placeCard?.cardTitle,
         headerLeft: renderHeaderLeftUnchanged,
       })
 
