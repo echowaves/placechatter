@@ -43,7 +43,7 @@ import { VALID } from '../../valid'
 function Place({ route, navigation }) {
   const { placeUuid } = route.params
   const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
-  const [authContext, setAuthContext] = useContext(CONST.AuthContext)
+  // const [authContext, setAuthContext] = useContext(CONST.AuthContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -130,11 +130,11 @@ function Place({ route, navigation }) {
   const init = async () => {
     // console.log('initializing................................')
     setShowSpinner(true)
-    const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
-      navigation,
-      topOffset,
-    })
-    setAuthContext({ token, uuid, phoneNumber })
+    // const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
+    //   navigation,
+    //   topOffset,
+    // })
+    // setAuthContext({ token, uuid, phoneNumber })
 
     try {
       const loadedPlace = await loadPlace()
@@ -215,19 +215,6 @@ function Place({ route, navigation }) {
             {place.city}, {place.region} {place.postalCode}
           </Text>
         </Card>
-
-        <Card>
-          <Button
-            onPress={() => navigation.navigate('PlaceCardAdd')}
-            size="lg"
-            color="green"
-            iconRight
-          >
-            {`  Add Card`}
-            <Icon name="add" color="white" />
-          </Button>
-        </Card>
-
         {placeContext.cards.map((card, index) => (
           <Card key={index}>
             <Card.Title>{card.cardTitle}</Card.Title>
@@ -248,7 +235,18 @@ function Place({ route, navigation }) {
             </Button>
           </Card>
         ))}
-
+        <Card>
+          <Button
+            onPress={() => navigation.navigate('PlaceCardAdd')}
+            size="lg"
+            color="green"
+            iconRight
+          >
+            {`  Add Card`}
+            <Icon name="add" color="white" />
+          </Button>
+        </Card>
+        <Card.Divider />
         <Card>
           <Button
             onPress={() => navigation.navigate('Place', { placeUuid })}

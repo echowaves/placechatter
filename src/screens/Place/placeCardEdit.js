@@ -241,14 +241,14 @@ function PlaceCardEdit({ route, navigation }) {
         })
         // console.log({ response })
 
-        await CacheManager.addToCache({
-          file: cameraReturn.uri,
-          key: `${response.photo.photoUuid}`,
-        })
-        await CacheManager.addToCache({
-          file: locallyThumbedImage.uri,
-          key: `${response.photo.photoUuid}-thumb`,
-        })
+        // await CacheManager.addToCache({
+        //   file: cameraReturn.uri,
+        //   key: `${response.photo.photoUuid}`,
+        // })
+        // await CacheManager.addToCache({
+        //   file: locallyThumbedImage.uri,
+        //   key: `${response.photo.photoUuid}-thumb`,
+        // })
 
         // const photosClone = photos
         // await setPhotos([])

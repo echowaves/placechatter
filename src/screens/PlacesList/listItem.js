@@ -41,11 +41,16 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 
 import CachedImage from 'expo-cached-image'
 
-function listItem({ item, item: { photos }, navigation }) {
+function listItem({ item, item: { cards }, navigation }) {
+  // console.log({ item })
   // eslint-disable-next-line no-shadow
-  const renderItem = function ({ item, index }) {
-    const { photoUuid, thumbUrl } = item
-    // console.log({ index })
+  const renderPhotoItem = function ({ item, index }) {
+    // console.log({ item })
+    const {
+      photo,
+      photo: { thumbUrl },
+    } = item
+    // console.log({ thumbUrl })
     return (
       <View
         key={index}
@@ -56,9 +61,9 @@ function listItem({ item, item: { photos }, navigation }) {
         <CachedImage
           source={{
             uri: `${thumbUrl}`,
-            // expiresIn: 5, // seconds. This field is optional
+            expiresIn: 1, // seconds. This field is optional
           }}
-          cacheKey={`${photoUuid}-thumb`}
+          cacheKey={`${photo.photoUuid}-thumb`}
           resizeMode="contain"
           style={{
             flex: 1,
@@ -72,7 +77,7 @@ function listItem({ item, item: { photos }, navigation }) {
     )
   }
 
-  // console.log({ item })
+  // console.log({ cards: cards.filter((card) => card?.photo !== null) })
   return (
     <ListItem
       onPress={() =>
@@ -107,8 +112,8 @@ function listItem({ item, item: { photos }, navigation }) {
 
         <FlatList
           horizontal={true}
-          data={photos}
-          renderItem={renderItem}
+          data={cards.filter((card) => card?.photo !== null)}
+          renderItem={renderPhotoItem}
           // keyExtractor={(item) => item.id}
           // extraData={selectedId}
         />

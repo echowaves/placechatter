@@ -69,7 +69,7 @@ function PlacesList() {
   }
 
   const load = async function () {
-    setPlaces(null)
+    // setPlaces(null)
     let location
     try {
       location = await utils.getLocation()
@@ -103,7 +103,7 @@ function PlacesList() {
                     cardTitle
                     cardText
                     photo {
-                      imgUrl
+                      photoUuid
                       thumbUrl
                     }
                   }
@@ -247,7 +247,7 @@ function PlacesList() {
   }
 
   const keyExtractor = (item, index) => index.toString()
-
+  // console.log({ places: JSON.stringify(places) })
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
