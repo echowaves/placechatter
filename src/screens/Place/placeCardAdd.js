@@ -50,8 +50,8 @@ import { VALID } from '../../valid'
 function PlaceCardAdd() {
   const { width, height } = useDimensions().window
 
-  const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
-  const [authContext, setAuthContext] = useContext(CONST.AuthContext)
+  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
   const topOffset = height / 3
 

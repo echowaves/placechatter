@@ -28,8 +28,8 @@ import * as CONST from '../../consts'
 
 const PhotosSwiper = ({ route, navigation }) => {
   const { index } = route.params
-  const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
-  // const [authContext, setAuthContext] = useContext(CONST.AuthContext)
+  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
+  // const {authContext, setAuthContext} = useContext(CONST.AuthContext)
   const [currentIndex, setCurrentIndex] = useState(index)
 
   const { width, height } = useDimensions().window

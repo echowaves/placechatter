@@ -4,7 +4,7 @@
  * @format
  * @flow strict-local
  */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // eslint-disable-next-line no-unused-vars
 import { NavigationContainer } from '@react-navigation/native'
@@ -31,6 +31,7 @@ import { ThemeProvider } from '@rneui/themed'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import * as CONST from './src/consts'
+import * as UTILS from './src/utils'
 
 import PlacesList from './src/screens/PlacesList'
 import PlaceAdd from './src/screens/Place/placeAdd'
@@ -60,16 +61,26 @@ function App() {
     place: {},
     cards: [],
   })
-  const [authContext, setAuthContext] = useState({
-    token: {},
-    uuid: {},
-    phoneNumber: {},
-  })
+
+  const [authContext, setAuthContext] = useState()
+
+  const init = async () => {
+    setAuthContext({
+      uuid: await UTILS.getUUID(),
+      token: await UTILS.getToken(),
+      phoneNumber: await UTILS.getPhoneNumber(),
+      nickName: await UTILS.getNickName(),
+    })
+  }
+
+  useEffect(() => {
+    init()
+  }, [])
 
   return (
-    <ThemeProvider>
-      <AuthContext.Provider value={[authContext, setAuthContext]}>
-        <PlaceContext.Provider value={[placeContext, setPlaceContext]}>
+    <AuthContext.Provider value={{ authContext, setAuthContext }}>
+      <PlaceContext.Provider value={{ placeContext, setPlaceContext }}>
+        <ThemeProvider>
           <NavigationContainer>
             <Drawer.Navigator
               // useLegacyImplementation={false}
@@ -238,9 +249,9 @@ function App() {
             </Drawer.Navigator>
           </NavigationContainer>
           <Toast />
-        </PlaceContext.Provider>
-      </AuthContext.Provider>
-    </ThemeProvider>
+        </ThemeProvider>
+      </PlaceContext.Provider>
+    </AuthContext.Provider>
   )
 }
 export default App

@@ -63,7 +63,7 @@ function listItem({ item, item: { cards }, navigation }) {
             uri: `${thumbUrl}`,
             expiresIn: 1, // seconds. This field is optional
           }}
-          cacheKey={`${photo.photoUuid}-thumb`}
+          cacheKey={`${photo.photoUuid}-thumb.webp`}
           resizeMode="contain"
           style={{
             flex: 1,

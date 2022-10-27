@@ -62,7 +62,7 @@ const Photo = ({ photo }) => {
           uri: `${photo.thumbUrl}`,
           // expiresIn: 5, // seconds. This field is optional
         }}
-        cacheKey={`${photo.photoUuid}-thumb`}
+        cacheKey={`${photo.photoUuid}-thumb.webp`}
         resizeMode="contain"
         style={styles.photo}
       />
@@ -70,7 +70,7 @@ const Photo = ({ photo }) => {
         source={{
           uri: `${photo.imgUrl}`,
         }}
-        cacheKey={`${photo.photoUuid}`}
+        cacheKey={`${photo.photoUuid}.webp`}
         placeholderContent={
           // optional
           <ActivityIndicator

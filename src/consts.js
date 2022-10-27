@@ -17,8 +17,8 @@ import {
 
 import Constants from 'expo-constants'
 
-export const PlaceContext = createContext() // {place}
-export const AuthContext = createContext() // {auth}
+export const PlaceContext = createContext(null) // {place}
+export const AuthContext = createContext(null) // {auth}
 
 export const { API_URI, API_KEY, PRIVATE_IMG_HOST } = Constants.manifest.extra
 // alert(JSON.stringify({ API_URI, API_KEY }))

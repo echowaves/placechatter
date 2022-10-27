@@ -48,6 +48,8 @@ export async function getLocation() {
 }
 
 async function storeUUID(uuid) {
+  // console.log('storing', { uuid })
+
   try {
     await SecureStore.setItemAsync(CONST.UUID_KEY, uuid)
   } catch (err1) {
@@ -73,10 +75,10 @@ export async function getUUID() {
 
     if (uuid === '' || uuid === null) {
       uuid = uuidv4()
-      // console.log('storing', { uuid })
       await storeUUID(uuid)
     }
   }
+  // console.log({ uuid })
   return uuid
 }
 
@@ -129,31 +131,4 @@ export const setToken = async (token) => {
 export async function getToken() {
   const token = await SecureStore.getItemAsync(CONST.TOKEN_KEY)
   return token
-}
-
-export async function checkAuthentication({ navigation, topOffset }) {
-  const localToken = await getToken()
-
-  // console.log({ localToken })
-
-  if (!localToken) {
-    navigation.navigate('PhoneCheck')
-    Toast.show({
-      text1: 'Need to Validate your Phone Number first',
-      type: 'info',
-      topOffset,
-    })
-
-    return {
-      token: null,
-      uuid: null,
-      phoneNumber: null,
-    }
-  }
-
-  return {
-    token: localToken,
-    uuid: await getUUID(),
-    phoneNumber: await getPhoneNumber(),
-  }
 }

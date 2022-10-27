@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
@@ -31,7 +31,7 @@ import { VALID } from '../../valid'
 function PlaceAdd() {
   const navigation = useNavigation()
 
-  const [auth, setAuth] = useState()
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -54,7 +54,7 @@ function PlaceAdd() {
     setShowSpinner(true)
 
     try {
-      const { uuid, phoneNumber, token } = auth
+      const { uuid, phoneNumber, token } = authContext
       const response = (
         await CONST.gqlClient.mutate({
           mutation: gql`
@@ -283,7 +283,8 @@ function PlaceAdd() {
         lon: longitude,
       })
     }
-    setAuth(await UTILS.checkAuthentication({ navigation, topOffset }))
+    console.log('in place add', { authContext })
+    VALID.isValidToken({ authContext, navigation, topOffset })
   }
 
   useEffect(() => {
@@ -310,7 +311,7 @@ function PlaceAdd() {
     },
   })
 
-  if (!locationGeocodedAddress || !currentLocation || !auth?.token) {
+  if (!locationGeocodedAddress || !currentLocation) {
     return (
       <LinearProgress
         color={CONST.MAIN_COLOR}

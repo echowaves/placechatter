@@ -53,8 +53,8 @@ function PlaceCardEdit({ route, navigation }) {
 
   const { width, height } = useDimensions().window
 
-  const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
-  const [authContext, setAuthContext] = useContext(CONST.AuthContext)
+  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
   const topOffset = height / 3
 
@@ -117,14 +117,14 @@ function PlaceCardEdit({ route, navigation }) {
 
     // console.log({ photoForUpload })
     // console.log({ assetUri })
-    // CacheManager.addToCache({
-    //   file: assetUri,
-    //   key: `${photoUuid}`,
-    // })
-    // CacheManager.addToCache({
-    //   file: assetUri,
-    //   key: `${photoUuid}-thumb`,
-    // })
+    CacheManager.addToCache({
+      file: assetUri,
+      key: `${photoUuid}.webp`,
+    })
+    CacheManager.addToCache({
+      file: assetUri,
+      key: `${photoUuid}-thumb.webp`,
+    })
 
     const { uploadUrl, photo } = photoForUpload
 

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState, createRef } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import {
   Alert,
@@ -28,6 +28,8 @@ import Spinner from 'react-native-loading-spinner-overlay'
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
 
+import { useNavigation } from '@react-navigation/native'
+
 import {
   FontAwesome,
   Ionicons,
@@ -40,24 +42,28 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function SmsConfirm({ route, navigation }) {
-  const [showSpinner, setShowSpinner] = useState(false)
+function SmsConfirm() {
+  const navigation = useNavigation()
 
-  const { uuid, phoneNumber } = route.params
+  const [showSpinner, setShowSpinner] = useState(false)
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+
   // console.log({ uuid, phoneNumber })
 
-  const [formInput, setFormInput] = useState({})
+  const [smsCode, setSmsCode] = useState()
+
   const [nickNameError, setNickNameError] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(true)
   // const input = createRef()
 
   async function handleSubmit() {
-    const { smsCode, nickName } = formInput
+    const { uuid, phoneNumber, nickName } = authContext
+    console.log('in handle submit', { authContext })
     // console.log({ smsCode, nickName })
     setShowSpinner(true)
     try {
-      const response = (
+      const token = (
         await CONST.gqlClient.mutate({
           mutation: gql`
             mutation phoneActivate(
@@ -83,11 +89,11 @@ function SmsConfirm({ route, navigation }) {
         })
       ).data.phoneActivate
 
-      // console.log({ response })
-      // success, validateion passsed
-      await UTILS.setNickName(nickName)
-      await UTILS.setPhoneNumber(phoneNumber)
-      await UTILS.setToken(response)
+      UTILS.setPhoneNumber(phoneNumber)
+      UTILS.setToken(token)
+      UTILS.setNickName(nickName)
+
+      await setAuthContext({ ...authContext, phoneNumber, token, nickName })
 
       navigation.goBack()
       // console.log({ response })
@@ -96,10 +102,14 @@ function SmsConfirm({ route, navigation }) {
       console.log({ err3 })
       await UTILS.setNickName('')
       await UTILS.setPhoneNumber('')
-      setFormInput({
-        smsCode: '',
+      await UTILS.setToken('')
+      setAuthContext({
+        ...authContext,
         nickName: '',
+        phoneNumber: '',
+        token: '',
       })
+      setSmsCode('')
 
       Toast.show({
         text1: 'Unable to activatePhone phone, try again.',
@@ -138,7 +148,7 @@ function SmsConfirm({ route, navigation }) {
 
   async function valid() {
     setNickNameError('')
-    const { smsCode, nickName } = formInput
+    const { nickName, phoneNumber } = authContext
 
     if (VALID.nickName(nickName)) {
       if (VALID.smsCode(smsCode)) {
@@ -171,7 +181,7 @@ function SmsConfirm({ route, navigation }) {
           }
           return true
         } catch (err1) {
-          setNickNameError('Lettters and digits only')
+          setNickNameError('Letters and digits only')
           return false
         }
       }
@@ -198,11 +208,6 @@ function SmsConfirm({ route, navigation }) {
     })
     // input.current.focus()
     // input.current.clear()
-
-    async function init() {
-      setFormInput({ ...formInput, nickName: await UTILS.getNickName() })
-    }
-    init()
   }, [])
 
   useEffect(() => {
@@ -217,7 +222,7 @@ function SmsConfirm({ route, navigation }) {
     navigation.setOptions({
       headerRight: renderHeaderRight,
     })
-  }, [formInput])
+  }, [smsCode, authContext.nickName])
 
   const styles = StyleSheet.create({
     container: {
@@ -245,10 +250,8 @@ function SmsConfirm({ route, navigation }) {
           leftIcon={{ type: 'material-icons', name: 'confirmation-num' }}
           focus={true}
           //   keyboardType="numeric"
-          value={formInput.smsCode}
-          onChangeText={(value) =>
-            setFormInput({ ...formInput, smsCode: value })
-          }
+          value={smsCode}
+          onChangeText={(value) => setSmsCode(value)}
           autoCapitalize={'none'}
           autoComplete={'off'}
           autoCorrect={false}
@@ -258,9 +261,9 @@ function SmsConfirm({ route, navigation }) {
           placeholder="Nickname appears in chats"
           leftIcon={{ type: 'font-awesome', name: 'user-circle' }}
           //   keyboardType="numeric"
-          value={formInput.nickName}
+          value={authContext.nickName}
           onChangeText={(value) =>
-            setFormInput({ ...formInput, nickName: value })
+            setAuthContext({ ...authContext, nickName: value })
           }
           errorStyle={{ color: 'red' }}
           errorMessage={nickNameError}

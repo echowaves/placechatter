@@ -42,8 +42,8 @@ import { VALID } from '../../valid'
 
 function Place({ route, navigation }) {
   const { placeUuid } = route.params
-  const [placeContext, setPlaceContext] = useContext(CONST.PlaceContext)
-  // const [authContext, setAuthContext] = useContext(CONST.AuthContext)
+  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
