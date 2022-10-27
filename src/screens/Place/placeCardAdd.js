@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -47,7 +47,8 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 import { VALID } from '../../valid'
 
-function PlaceCardAdd() {
+function PlaceCardAdd({ navigation }) {
+  // const navigation = useNavigation()
   const { width, height } = useDimensions().window
 
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
@@ -55,7 +56,6 @@ function PlaceCardAdd() {
 
   const topOffset = height / 3
 
-  const navigation = useNavigation()
   const [showSpinner, setShowSpinner] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)
 

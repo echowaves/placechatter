@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { useNavigation } from '@react-navigation/native'
+// import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 import * as FileSystem from 'expo-file-system'
@@ -40,7 +40,7 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function Place({ route, navigation }) {
+function Place({ navigation, route }) {
   const { placeUuid } = route.params
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)

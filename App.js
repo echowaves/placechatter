@@ -10,6 +10,8 @@ import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createStackNavigator } from '@react-navigation/stack'
+
 // import { enableFreeze } from 'react-native-screens'
 
 /* eslint-disable import/no-extraneous-dependencies */
@@ -27,8 +29,6 @@ import Toast from 'react-native-toast-message'
 
 // eslint-disable-next-line no-unused-vars
 import { ThemeProvider } from '@rneui/themed'
-
-import { createStackNavigator } from '@react-navigation/stack'
 
 import * as CONST from './src/consts'
 import * as UTILS from './src/utils'
@@ -77,181 +77,186 @@ function App() {
     init()
   }, [])
 
+  const MainDrawNavigator = () => (
+    <Drawer.Navigator
+      // useLegacyImplementation={true}      drawerPosition: 'right',
+      screenOptions={{ gestureEnabled: true, headerShown: true }}
+      initialRouteName="PlacesList"
+    >
+      <Drawer.Screen
+        name="PlacesList"
+        component={PlacesList}
+        options={{
+          drawerIcon: () => (
+            <FontAwesome
+              name="chevron-left"
+              size={30}
+              style={{
+                marginLeft: 10,
+                color: CONST.MAIN_COLOR,
+                width: 60,
+              }}
+            />
+          ),
+          drawerLabel: '',
+        }}
+      />
+
+      <Drawer.Screen
+        name="PhoneCheck"
+        component={PhoneCheck}
+        options={{
+          drawerIcon: () => (
+            <MaterialCommunityIcons
+              name="cellphone-check"
+              size={30}
+              style={{
+                marginLeft: 5,
+                color: CONST.MAIN_COLOR,
+                width: 30,
+              }}
+            />
+          ),
+          drawerLabel: 'NickName',
+          // headerShown: true,
+        }}
+      />
+
+      <Drawer.Screen
+        name="PlaceAdd"
+        component={PlaceAdd}
+        options={{
+          drawerIcon: () => (
+            <MaterialIcons
+              name="add-circle"
+              size={30}
+              style={{
+                marginLeft: 5,
+                color: CONST.MAIN_COLOR,
+                width: 30,
+              }}
+            />
+          ),
+          drawerLabel: 'Add Place',
+          // headerShown: true,
+        }}
+      />
+
+      <Drawer.Screen
+        name="Feedback"
+        component={Feedback}
+        options={{
+          drawerIcon: () => (
+            <MaterialIcons
+              name="feedback"
+              size={30}
+              style={{
+                marginLeft: 5,
+                color: CONST.MAIN_COLOR,
+                width: 30,
+              }}
+            />
+          ),
+          drawerLabel: 'Feedback',
+          // headerShown: true,
+        }}
+      />
+    </Drawer.Navigator>
+  )
+
+  const MainStackNavigator = () => (
+    <Stack.Navigator
+      // initialRouteName="PhotosList"
+      screenOptions={{
+        gestureEnabled: true,
+        headerShown: false,
+      }}
+      initialRouteName="PlacesList"
+    >
+      <Stack.Screen
+        name="Home"
+        component={MainDrawNavigator}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          headerTitle: '',
+          headerLeft: '',
+          headerRight: '',
+        }}
+      />
+      <Stack.Screen
+        name="PlaceAdd"
+        component={PlaceAdd}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="Place"
+        component={Place}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+        }}
+        screenOptions={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="PlaceCardAdd"
+        component={PlaceCardAdd}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="PlaceCardEdit"
+        component={PlaceCardEdit}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="PhotosSwiper"
+        component={PhotosSwiper}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="PhoneCheck"
+        component={PhoneCheck}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="SmsConfirm"
+        component={SmsConfirm}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+          headerShown: true,
+        }}
+      />
+    </Stack.Navigator>
+  )
+
   return (
-    <AuthContext.Provider value={{ authContext, setAuthContext }}>
-      <PlaceContext.Provider value={{ placeContext, setPlaceContext }}>
-        <ThemeProvider>
-          <NavigationContainer>
-            <Drawer.Navigator
-              // useLegacyImplementation={false}
-              screenOptions={{ gestureEnabled: true, headerShown: false }}
-              initialRouteName="Home"
-            >
-              <Drawer.Screen
-                name="Home"
-                options={{
-                  drawerIcon: () => (
-                    <FontAwesome
-                      name="chevron-left"
-                      size={30}
-                      style={{
-                        marginLeft: 10,
-                        color: CONST.MAIN_COLOR,
-                        width: 60,
-                      }}
-                    />
-                  ),
-                  drawerLabel: '',
-                }}
-              >
-                {() => (
-                  <Stack.Navigator
-                    // headerMode="none"
-                    // initialRouteName="PhotosList"
-                    screenOptions={{ gestureEnabled: true, headerShown: true }}
-                    initialRouteName="Home"
-                  >
-                    <Stack.Screen
-                      name="PlacesList"
-                      component={PlacesList}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        headerTitle: '',
-                        headerLeft: '',
-                        headerRight: '',
-                      }}
-                    />
-                    <Stack.Screen
-                      name="PlaceAdd"
-                      component={PlaceAdd}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="Place"
-                      component={Place}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="PlaceCardAdd"
-                      component={PlaceCardAdd}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="PlaceCardEdit"
-                      component={PlaceCardEdit}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="PhotosSwiper"
-                      component={PhotosSwiper}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="PhoneCheck"
-                      component={PhoneCheck}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="SmsConfirm"
-                      component={SmsConfirm}
-                      options={{
-                        headerTintColor: CONST.MAIN_COLOR,
-                        gestureEnabled: false,
-                      }}
-                      screenOptions={{ headerShown: true }}
-                    />
-                  </Stack.Navigator>
-                )}
-              </Drawer.Screen>
-              <Drawer.Screen
-                name="PhoneCheck"
-                component={PhoneCheck}
-                options={{
-                  drawerIcon: () => (
-                    <MaterialCommunityIcons
-                      name="cellphone-check"
-                      size={30}
-                      style={{
-                        marginLeft: 5,
-                        color: CONST.MAIN_COLOR,
-                        width: 30,
-                      }}
-                    />
-                  ),
-                  drawerLabel: 'NickName',
-                  headerShown: true,
-                }}
-              />
-
-              <Drawer.Screen
-                name="PlaceAdd"
-                component={PlaceAdd}
-                options={{
-                  drawerIcon: () => (
-                    <MaterialIcons
-                      name="add-circle"
-                      size={30}
-                      style={{
-                        marginLeft: 5,
-                        color: CONST.MAIN_COLOR,
-                        width: 30,
-                      }}
-                    />
-                  ),
-                  drawerLabel: 'Add Place',
-                  headerShown: true,
-                }}
-              />
-
-              <Drawer.Screen
-                name="Feedback"
-                component={Feedback}
-                options={{
-                  drawerIcon: () => (
-                    <MaterialIcons
-                      name="feedback"
-                      size={30}
-                      style={{
-                        marginLeft: 5,
-                        color: CONST.MAIN_COLOR,
-                        width: 30,
-                      }}
-                    />
-                  ),
-                  drawerLabel: 'Feedback',
-                  headerShown: true,
-                }}
-              />
-            </Drawer.Navigator>
-          </NavigationContainer>
-          <Toast />
-        </ThemeProvider>
-      </PlaceContext.Provider>
-    </AuthContext.Provider>
+    <>
+      <AuthContext.Provider value={{ authContext, setAuthContext }}>
+        <PlaceContext.Provider value={{ placeContext, setPlaceContext }}>
+          <ThemeProvider>
+            <NavigationContainer>
+              <MainStackNavigator />
+            </NavigationContainer>
+            <Toast />
+          </ThemeProvider>
+        </PlaceContext.Provider>
+      </AuthContext.Provider>
+    </>
   )
 }
 export default App

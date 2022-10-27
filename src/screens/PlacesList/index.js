@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'
@@ -47,8 +47,8 @@ import * as utils from '../../utils'
 
 import listItem from './listItem'
 
-function PlacesList() {
-  const navigation = useNavigation()
+function PlacesList({ navigation }) {
+  // const navigation = useNavigation()
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
@@ -179,61 +179,56 @@ function PlacesList() {
   if (!isTandcAccepted) {
     return (
       <SafeAreaView style={styles.container}>
-        <Overlay>
-          <ScrollView style={styles.scrollView}>
-            <Card containerStyle={{ padding: 0 }}>
-              <ListItem style={{ borderRadius: 10 }}>
-                <Text>Anyone close-by can see your posts.</Text>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <Text>You can see other&#39;s posts also.</Text>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <Text>
-                  If you find any posts abusive or inappropriate, you can report
-                  abuse. The place moderator will review and take actions.
-                </Text>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <Text>
-                  The objectionable content or abusive users will not be
-                  tolerated.
-                </Text>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <Text>
-                  The abusive users may be banned from placechatter forever, and
-                  will be reported.
-                </Text>
-              </ListItem>
-              <Divider />
-              <ListItem>
-                <Text>
-                  By using placechatter I agree to Terms and Conditions.
-                </Text>
-              </ListItem>
-              <Divider />
+        <ScrollView style={styles.scrollView}>
+          <Card containerStyle={{ padding: 0 }}>
+            <ListItem style={{ borderRadius: 10 }}>
+              <Text>Anyone close-by can see your posts.</Text>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <Text>You can see other&#39;s posts also.</Text>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <Text>
+                If you find any posts abusive or inappropriate, you can report
+                abuse. The place moderator will review and take actions.
+              </Text>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <Text>
+                The objectionable content or abusive users will not be
+                tolerated.
+              </Text>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <Text>
+                The abusive users may be banned from placechatter forever, and
+                will be reported.
+              </Text>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <Text>
+                By using placechatter I agree to Terms and Conditions.
+              </Text>
+            </ListItem>
+            <Divider />
 
-              <ListItem style={{ alignItems: 'center' }}>
-                <Button
-                  title="I Agree"
-                  type="outline"
-                  onPress={() => {
-                    SecureStore.setItemAsync(
-                      CONST.IS_TANDC_ACCEPTED_KEY,
-                      'true',
-                    )
-                    setIsTandcAccepted(true)
-                  }}
-                />
-              </ListItem>
-            </Card>
-          </ScrollView>
-        </Overlay>
+            <ListItem style={{ alignItems: 'center' }}>
+              <Button
+                title="I Agree"
+                type="outline"
+                onPress={() => {
+                  SecureStore.setItemAsync(CONST.IS_TANDC_ACCEPTED_KEY, 'true')
+                  setIsTandcAccepted(true)
+                }}
+              />
+            </ListItem>
+          </Card>
+        </ScrollView>
       </SafeAreaView>
     )
   }
@@ -242,6 +237,8 @@ function PlacesList() {
     return (
       <View style={styles.container}>
         <LinearProgress color={CONST.MAIN_COLOR} />
+        <View style={{ width, height: CONST.FOOTER_HEIGHT }}></View>
+        <Footer />
       </View>
     )
   }

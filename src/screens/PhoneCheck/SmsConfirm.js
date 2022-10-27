@@ -28,7 +28,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
 
-import { useNavigation } from '@react-navigation/native'
+// import { useNavigation } from '@react-navigation/native'
 
 import {
   FontAwesome,
@@ -42,8 +42,8 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function SmsConfirm() {
-  const navigation = useNavigation()
+function SmsConfirm({ navigation }) {
+  // const navigation = useNavigation()
 
   const [showSpinner, setShowSpinner] = useState(false)
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
@@ -51,6 +51,7 @@ function SmsConfirm() {
   // console.log({ uuid, phoneNumber })
 
   const [smsCode, setSmsCode] = useState()
+  const [nickName, setNickName] = useState()
 
   const [nickNameError, setNickNameError] = useState('')
 
@@ -58,7 +59,7 @@ function SmsConfirm() {
   // const input = createRef()
 
   async function handleSubmit() {
-    const { uuid, phoneNumber, nickName } = authContext
+    const { uuid, phoneNumber } = authContext
     console.log('in handle submit', { authContext })
     // console.log({ smsCode, nickName })
     setShowSpinner(true)
@@ -148,7 +149,7 @@ function SmsConfirm() {
 
   async function valid() {
     setNickNameError('')
-    const { nickName, phoneNumber } = authContext
+    const { phoneNumber } = authContext
 
     if (VALID.nickName(nickName)) {
       if (VALID.smsCode(smsCode)) {
@@ -222,7 +223,7 @@ function SmsConfirm() {
     navigation.setOptions({
       headerRight: renderHeaderRight,
     })
-  }, [smsCode, authContext.nickName])
+  }, [smsCode, nickName])
 
   const styles = StyleSheet.create({
     container: {
@@ -261,10 +262,8 @@ function SmsConfirm() {
           placeholder="Nickname appears in chats"
           leftIcon={{ type: 'font-awesome', name: 'user-circle' }}
           //   keyboardType="numeric"
-          value={authContext.nickName}
-          onChangeText={(value) =>
-            setAuthContext({ ...authContext, nickName: value })
-          }
+          value={nickName}
+          onChangeText={(value) => setNickName(value)}
           errorStyle={{ color: 'red' }}
           errorMessage={nickNameError}
           autoCapitalize={'none'}

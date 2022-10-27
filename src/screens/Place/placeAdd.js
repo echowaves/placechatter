@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { useNavigation } from '@react-navigation/native'
+// import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -28,8 +28,8 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function PlaceAdd() {
-  const navigation = useNavigation()
+function PlaceAdd({ navigation }) {
+  // const navigation = useNavigation()
 
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 

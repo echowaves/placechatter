@@ -1,5 +1,5 @@
 import React, { useRef, useState /* useEffect */ } from 'react'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -33,7 +33,7 @@ const Photo = ({ photo }) => {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  const navigation = useNavigation()
+  // const navigation = useNavigation()
 
   const styles = StyleSheet.create({
     photoContainer: {

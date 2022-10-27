@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+// import { useNavigation } from '@react-navigation/native'
 import { useDimensions } from '@react-native-community/hooks'
 
 import * as Location from 'expo-location'

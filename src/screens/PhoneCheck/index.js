@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, createRef, useContext } from 'react'
-import { useNavigation } from '@react-navigation/native'
+// import { useNavigation } from '@react-navigation/native'
 
 import Spinner from 'react-native-loading-spinner-overlay'
 
@@ -42,11 +42,12 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function PhoneCheck() {
-  const navigation = useNavigation()
+function PhoneCheck({ navigation }) {
+  // const navigation = useNavigation()
   const [showSpinner, setShowSpinner] = useState(false)
 
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const [phoneNumber, setPhoneNumber] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(false)
   const input = createRef()
@@ -65,12 +66,15 @@ function PhoneCheck() {
           }
         `,
         variables: {
-          phoneNumber: authContext.phoneNumber,
+          phoneNumber,
           uuid: authContext.uuid,
         },
       })
       // console.log({ response })
       // alert(response)
+      setAuthContext({ ...authContext, phoneNumber })
+      setShowSpinner(false)
+
       navigation.navigate('SmsConfirm')
     } catch (err) {
       // console.log({ err })
@@ -124,12 +128,12 @@ function PhoneCheck() {
   }, [])
 
   useEffect(() => {
-    if (VALID.phoneNumber(authContext.phoneNumber)) {
+    if (VALID.phoneNumber(phoneNumber)) {
       setCanSubmit(true)
     } else {
       setCanSubmit(false)
     }
-  }, [authContext.phoneNumber])
+  }, [phoneNumber])
 
   useEffect(() => {
     navigation.setOptions({
@@ -163,10 +167,10 @@ function PhoneCheck() {
           leftIcon={{ type: 'font-awesome', name: 'mobile-phone' }}
           focus={true}
           keyboardType="numeric"
-          value={authContext.phoneNumber}
-          onChangeText={(value) =>
-            setAuthContext({ ...authContext, phoneNumber: value })
-          }
+          value={phoneNumber}
+          onChangeText={(value) => {
+            setPhoneNumber(value)
+          }}
         />
       </SafeAreaView>
     </View>
