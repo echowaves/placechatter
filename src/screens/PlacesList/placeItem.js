@@ -84,7 +84,7 @@ function PlaceItem({ item, navigation }) {
   return (
     <ListItem
       onPress={async () => {
-        const { place, cards } = await UTILS.loadPlace({
+        const { place, cards } = await UTILS.placeRead({
           placeUuid: item.place.placeUuid,
         })
         setPlaceContext({ ...placeContext, place, cards })

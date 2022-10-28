@@ -136,7 +136,7 @@ function PlaceAdd({ navigation }) {
       // console.log({ response: JSON.stringify(response) })
       const { placeUuid } = response
 
-      const { place, cards } = await UTILS.loadPlace({
+      const { place, cards } = await UTILS.placeRead({
         placeUuid,
       })
       setPlaceContext({ ...placeContext, place, cards })

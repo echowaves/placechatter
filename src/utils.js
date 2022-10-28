@@ -134,7 +134,11 @@ export async function getToken() {
   return token
 }
 
-export async function loadPlace({ placeUuid }) {
+/// /////////////////////////////////////////////////////////////////////////////////////////////
+/// aws gql functions
+/// /////////////////////////////////////////////////////////////////////////////////////////////
+
+export async function placeRead({ placeUuid }) {
   const { place, cards } = (
     await CONST.gqlClient.query({
       query: gql`
@@ -185,4 +189,42 @@ export async function loadPlace({ placeUuid }) {
   // alert(response)
 
   return { place, cards } //   // setPlaceContext({ place: {}, cards: [] })
+}
+
+export async function placesFeed({ latitude, longitude }) {
+  return (
+    await CONST.gqlClient.query({
+      query: gql`
+        query placesFeed($lat: Float!, $lon: Float!) {
+          placesFeed(lat: $lat, lon: $lon) {
+            places {
+              place {
+                placeUuid
+                distance
+                placeName
+                streetAddress1
+                streetAddress2
+                city
+                region
+              }
+              cards {
+                cardTitle
+                cardText
+                photo {
+                  photoUuid
+                  thumbUrl
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        lat: latitude,
+        lon: longitude,
+      },
+      // fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
+    })
+  ).data.placesFeed.places
 }

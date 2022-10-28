@@ -30,7 +30,7 @@ import {
   Avatar,
 } from '@rneui/themed'
 
-import { gql } from '@apollo/client'
+// import { gql } from '@apollo/client'
 import Spinner from 'react-native-loading-spinner-overlay'
 
 // import * as FileSystem from 'expo-file-system'
@@ -42,8 +42,8 @@ import PropTypes from 'prop-types'
 
 import Footer from './footer'
 
-import * as CONST from '../../consts'
-import * as utils from '../../utils'
+import * as CONSTS from '../../consts'
+import * as UTILS from '../../utils'
 
 import PlaceItem from './placeItem'
 
@@ -60,7 +60,7 @@ function PlacesList({ navigation }) {
   const init = async function () {
     try {
       setIsTandcAccepted(
-        (await SecureStore.getItemAsync(CONST.IS_TANDC_ACCEPTED_KEY)) ===
+        (await SecureStore.getItemAsync(CONSTS.IS_TANDC_ACCEPTED_KEY)) ===
           'true',
       )
     } catch (err) {
@@ -72,7 +72,7 @@ function PlacesList({ navigation }) {
     // setPlaces(null)
     let location
     try {
-      location = await utils.getLocation()
+      location = await UTILS.getLocation()
     } catch (err) {
       Toast.show({
         text1: 'Unable to get location',
@@ -84,41 +84,7 @@ function PlacesList({ navigation }) {
 
     const { latitude, longitude } = location.coords
     try {
-      const loadedPlaces = (
-        await CONST.gqlClient.query({
-          query: gql`
-            query placesFeed($lat: Float!, $lon: Float!) {
-              placesFeed(lat: $lat, lon: $lon) {
-                places {
-                  place {
-                    placeUuid
-                    distance
-                    placeName
-                    streetAddress1
-                    streetAddress2
-                    city
-                    region
-                  }
-                  cards {
-                    cardTitle
-                    cardText
-                    photo {
-                      photoUuid
-                      thumbUrl
-                    }
-                  }
-                }
-              }
-            }
-          `,
-          variables: {
-            lat: latitude,
-            lon: longitude,
-          },
-          // fetchPolicy: 'network-only',
-          fetchPolicy: 'no-cache',
-        })
-      ).data.placesFeed.places
+      const loadedPlaces = await UTILS.placesFeed({ latitude, longitude })
       // console.log({ loadedPlaces })
       // console.log('loadedPlaces.length:', loadedPlaces.length)
       setPlaces(loadedPlaces)
@@ -148,12 +114,12 @@ function PlacesList({ navigation }) {
     useCallback(() => {
       navigation.setOptions({
         headerTitle: 'places near me',
-        headerTintColor: CONST.MAIN_COLOR,
+        headerTintColor: CONSTS.MAIN_COLOR,
         headerRight: renderHeaderRight,
         headerLeft: renderHeaderLeft,
         headerBackTitle: '',
         headerStyle: {
-          backgroundColor: CONST.NAV_COLOR,
+          backgroundColor: CONSTS.NAV_COLOR,
         },
       })
       init()
@@ -222,7 +188,7 @@ function PlacesList({ navigation }) {
                 title="I Agree"
                 type="outline"
                 onPress={() => {
-                  SecureStore.setItemAsync(CONST.IS_TANDC_ACCEPTED_KEY, 'true')
+                  SecureStore.setItemAsync(CONSTS.IS_TANDC_ACCEPTED_KEY, 'true')
                   setIsTandcAccepted(true)
                 }}
               />
@@ -236,8 +202,8 @@ function PlacesList({ navigation }) {
   if (!places) {
     return (
       <View style={styles.container}>
-        <LinearProgress color={CONST.MAIN_COLOR} />
-        <View style={{ width, height: CONST.FOOTER_HEIGHT }}></View>
+        <LinearProgress color={CONSTS.MAIN_COLOR} />
+        <View style={{ width, height: CONSTS.FOOTER_HEIGHT }}></View>
         <Footer />
       </View>
     )
@@ -258,7 +224,7 @@ function PlacesList({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
-      <View style={{ width, height: CONST.FOOTER_HEIGHT }}></View>
+      <View style={{ width, height: CONSTS.FOOTER_HEIGHT }}></View>
       <Footer />
     </SafeAreaView>
   )
