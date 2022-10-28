@@ -25,8 +25,6 @@ import {
   Icon,
 } from '@rneui/themed'
 
-import { gql } from '@apollo/client'
-
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
 
@@ -56,20 +54,11 @@ function PhoneCheck({ navigation }) {
     setShowSpinner(true)
     try {
       // const response = await
-      await CONST.gqlClient.mutate({
-        mutation: gql`
-          mutation activationCodeGenerate(
-            $phoneNumber: String!
-            $uuid: String!
-          ) {
-            activationCodeGenerate(phoneNumber: $phoneNumber, uuid: $uuid)
-          }
-        `,
-        variables: {
-          phoneNumber,
-          uuid: authContext.uuid,
-        },
+      await UTILS.activationCodeGenerate({
+        phoneNumber,
+        uuid: authContext.uuid,
       })
+
       // console.log({ response })
       // alert(response)
       setAuthContext({ ...authContext, phoneNumber })

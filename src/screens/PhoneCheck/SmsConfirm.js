@@ -23,7 +23,6 @@ import {
   Icon,
 } from '@rneui/themed'
 
-import { gql } from '@apollo/client'
 import Spinner from 'react-native-loading-spinner-overlay'
 
 // import * as FileSystem from 'expo-file-system'
@@ -68,31 +67,12 @@ function SmsConfirm({ navigation }) {
     // console.log({ smsCode, nickName })
     setShowSpinner(true)
     try {
-      const token = (
-        await CONST.gqlClient.mutate({
-          mutation: gql`
-            mutation phoneActivate(
-              $uuid: String!
-              $phoneNumber: String!
-              $smsCode: String!
-              $nickName: String!
-            ) {
-              phoneActivate(
-                uuid: $uuid
-                phoneNumber: $phoneNumber
-                smsCode: $smsCode
-                nickName: $nickName
-              )
-            }
-          `,
-          variables: {
-            uuid,
-            phoneNumber,
-            smsCode,
-            nickName,
-          },
-        })
-      ).data.phoneActivate
+      const token = await UTILS.phoneActivate({
+        uuid,
+        phoneNumber,
+        smsCode,
+        nickName,
+      })
 
       UTILS.setPhoneNumber(phoneNumber)
       UTILS.setToken(token)
@@ -160,26 +140,11 @@ function SmsConfirm({ navigation }) {
       if (VALID.smsCode(smsCode)) {
         // setNickNameError('')
         try {
-          const nickNamesFound = await CONST.gqlClient.query({
-            query: gql`
-              query nickNameTypeAhead(
-                $phoneNumber: String!
-                $nickName: String!
-              ) {
-                nickNameTypeAhead(
-                  phoneNumber: $phoneNumber
-                  nickName: $nickName
-                )
-              }
-            `,
-            variables: {
-              phoneNumber,
-              nickName,
-            },
+          const nickNameTypeAhead = await UTILS.nickNameTypeAhead({
+            phoneNumber,
+            nickName,
           })
-          // alert(response)
-          const { nickNameTypeAhead } = nickNamesFound.data
-          // console.log({ nickNamesFound, nickNameTypeAhead })
+          // console.log({ nickNameTypeAhead })
 
           if (nickNameTypeAhead !== 0) {
             setNickNameError('Nickname is already taken')

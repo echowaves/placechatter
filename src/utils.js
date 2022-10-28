@@ -139,6 +139,64 @@ export async function getToken() {
 /// aws gql functions
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
+export async function activationCodeGenerate({ phoneNumber, uuid }) {
+  await CONST.gqlClient.mutate({
+    mutation: gql`
+      mutation activationCodeGenerate($phoneNumber: String!, $uuid: String!) {
+        activationCodeGenerate(phoneNumber: $phoneNumber, uuid: $uuid)
+      }
+    `,
+    variables: {
+      phoneNumber,
+      uuid,
+    },
+  })
+}
+
+export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
+  return (
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation phoneActivate(
+          $uuid: String!
+          $phoneNumber: String!
+          $smsCode: String!
+          $nickName: String!
+        ) {
+          phoneActivate(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            smsCode: $smsCode
+            nickName: $nickName
+          )
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        smsCode,
+        nickName,
+      },
+    })
+  ).data.phoneActivate
+}
+
+export async function nickNameTypeAhead({ phoneNumber, nickName }) {
+  return (
+    await CONST.gqlClient.query({
+      query: gql`
+        query nickNameTypeAhead($phoneNumber: String!, $nickName: String!) {
+          nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
+        }
+      `,
+      variables: {
+        phoneNumber,
+        nickName,
+      },
+    })
+  ).data.nickNameTypeAhead
+}
+
 export async function placeRead({ placeUuid }) {
   const { place, cards } = (
     await CONST.gqlClient.query({

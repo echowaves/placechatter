@@ -2,7 +2,6 @@
 /* eslint-disable func-names */
 /* eslint-disable import/prefer-default-export */
 import Toast from 'react-native-toast-message'
-// import { gql } from '@apollo/client'
 
 import * as CONST from './consts'
 
