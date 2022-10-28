@@ -78,7 +78,6 @@ function PlaceAdd({ navigation }) {
       const { place, cards } = await UTILS.placeRead({
         placeUuid,
       })
-      console.log({ place, cards })
 
       setPlaceContext({ ...placeContext, place, cards })
       navigation.navigate('Place')
