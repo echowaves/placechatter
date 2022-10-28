@@ -10,7 +10,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { Input, LinearProgress, Card } from '@rneui/themed'
 
-import { gql } from '@apollo/client'
 import Spinner from 'react-native-loading-spinner-overlay'
 
 // import * as FileSystem from 'expo-file-system'
@@ -56,89 +55,31 @@ function PlaceAdd({ navigation }) {
 
     try {
       const { uuid, phoneNumber, token } = authContext
-      const response = (
-        await CONST.gqlClient.mutate({
-          mutation: gql`
-            mutation placeCreate(
-              $uuid: String!
-              $phoneNumber: String!
-              $token: String!
-              $placeName: String!
-              $streetAddress1: String!
-              $streetAddress2: String!
-              $city: String!
-              $country: String!
-              $district: String!
-              $isoCountryCode: String!
-              $postalCode: String!
-              $region: String!
-              $subregion: String!
-              $timezone: String!
-              $lat: Float!
-              $lon: Float!
-            ) {
-              placeCreate(
-                uuid: $uuid
-                phoneNumber: $phoneNumber
-                token: $token
-                placeName: $placeName
-                streetAddress1: $streetAddress1
-                streetAddress2: $streetAddress2
-                city: $city
-                country: $country
-                district: $district
-                isoCountryCode: $isoCountryCode
-                postalCode: $postalCode
-                region: $region
-                subregion: $subregion
-                timezone: $timezone
-                lat: $lat
-                lon: $lon
-              ) {
-                placeUuid
-                # placeName
-                # streetAddress1
-                # streetAddress2
-                # city
-                # country
-                # district
-                # isoCountryCode
-                # postalCode
-                # region
-                # subregion
-                # timezone
-                # location
-                # createdAt
-              }
-            }
-          `,
-          variables: {
-            uuid,
-            phoneNumber,
-            token,
-            placeName: formInput.placeName,
-            streetAddress1: formInput.streetAddress1,
-            streetAddress2: formInput.streetAddress2,
-            city: formInput.city,
-            country: formInput.country,
-            district: formInput.district,
-            isoCountryCode: formInput.isoCountryCode,
-            postalCode: formInput.postalCode,
-            region: formInput.region,
-            subregion: formInput.subregion,
-            timezone: formInput.timezone,
-            lat: formInput.lat,
-            lon: formInput.lon,
-          },
-        })
-      ).data.placeCreate
 
-      // console.log({ response: JSON.stringify(response) })
-      const { placeUuid } = response
+      const { placeUuid } = await UTILS.placeCreate({
+        uuid,
+        phoneNumber,
+        token,
+        placeName: formInput.placeName,
+        streetAddress1: formInput.streetAddress1,
+        streetAddress2: formInput.streetAddress2,
+        city: formInput.city,
+        country: formInput.country,
+        district: formInput.district,
+        isoCountryCode: formInput.isoCountryCode,
+        postalCode: formInput.postalCode,
+        region: formInput.region,
+        subregion: formInput.subregion,
+        timezone: formInput.timezone,
+        lat: formInput.lat,
+        lon: formInput.lon,
+      })
 
       const { place, cards } = await UTILS.placeRead({
         placeUuid,
       })
+      console.log({ place, cards })
+
       setPlaceContext({ ...placeContext, place, cards })
       navigation.navigate('Place')
 

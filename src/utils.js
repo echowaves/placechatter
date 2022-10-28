@@ -387,3 +387,99 @@ export async function isPlaceOwner({
   }
   return false
 }
+
+export async function placeCreate({
+  uuid,
+  phoneNumber,
+  token,
+  placeName,
+  streetAddress1,
+  streetAddress2,
+  city,
+  country,
+  district,
+  isoCountryCode,
+  postalCode,
+  region,
+  subregion,
+  timezone,
+  lat,
+  lon,
+}) {
+  return (
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation placeCreate(
+          $uuid: String!
+          $phoneNumber: String!
+          $token: String!
+          $placeName: String!
+          $streetAddress1: String!
+          $streetAddress2: String!
+          $city: String!
+          $country: String!
+          $district: String!
+          $isoCountryCode: String!
+          $postalCode: String!
+          $region: String!
+          $subregion: String!
+          $timezone: String!
+          $lat: Float!
+          $lon: Float!
+        ) {
+          placeCreate(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            placeName: $placeName
+            streetAddress1: $streetAddress1
+            streetAddress2: $streetAddress2
+            city: $city
+            country: $country
+            district: $district
+            isoCountryCode: $isoCountryCode
+            postalCode: $postalCode
+            region: $region
+            subregion: $subregion
+            timezone: $timezone
+            lat: $lat
+            lon: $lon
+          ) {
+            placeUuid
+            # placeName
+            # streetAddress1
+            # streetAddress2
+            # city
+            # country
+            # district
+            # isoCountryCode
+            # postalCode
+            # region
+            # subregion
+            # timezone
+            # location
+            # createdAt
+          }
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        placeName,
+        streetAddress1,
+        streetAddress2,
+        city,
+        country,
+        district,
+        isoCountryCode,
+        postalCode,
+        region,
+        subregion,
+        timezone,
+        lat,
+        lon,
+      },
+    })
+  ).data.placeCreate
+}

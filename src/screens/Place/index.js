@@ -22,7 +22,6 @@ import {
   Icon,
 } from '@rneui/themed'
 
-import { gql } from '@apollo/client'
 import Spinner from 'react-native-loading-spinner-overlay'
 
 // import * as FileSystem from 'expo-file-system'
