@@ -243,6 +243,8 @@ function PlaceAdd({ navigation }) {
   }, [])
 
   async function init() {
+    UTILS.isValidToken({ authContext, navigation, topOffset })
+
     let location = null
     try {
       location = await UTILS.getLocation()
@@ -290,8 +292,6 @@ function PlaceAdd({ navigation }) {
         lon: longitude,
       })
     }
-
-    VALID.isValidToken({ authContext, navigation, topOffset })
   }
 
   useEffect(() => {

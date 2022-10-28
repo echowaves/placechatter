@@ -8,6 +8,7 @@ import 'react-native-get-random-values'
 import { gql } from '@apollo/client'
 
 import * as CONST from './consts'
+import { VALID } from './valid'
 
 export async function checkPermission({
   permissionFunction,
@@ -227,4 +228,104 @@ export async function placesFeed({ latitude, longitude }) {
       fetchPolicy: 'no-cache',
     })
   ).data.placesFeed.places
+}
+
+export async function isValidToken({ authContext, navigation, topOffset }) {
+  // console.log('isValidToken')
+  const { uuid, phoneNumber, token } = authContext
+  // console.log({ uuid })
+  try {
+    if (
+      !VALID.uuid(uuid) ||
+      !VALID.phoneNumber(phoneNumber) ||
+      !VALID.token(token)
+    ) {
+      throw new Error('Invalid parameters')
+    }
+
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query isValidToken(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+          ) {
+            isValidToken(uuid: $uuid, phoneNumber: $phoneNumber, token: $token)
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+        },
+        fetchPolicy: 'no-cache',
+      })
+    ).data.isValidToken
+  } catch (err01) {
+    console.log({ err01 })
+    navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Need to confirm your phone number',
+      // text2: err01.toString(),
+      type: 'info',
+      topOffset,
+    })
+  }
+  return false
+}
+
+export async function isPlaceOwner({
+  authContext,
+  placeUuid,
+  navigation,
+  topOffset,
+}) {
+  const { uuid, phoneNumber, token } = authContext
+  // console.log({ localToken })
+  try {
+    if (
+      !VALID.uuid(uuid) ||
+      !VALID.phoneNumber(phoneNumber) ||
+      !VALID.token(token)
+    ) {
+      throw new Error('Invalid parameters')
+    }
+
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query isPlaceOwner(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+          ) {
+            isPlaceOwner(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+        },
+        fetchPolicy: 'no-cache',
+      })
+    ).data.isPlaceOwner
+  } catch (err00) {
+    navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Phone Number authentication is required',
+      text2: err00.toString(),
+      type: 'info',
+      topOffset,
+    })
+  }
+  return false
 }
