@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, useContext } from 'react'
+import { useDimensions } from '@react-native-community/hooks'
 
 import {
   Alert,
@@ -44,6 +45,8 @@ import { VALID } from '../../valid'
 
 function SmsConfirm({ navigation }) {
   // const navigation = useNavigation()
+  const { width, height } = useDimensions().window
+  const topOffset = height / 3
 
   const [showSpinner, setShowSpinner] = useState(false)
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
@@ -60,6 +63,7 @@ function SmsConfirm({ navigation }) {
 
   async function handleSubmit() {
     const { uuid, phoneNumber } = authContext
+
     // console.log('in handle submit', { authContext })
     // console.log({ smsCode, nickName })
     setShowSpinner(true)
@@ -94,7 +98,7 @@ function SmsConfirm({ navigation }) {
       UTILS.setToken(token)
       UTILS.setNickName(nickName)
 
-      await setAuthContext({ ...authContext, phoneNumber, token, nickName })
+      await setAuthContext({ ...authContext, token, nickName })
 
       navigation.goBack()
       // console.log({ response })
@@ -107,7 +111,7 @@ function SmsConfirm({ navigation }) {
       setAuthContext({
         ...authContext,
         nickName: '',
-        phoneNumber: '',
+        // phoneNumber: '',
         token: '',
       })
       setSmsCode('')
@@ -116,6 +120,7 @@ function SmsConfirm({ navigation }) {
         text1: 'Unable to activatePhone phone, try again.',
         text2: err3.toString(),
         type: 'error',
+        topOffset,
       })
     }
     setShowSpinner(false)
@@ -182,6 +187,7 @@ function SmsConfirm({ navigation }) {
           }
           return true
         } catch (err1) {
+          console.log({ err1 })
           setNickNameError('Letters and digits only')
           return false
         }
