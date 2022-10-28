@@ -23,7 +23,7 @@ import {
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts.js'
+import * as CONST from '../../consts'
 
 function Feedback({ navigation }) {
   // const navigation = useNavigation()

@@ -32,6 +32,7 @@ function PlaceAdd({ navigation }) {
   // const navigation = useNavigation()
 
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -135,7 +136,13 @@ function PlaceAdd({ navigation }) {
       // console.log({ response: JSON.stringify(response) })
       const { placeUuid } = response
 
-      navigation.navigate('Place', { placeUuid })
+      const { place, cards } = await UTILS.loadPlace({
+        placeUuid,
+      })
+      setPlaceContext({ ...placeContext, place, cards })
+      navigation.navigate('Place')
+
+      navigation.navigate('Place')
     } catch (err4) {
       console.log({ err4 })
       Toast.show({
@@ -168,7 +175,7 @@ function PlaceAdd({ navigation }) {
         color: CONST.MAIN_COLOR,
         width: 60,
       }}
-      onPress={() => navigation.goBack()}
+      onPress={() => navigation.navigate('PlacesList')}
     />
   )
 
@@ -283,7 +290,7 @@ function PlaceAdd({ navigation }) {
         lon: longitude,
       })
     }
-    console.log('in place add', { authContext })
+
     VALID.isValidToken({ authContext, navigation, topOffset })
   }
 

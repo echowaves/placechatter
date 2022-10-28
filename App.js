@@ -197,8 +197,8 @@ function App() {
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
+          headerShown: true,
         }}
-        screenOptions={{ headerShown: true }}
       />
       <Stack.Screen
         name="PlaceCardAdd"

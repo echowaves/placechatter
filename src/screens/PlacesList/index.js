@@ -45,7 +45,7 @@ import Footer from './footer'
 import * as CONST from '../../consts'
 import * as utils from '../../utils'
 
-import listItem from './listItem'
+import PlaceItem from './placeItem'
 
 function PlacesList({ navigation }) {
   // const navigation = useNavigation()
@@ -249,7 +249,9 @@ function PlacesList({ navigation }) {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={places}
-        renderItem={(item, index) => listItem({ item: item.item, navigation })}
+        renderItem={(item, index) => (
+          <PlaceItem item={item.item} navigation={navigation} />
+        )}
         keyExtractor={keyExtractor}
         // extraData={selectedId}
         refreshControl={

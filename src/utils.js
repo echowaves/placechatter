@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store'
 import Toast from 'react-native-toast-message'
 import { v4 as uuidv4 } from 'uuid'
 import 'react-native-get-random-values'
+import { gql } from '@apollo/client'
 
 import * as CONST from './consts'
 
@@ -131,4 +132,57 @@ export const setToken = async (token) => {
 export async function getToken() {
   const token = await SecureStore.getItemAsync(CONST.TOKEN_KEY)
   return token
+}
+
+export async function loadPlace({ placeUuid }) {
+  const { place, cards } = (
+    await CONST.gqlClient.query({
+      query: gql`
+        query placeRead(
+          # $uuid: String!
+          # $phoneNumber: String!
+          # $token: String!
+          $placeUuid: String!
+        ) {
+          placeRead(
+            # uuid: $uuid
+            # phoneNumber: $phoneNumber
+            # token: $token
+            placeUuid: $placeUuid
+          ) {
+            place {
+              placeUuid
+              placeName
+              streetAddress1
+              streetAddress2
+              city
+              district
+              postalCode
+              region
+            }
+            cards {
+              cardUuid
+              cardTitle
+              cardText
+              photo {
+                imgUrl
+                thumbUrl
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        // uuid,
+        // phoneNumber,
+        // token,
+        placeUuid,
+      },
+      // fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
+    })
+  ).data.placeRead
+  // alert(response)
+
+  return { place, cards } //   // setPlaceContext({ place: {}, cards: [] })
 }

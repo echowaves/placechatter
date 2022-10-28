@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 // import { useNavigation } from '@react-navigation/native'
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -30,7 +30,6 @@ import {
   Avatar,
 } from '@rneui/themed'
 
-import { gql } from '@apollo/client'
 import Spinner from 'react-native-loading-spinner-overlay'
 
 // import * as FileSystem from 'expo-file-system'
@@ -41,8 +40,12 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 
 import CachedImage from 'expo-cached-image'
 
-function listItem({ item, item: { cards }, navigation }) {
-  // console.log({ item })
+import * as CONST from '../../consts'
+import * as UTILS from '../../utils'
+
+function PlaceItem({ item, navigation }) {
+  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
+
   // eslint-disable-next-line no-shadow
   const renderPhotoItem = function ({ item, index }) {
     // console.log({ item })
@@ -80,9 +83,13 @@ function listItem({ item, item: { cards }, navigation }) {
   // console.log({ cards: cards.filter((card) => card?.photo !== null) })
   return (
     <ListItem
-      onPress={() =>
-        navigation.navigate('Place', { placeUuid: item.place.placeUuid })
-      }
+      onPress={async () => {
+        const { place, cards } = await UTILS.loadPlace({
+          placeUuid: item.place.placeUuid,
+        })
+        setPlaceContext({ ...placeContext, place, cards })
+        navigation.navigate('Place')
+      }}
       style={{ paddingVertical: 8 }}
       Component={TouchableScale}
       friction={90} //
@@ -112,7 +119,7 @@ function listItem({ item, item: { cards }, navigation }) {
 
         <FlatList
           horizontal={true}
-          data={cards.filter((card) => card?.photo !== null)}
+          data={item.cards.filter((card) => card?.photo !== null)}
           renderItem={renderPhotoItem}
           // keyExtractor={(item) => item.id}
           // extraData={selectedId}
@@ -132,4 +139,4 @@ function listItem({ item, item: { cards }, navigation }) {
     </ListItem>
   )
 }
-export default listItem
+export default PlaceItem

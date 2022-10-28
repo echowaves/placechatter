@@ -60,7 +60,7 @@ function SmsConfirm({ navigation }) {
 
   async function handleSubmit() {
     const { uuid, phoneNumber } = authContext
-    console.log('in handle submit', { authContext })
+    // console.log('in handle submit', { authContext })
     // console.log({ smsCode, nickName })
     setShowSpinner(true)
     try {

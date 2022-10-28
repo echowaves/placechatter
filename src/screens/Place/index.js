@@ -40,10 +40,9 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
-function Place({ navigation, route }) {
-  const { placeUuid } = route.params
+function Place({ navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  // const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -75,96 +74,9 @@ function Place({ navigation, route }) {
     />
   )
 
-  async function loadPlace() {
-    // console.log({ placeUuidToLoad })
-    return (
-      await CONST.gqlClient.query({
-        query: gql`
-          query placeRead(
-            # $uuid: String!
-            # $phoneNumber: String!
-            # $token: String!
-            $placeUuid: String!
-          ) {
-            placeRead(
-              # uuid: $uuid
-              # phoneNumber: $phoneNumber
-              # token: $token
-              placeUuid: $placeUuid
-            ) {
-              place {
-                placeUuid
-                placeName
-                streetAddress1
-                streetAddress2
-                city
-                district
-                postalCode
-                region
-              }
-              cards {
-                cardUuid
-                cardTitle
-                cardText
-                photo {
-                  imgUrl
-                  thumbUrl
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          // uuid,
-          // phoneNumber,
-          // token,
-          placeUuid,
-        },
-        // fetchPolicy: 'network-only',
-        fetchPolicy: 'no-cache',
-      })
-    ).data.placeRead
-    // alert(response)
-  }
-
-  const init = async () => {
-    // console.log('initializing................................')
-    setShowSpinner(true)
-    // const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
-    //   navigation,
-    //   topOffset,
-    // })
-    // setAuthContext({ token, uuid, phoneNumber })
-
-    try {
-      const loadedPlace = await loadPlace()
-      console.log({ loadedPlace: JSON.stringify(loadedPlace) })
-
-      navigation.setOptions({
-        headerTitle: `${loadedPlace?.place.placeName}`,
-      })
-      // console.log({ loadedPlace })
-      const { place, cards } = loadedPlace
-      setPlaceContext({ place: {}, cards: [] })
-      setPlaceContext({ ...placeContext, place, cards })
-      // console.log({ place })
-    } catch (err7) {
-      console.log({ err7 })
-      Toast.show({
-        text1: 'Unable to load Place info, try again.',
-        text2: err7.toString(),
-        type: 'error',
-        topOffset,
-      })
-
-      // setNickNameError('Lettters and digits only')
-    }
-    setShowSpinner(false)
-  }
-
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: '',
+      headerTitle: placeContext.place.placeName,
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -173,7 +85,6 @@ function Place({ navigation, route }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-    init()
   }, [])
 
   const styles = StyleSheet.create({
@@ -248,12 +159,7 @@ function Place({ navigation, route }) {
         </Card>
         <Card.Divider />
         <Card>
-          <Button
-            onPress={() => navigation.navigate('Place', { placeUuid })}
-            size="lg"
-            color="red"
-            iconRight
-          >
+          <Button onPress={() => null} size="lg" color="red" iconRight>
             {`  Delete Place`}
             <Icon name="delete" color="white" />
           </Button>
