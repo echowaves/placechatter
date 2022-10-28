@@ -206,6 +206,7 @@ function App() {
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
+          headerShown: true,
         }}
       />
       <Stack.Screen
@@ -214,6 +215,7 @@ function App() {
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
+          headerShown: true,
         }}
       />
       <Stack.Screen
@@ -222,6 +224,7 @@ function App() {
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
+          headerShown: true,
         }}
       />
       <Stack.Screen
@@ -230,6 +233,7 @@ function App() {
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
+          headerShown: true,
         }}
       />
       <Stack.Screen
