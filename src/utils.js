@@ -229,6 +229,9 @@ export async function placeRead({ placeUuid }) {
               cardText
               photo {
                 photoUuid
+                width
+                height
+                active
                 imgUrl
                 thumbUrl
               }
@@ -273,6 +276,10 @@ export async function placesFeed({ latitude, longitude }) {
                 cardText
                 photo {
                   photoUuid
+                  width
+                  height
+                  active
+
                   thumbUrl
                 }
               }
@@ -555,6 +562,10 @@ export async function placeCardRead({ placeUuid, cardUuid }) {
             cardText
             photo {
               photoUuid
+              width
+              height
+              active
+
               imgUrl
               thumbUrl
             }

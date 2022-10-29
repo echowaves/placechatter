@@ -1,11 +1,11 @@
-import React, { useRef, useState /* useEffect */ } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
 import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons'
 import Toast from 'react-native-toast-message'
-import CachedImage from 'expo-cached-image'
+import CachedImage, { CacheManager } from 'expo-cached-image'
 
 import {
   View,
@@ -16,6 +16,7 @@ import {
   SafeAreaView,
   StyleSheet,
   ActivityIndicator,
+  Image,
 } from 'react-native'
 
 import { Text, Card, LinearProgress, Divider, Badge } from '@rneui/themed'
@@ -38,53 +39,60 @@ const Photo = ({ photo }) => {
 
   const styles = StyleSheet.create({
     photoContainer: {
-      width,
-      height: width + 10,
-
-      //   backgroundColor: '#333399',
+      flex: 1,
+      flexDirection: 'row',
+      // backgroundColor: 'aliceblue',
     },
     photo: {
-      width: width - 10,
-      height: width - 10,
-      position: 'absolute',
-      top: 10,
-      bottom: 0,
-      right: 5,
-      left: 5,
-      borderRadius: 10,
-      backgroundColor: '#333399',
+      flex: 1,
+      resizeMode: 'contain',
+      width,
+      height: Math.floor(photo.height * ((width - 50) / photo.width)),
+      // width: Math.floor(photo.width),
+      // height: Math.floor(photo.height),
+      // alignSelf: 'center',
+
+      // shadowColor: 'black',
+      // shadowOffset: {
+      //   width: 5,
+      //   height: 5,
+      // },
+      // shadowOpacity: 0.5,
+      // shadowRadius: 2,
+      // elevation: 2,
     },
   })
 
+  // console.log({ height: `${(photo.height * width) / photo.width}` })
   return (
     <View style={styles.photoContainer}>
-      <CachedImage
-        source={{
-          uri: `${photo.thumbUrl}`,
-          // expiresIn: 5, // seconds. This field is optional
-        }}
-        cacheKey={`${photo.photoUuid}-thumb.webp`}
-        resizeMode="contain"
-        style={styles.photo}
-      />
       <CachedImage
         source={{
           uri: `${photo.imgUrl}`,
         }}
         cacheKey={`${photo.photoUuid}.webp`}
+        style={styles.photo}
         placeholderContent={
-          // optional
-          <ActivityIndicator
-            color={CONST.MAIN_COLOR}
-            size="small"
-            style={{
-              flex: 1,
-              justifyContent: 'center',
+          <CachedImage
+            source={{
+              uri: `${photo.thumbUrl}`,
+              // expiresIn: 5, // seconds. This field is optional
             }}
+            cacheKey={`${photo.photoUuid}-thumb.webp`}
+            style={styles.photo}
+            placeholderContent={
+              // optional
+              <ActivityIndicator
+                color={CONST.MAIN_COLOR}
+                size="small"
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                }}
+              />
+            }
           />
         }
-        resizeMode="contain"
-        style={styles.photo}
       />
     </View>
   )
