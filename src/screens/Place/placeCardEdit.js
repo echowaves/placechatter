@@ -30,18 +30,19 @@ import {
   Input,
 } from '@rneui/themed'
 
-import { Col, Row, Grid } from 'react-native-easy-grid'
 import * as ImageManipulator from 'expo-image-manipulator'
 import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker'
 import * as Linking from 'expo-linking'
 
-import CachedImage, { CacheManager } from 'expo-cached-image'
+import { CacheManager } from 'expo-cached-image'
 import * as FileSystem from 'expo-file-system'
 
 import { v4 as uuidv4 } from 'uuid'
 
 import PropTypes from 'prop-types'
+
+import Photo from './Photo'
 
 import * as CONST from '../../consts'
 import { VALID } from '../../valid'
@@ -104,6 +105,9 @@ function PlaceCardEdit({ route, navigation }) {
     })
     // console.log({ responseData })
     return { responseData, photo }
+  }
+  const deletePhoto = async () => {
+    
   }
 
   const takePhoto = async () => {
@@ -280,7 +284,7 @@ function PlaceCardEdit({ route, navigation }) {
         Alert.alert('You have unsaved changes', 'Really want to exit?', [
           {
             text: 'exit',
-            onPress: () => exit(),
+            onPress: () => back(),
           },
           {
             text: 'continue editing',
@@ -440,6 +444,15 @@ function PlaceCardEdit({ route, navigation }) {
               {`  Add Photo`}
               <Icon name="camera" color="white" />
             </Button>
+          )}
+          {cardPhoto && (
+            <>
+              <Photo photo={cardPhoto} />
+              <Button onPress={deletePhoto} size="lg" iconRight color="red">
+                {`  Delete Photo`}
+                <Icon name="delete" color="white" />
+              </Button>
+            </>
           )}
           <Card.Divider />
           <Input
