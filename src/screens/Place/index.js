@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 // import { useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
@@ -8,7 +8,15 @@ import * as Location from 'expo-location'
 
 import { v4 as uuidv4 } from 'uuid'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native'
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  RefreshControl,
+} from 'react-native'
+
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Linking from 'expo-linking'
 
@@ -51,6 +59,19 @@ function Place({ navigation }) {
   const topOffset = height / 3
 
   // const [place, setPlace] = useState()
+
+  const refresh = async () => {
+    setShowSpinner(true)
+    const { place, cards } = await UTILS.placeRead({
+      placeUuid: placeContext.place.placeUuid,
+    })
+    setPlaceContext({ ...placeContext, place, cards })
+
+    setShowSpinner(false)
+  }
+  const onRefresh = useCallback(() => {
+    refresh()
+  }, [])
 
   const renderHeaderRight = () => null
   // <Ionicons
@@ -118,7 +139,11 @@ function Place({ navigation }) {
         textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView
+        refreshControl={
+          <RefreshControl refreshing={showSpinner} onRefresh={onRefresh} />
+        }
+      >
         <Card>
           <Card.Title>Address</Card.Title>
           <Text>{place.streetAddress1}</Text>

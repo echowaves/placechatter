@@ -244,7 +244,7 @@ function PlaceCardEdit({ route, navigation }) {
     }
   }
 
-  const exit = async () => {
+  const back = async () => {
     const { place, cards } = await UTILS.placeRead({
       placeUuid: placeContext.place.placeUuid,
     })
@@ -263,7 +263,7 @@ function PlaceCardEdit({ route, navigation }) {
         width: 60,
       }}
       onPress={() => {
-        exit()
+        back()
       }}
     />
   )
