@@ -528,3 +528,89 @@ export async function placeCardCreate({
     })
   ).data.placeCardCreate
 }
+
+export async function placeCardRead({ placeUuid, cardUuid }) {
+  return (
+    await CONST.gqlClient.query({
+      query: gql`
+        query placeCardRead(
+          # $uuid: String!
+          # $phoneNumber: String!
+          # $token: String!
+          $placeUuid: String!
+          $cardUuid: String!
+        ) {
+          placeCardRead(
+            # uuid: $uuid
+            # phoneNumber: $phoneNumber
+            # token: $token
+            placeUuid: $placeUuid
+            cardUuid: $cardUuid
+          ) {
+            cardUuid
+            cardTitle
+            cardText
+            photo {
+              imgUrl
+              thumbUrl
+            }
+          }
+        }
+      `,
+      variables: {
+        placeUuid,
+        cardUuid,
+      },
+      fetchPolicy: 'no-cache',
+    })
+  ).data.placeCardRead
+}
+
+export async function placeCardSave({
+  uuid,
+  phoneNumber,
+  token,
+  placeUuid,
+  cardUuid,
+  cardTitle,
+  cardText,
+}) {
+  return (
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation placeCardSave(
+          $uuid: String!
+          $phoneNumber: String!
+          $token: String!
+          $placeUuid: String!
+          $cardUuid: String!
+          $cardTitle: String!
+          $cardText: String!
+        ) {
+          placeCardSave(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            placeUuid: $placeUuid
+            cardUuid: $cardUuid
+            cardTitle: $cardTitle
+            cardText: $cardText
+          ) {
+            cardTitle
+            cardText
+            active
+          }
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+        cardUuid,
+        cardTitle,
+        cardText,
+      },
+    })
+  ).data.placeCardSave
+}

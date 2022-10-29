@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import { useFocusEffect } from '@react-navigation/native'
+// import { useFocusEffect } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -40,7 +40,6 @@ import CachedImage, { CacheManager } from 'expo-cached-image'
 import * as FileSystem from 'expo-file-system'
 
 import { v4 as uuidv4 } from 'uuid'
-import { gql } from '@apollo/client'
 
 import PropTypes from 'prop-types'
 
@@ -277,10 +276,11 @@ function PlaceCardEdit({ route, navigation }) {
   }
 
   const exit = async () => {
-    await navigation.popToTop()
-    navigation.navigate('Place', {
+    const { place, cards } = await UTILS.placeRead({
       placeUuid: placeContext.place.placeUuid,
     })
+    setPlaceContext({ ...placeContext, place, cards })
+    navigation.navigate('Place')
   }
 
   const renderHeaderRight = () => null
@@ -323,44 +323,6 @@ function PlaceCardEdit({ route, navigation }) {
     />
   )
 
-  async function loadCard() {
-    // console.log({ placeUuidToLoad })
-    return (
-      await CONST.gqlClient.query({
-        query: gql`
-          query placeCardRead(
-            # $uuid: String!
-            # $phoneNumber: String!
-            # $token: String!
-            $placeUuid: String!
-            $cardUuid: String!
-          ) {
-            placeCardRead(
-              # uuid: $uuid
-              # phoneNumber: $phoneNumber
-              # token: $token
-              placeUuid: $placeUuid
-              cardUuid: $cardUuid
-            ) {
-              cardUuid
-              cardTitle
-              cardText
-              photo {
-                imgUrl
-                thumbUrl
-              }
-            }
-          }
-        `,
-        variables: {
-          placeUuid: placeContext.place.placeUuid,
-          cardUuid,
-        },
-        fetchPolicy: 'no-cache',
-      })
-    ).data.placeCardRead
-  }
-
   const init = async () => {
     // console.log('initializing................................')
     setShowSpinner(true)
@@ -371,8 +333,11 @@ function PlaceCardEdit({ route, navigation }) {
     // // setAuthContext({ token, uuid, phoneNumber })
 
     try {
-      const loadedCard = await loadCard()
-      console.log({ loadedCard })
+      const loadedCard = await UTILS.placeCardRead({
+        placeUuid: placeContext.place.placeUuid,
+        cardUuid,
+      })
+      // console.log({ loadedCard })
 
       // console.log({ loadedPlace })
       // const { place, cards } = loadedCard
@@ -443,44 +408,15 @@ function PlaceCardEdit({ route, navigation }) {
 
     try {
       const { uuid, phoneNumber, token } = authContext
-      const placeCard = (
-        await CONST.gqlClient.mutate({
-          mutation: gql`
-            mutation placeCardSave(
-              $uuid: String!
-              $phoneNumber: String!
-              $token: String!
-              $placeUuid: String!
-              $cardUuid: String!
-              $cardTitle: String!
-              $cardText: String!
-            ) {
-              placeCardSave(
-                uuid: $uuid
-                phoneNumber: $phoneNumber
-                token: $token
-                placeUuid: $placeUuid
-                cardUuid: $cardUuid
-                cardTitle: $cardTitle
-                cardText: $cardText
-              ) {
-                cardTitle
-                cardText
-                active
-              }
-            }
-          `,
-          variables: {
-            uuid,
-            phoneNumber,
-            token,
-            placeUuid: placeContext.place.placeUuid,
-            cardUuid,
-            cardTitle,
-            cardText,
-          },
-        })
-      ).data.placeCardSave
+      const placeCard = await UTILS.placeCardSave({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid: placeContext.place.placeUuid,
+        cardUuid,
+        cardTitle,
+        cardText,
+      })
 
       navigation.setOptions({
         headerTitle: placeCard?.cardTitle,
