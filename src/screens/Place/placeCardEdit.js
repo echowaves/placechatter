@@ -73,46 +73,15 @@ function PlaceCardEdit({ route, navigation }) {
     const photoUuid = uuidv4()
     const { uuid, phoneNumber, token } = authContext
 
-    const photoForUpload = (
-      await CONST.gqlClient.mutate({
-        mutation: gql`
-          mutation generateUploadUrlForCard(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
-            $assetKey: String!
-            $contentType: String!
-            $placeUuid: String!
-            $cardUuid: String!
-          ) {
-            generateUploadUrlForCard(
-              uuid: $uuid
-              phoneNumber: $phoneNumber
-              token: $token
-              assetKey: $assetKey
-              contentType: $contentType
-              placeUuid: $placeUuid
-              cardUuid: $cardUuid
-            ) {
-              photo {
-                thumbUrl
-                photoUuid
-              }
-              uploadUrl
-            }
-          }
-        `,
-        variables: {
-          uuid,
-          phoneNumber,
-          token,
-          assetKey: photoUuid,
-          contentType,
-          placeUuid,
-          cardUuid,
-        },
-      })
-    ).data.generateUploadUrlForCard
+    const photoForUpload = await UTILS.generateUploadUrlForCard({
+      uuid,
+      phoneNumber,
+      token,
+      assetKey: photoUuid,
+      contentType,
+      placeUuid,
+      cardUuid,
+    })
 
     // console.log({ photoForUpload })
     // console.log({ assetUri })

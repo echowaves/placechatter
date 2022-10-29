@@ -267,6 +267,7 @@ export async function placesFeed({ latitude, longitude }) {
                 region
               }
               cards {
+                cardUuid
                 cardTitle
                 cardText
                 photo {
@@ -511,6 +512,7 @@ export async function placeCardCreate({
             cardTitle: $cardTitle
             cardText: $cardText
           ) {
+            cardUuid
             cardTitle
             cardText
             active
@@ -596,6 +598,7 @@ export async function placeCardSave({
             cardTitle: $cardTitle
             cardText: $cardText
           ) {
+            cardUuid
             cardTitle
             cardText
             active
@@ -613,4 +616,55 @@ export async function placeCardSave({
       },
     })
   ).data.placeCardSave
+}
+
+export async function generateUploadUrlForCard({
+  uuid,
+  phoneNumber,
+  token,
+  assetKey,
+  contentType,
+  placeUuid,
+  cardUuid,
+}) {
+  return (
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation generateUploadUrlForCard(
+          $uuid: String!
+          $phoneNumber: String!
+          $token: String!
+          $assetKey: String!
+          $contentType: String!
+          $placeUuid: String!
+          $cardUuid: String!
+        ) {
+          generateUploadUrlForCard(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            assetKey: $assetKey
+            contentType: $contentType
+            placeUuid: $placeUuid
+            cardUuid: $cardUuid
+          ) {
+            photo {
+              thumbUrl
+              photoUuid
+            }
+            uploadUrl
+          }
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        assetKey,
+        contentType,
+        placeUuid,
+        cardUuid,
+      },
+    })
+  ).data.generateUploadUrlForCard
 }
