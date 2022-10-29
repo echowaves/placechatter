@@ -483,3 +483,48 @@ export async function placeCreate({
     })
   ).data.placeCreate
 }
+
+export async function placeCardCreate({
+  uuid,
+  phoneNumber,
+  token,
+  placeUuid,
+  cardTitle,
+  cardText,
+}) {
+  return (
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation placeCardCreate(
+          $uuid: String!
+          $phoneNumber: String!
+          $token: String!
+          $placeUuid: String!
+          $cardTitle: String!
+          $cardText: String!
+        ) {
+          placeCardCreate(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            placeUuid: $placeUuid
+            cardTitle: $cardTitle
+            cardText: $cardText
+          ) {
+            cardTitle
+            cardText
+            active
+          }
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+        cardTitle,
+        cardText,
+      },
+    })
+  ).data.placeCardCreate
+}

@@ -40,11 +40,11 @@ import CachedImage, { CacheManager } from 'expo-cached-image'
 import * as FileSystem from 'expo-file-system'
 
 import { v4 as uuidv4 } from 'uuid'
-import { gql } from '@apollo/client'
 
 import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
+import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
 function PlaceCardAdd({ navigation }) {
@@ -117,46 +117,21 @@ function PlaceCardAdd({ navigation }) {
 
     try {
       const { uuid, phoneNumber, token } = authContext
-      const placeCard = (
-        await CONST.gqlClient.mutate({
-          mutation: gql`
-            mutation placeCardCreate(
-              $uuid: String!
-              $phoneNumber: String!
-              $token: String!
-              $placeUuid: String!
-              $cardTitle: String!
-              $cardText: String!
-            ) {
-              placeCardCreate(
-                uuid: $uuid
-                phoneNumber: $phoneNumber
-                token: $token
-                placeUuid: $placeUuid
-                cardTitle: $cardTitle
-                cardText: $cardText
-              ) {
-                cardTitle
-                cardText
-                active
-              }
-            }
-          `,
-          variables: {
-            uuid,
-            phoneNumber,
-            token,
-            placeUuid: placeContext.place.placeUuid,
-            cardTitle,
-            cardText,
-          },
-        })
-      ).data.placeCardCreate
-
+      const placeCard = await UTILS.placeCardCreate({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid: placeContext.place.placeUuid,
+        cardTitle,
+        cardText,
+      })
       // console.log({ response: JSON.stringify(response) })
+      setPlaceContext({
+        ...placeContext,
+        cards: [...placeContext.cards, placeCard],
+      })
 
-      await navigation.popToTop()
-      navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
+      navigation.navigate('Place')
     } catch (err11) {
       console.log({ err11 })
       Toast.show({
