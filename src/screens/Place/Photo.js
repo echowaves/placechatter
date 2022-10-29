@@ -30,6 +30,7 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 
 const Photo = ({ photo }) => {
+  console.log({ photo })
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 

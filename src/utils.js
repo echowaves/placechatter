@@ -228,6 +228,7 @@ export async function placeRead({ placeUuid }) {
               cardTitle
               cardText
               photo {
+                photoUuid
                 imgUrl
                 thumbUrl
               }
@@ -553,6 +554,7 @@ export async function placeCardRead({ placeUuid, cardUuid }) {
             cardTitle
             cardText
             photo {
+              photoUuid
               imgUrl
               thumbUrl
             }
@@ -649,8 +651,8 @@ export async function generateUploadUrlForCard({
             cardUuid: $cardUuid
           ) {
             photo {
-              thumbUrl
               photoUuid
+              thumbUrl
             }
             uploadUrl
           }

@@ -39,6 +39,8 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
+import Photo from './Photo'
+
 function Place({ navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
   // const { authContext, setAuthContext } = useContext(CONST.AuthContext)
@@ -125,26 +127,33 @@ function Place({ navigation }) {
             {place.city}, {place.region} {place.postalCode}
           </Text>
         </Card>
-        {placeContext.cards.map((card, index) => (
-          <Card key={index}>
-            <Card.Title>{card.cardTitle}</Card.Title>
-            {/* {card.photoUuid && } */}
-            <Text>{card.cardText}</Text>
-            <Button
-              onPress={() =>
-                navigation.navigate('PlaceCardEdit', {
-                  cardUuid: card.cardUuid,
-                })
-              }
-              size="sm"
-              // color="red"
-              iconRight
-            >
-              {`  Edit Card`}
-              <Icon name="edit" color="white" />
-            </Button>
-          </Card>
-        ))}
+        {placeContext.cards.map((card, index) => {
+          // eslint-disable-next-line no-lone-blocks
+          {
+            /* console.log(card.photoUuid) */
+          }
+
+          return (
+            <Card key={index}>
+              <Card.Title>{card.cardTitle}</Card.Title>
+              {card?.photo && <Photo photo={card?.photo} />}
+              <Text>{card.cardText}</Text>
+              <Button
+                onPress={() =>
+                  navigation.navigate('PlaceCardEdit', {
+                    cardUuid: card.cardUuid,
+                  })
+                }
+                size="sm"
+                // color="red"
+                iconRight
+              >
+                {`  Edit Card`}
+                <Icon name="edit" color="white" />
+              </Button>
+            </Card>
+          )
+        })}
         <Card>
           <Button
             onPress={() => navigation.navigate('PlaceCardAdd')}

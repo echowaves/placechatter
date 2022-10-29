@@ -58,7 +58,14 @@ function PlaceItem({ item, navigation }) {
       <View
         key={index}
         style={{
-          padding: 5,
+          margin: 5,
+          // borderRadius: 4,
+          // borderWidth: 2,
+          width: 100,
+          height: 100,
+          shadowColor: 'black',
+          shadowOffset: { height: 2 },
+          shadowOpacity: 0.3,
         }}
       >
         <CachedImage
@@ -67,13 +74,13 @@ function PlaceItem({ item, navigation }) {
             expiresIn: 1, // seconds. This field is optional
           }}
           cacheKey={`${photo.photoUuid}-thumb.webp`}
-          resizeMode="contain"
+          resizeMode="cover"
           style={{
             flex: 1,
             alignSelf: 'stretch',
-            width: 100,
-            height: 100,
-            borderRadius: 10,
+            width: '100%',
+            height: '100%',
+            borderRadius: 5,
           }}
         />
       </View>
