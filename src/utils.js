@@ -681,3 +681,41 @@ export async function generateUploadUrlForCard({
     })
   ).data.generateUploadUrlForCard
 }
+
+export async function placeCardPhotoDelete({
+  uuid,
+  phoneNumber,
+  token,
+
+  placeUuid,
+  photoUuid,
+}) {
+  return (
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation placeCardPhotoDelete(
+          $uuid: String!
+          $phoneNumber: String!
+          $token: String!
+          $placeUuid: String!
+          $photoUuid: String!
+        ) {
+          placeCardPhotoDelete(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            placeUuid: $placeUuid
+            photoUuid: $photoUuid
+          )
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+        photoUuid,
+      },
+    })
+  ).data.placeCardPhotoDelete
+}

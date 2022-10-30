@@ -104,10 +104,25 @@ function PlaceCardEdit({ route, navigation }) {
       },
     })
     // console.log({ responseData })
+
+    // let's wait for the file to be processed in the backend
+    await new Promise((r) => setTimeout(r, 5000)) // eslint-disable-line no-promise-executor-return
+
     return { responseData, photo }
   }
+
   const deletePhoto = async () => {
-    
+    const { uuid, phoneNumber, token } = authContext
+
+    const returnValue = await UTILS.placeCardPhotoDelete({
+      uuid,
+      phoneNumber,
+      token,
+
+      placeUuid: placeContext?.place?.placeUuid,
+      photoUuid: cardPhoto?.photoUuid,
+    })
+    console.log({ returnValue })
   }
 
   const takePhoto = async () => {
