@@ -111,8 +111,52 @@ function PlaceCardEdit({ route, navigation }) {
     return { responseData, photo }
   }
 
+  const init = async () => {
+    // console.log('initializing................................')
+    setShowSpinner(true)
+    // const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
+    //   navigation,
+    //   topOffset,
+    // })
+    // // setAuthContext({ token, uuid, phoneNumber })
+
+    try {
+      const loadedCard = await UTILS.placeCardRead({
+        placeUuid: placeContext.place.placeUuid,
+        cardUuid,
+      })
+      // console.log({ loadedCard })
+
+      // console.log({ loadedPlace })
+      // const { place, cards } = loadedCard
+      // setPlaceContext({ place: {}, cards: [] })
+      // setPlaceContext({ ...placeContext, place, cards })
+      // console.log({ place })
+      setCardTitle(loadedCard?.cardTitle)
+      setCardText(loadedCard?.cardText)
+      setCardPhoto(loadedCard?.photo)
+
+      navigation.setOptions({
+        headerTitle: loadedCard?.cardTitle,
+        headerLeft: renderHeaderLeftUnchanged,
+      })
+    } catch (err12) {
+      console.log({ err12 })
+      Toast.show({
+        text1: 'Unable to load Card info, try again.',
+        text2: err12.toString(),
+        type: 'error',
+        topOffset,
+      })
+
+      // setNickNameError('Lettters and digits only')
+    }
+    setShowSpinner(false)
+  }
+
   const deletePhoto = async () => {
     const { uuid, phoneNumber, token } = authContext
+    setShowSpinner(true)
 
     const returnValue = await UTILS.placeCardPhotoDelete({
       uuid,
@@ -122,7 +166,9 @@ function PlaceCardEdit({ route, navigation }) {
       placeUuid: placeContext?.place?.placeUuid,
       photoUuid: cardPhoto?.photoUuid,
     })
-    console.log({ returnValue })
+    // console.log({ returnValue })
+    await init()
+    setShowSpinner(false)
   }
 
   const takePhoto = async () => {
@@ -258,7 +304,7 @@ function PlaceCardEdit({ route, navigation }) {
       // console.log(reloadedPlace.photos[0])
       // setShowSpinner(false)
       // console.log({ reloadedPlace })
-
+      await init()
       setShowSpinner(false)
     }
   }
@@ -310,49 +356,6 @@ function PlaceCardEdit({ route, navigation }) {
       }}
     />
   )
-
-  const init = async () => {
-    // console.log('initializing................................')
-    setShowSpinner(true)
-    // const { token, uuid, phoneNumber } = await UTILS.checkAuthentication({
-    //   navigation,
-    //   topOffset,
-    // })
-    // // setAuthContext({ token, uuid, phoneNumber })
-
-    try {
-      const loadedCard = await UTILS.placeCardRead({
-        placeUuid: placeContext.place.placeUuid,
-        cardUuid,
-      })
-      // console.log({ loadedCard })
-
-      // console.log({ loadedPlace })
-      // const { place, cards } = loadedCard
-      // setPlaceContext({ place: {}, cards: [] })
-      // setPlaceContext({ ...placeContext, place, cards })
-      // console.log({ place })
-      setCardTitle(loadedCard?.cardTitle)
-      setCardText(loadedCard?.cardText)
-      setCardPhoto(loadedCard?.photo)
-
-      navigation.setOptions({
-        headerTitle: loadedCard?.cardTitle,
-        headerLeft: renderHeaderLeftUnchanged,
-      })
-    } catch (err12) {
-      console.log({ err12 })
-      Toast.show({
-        text1: 'Unable to load Card info, try again.',
-        text2: err12.toString(),
-        type: 'error',
-        topOffset,
-      })
-
-      // setNickNameError('Lettters and digits only')
-    }
-    setShowSpinner(false)
-  }
 
   useEffect(() => {
     navigation.setOptions({
