@@ -115,32 +115,25 @@ function PlaceCardAdd({ navigation }) {
   const addCard = async () => {
     setShowSpinner(true)
 
-    try {
-      const { uuid, phoneNumber, token } = authContext
-      const placeCard = await UTILS.placeCardCreate({
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid: placeContext.place.placeUuid,
-        cardTitle,
-        cardText,
-      })
-      // console.log({ response: JSON.stringify(response) })
+    const { uuid, phoneNumber, token } = authContext
+
+    const placeCard = await UTILS.placeCardCreate({
+      uuid,
+      phoneNumber,
+      token,
+      placeUuid: placeContext.place.placeUuid,
+      cardTitle,
+      cardText,
+    })
+
+    if (placeCard) {
       setPlaceContext({
         ...placeContext,
         cards: [...placeContext.cards, placeCard],
       })
-
       navigation.navigate('Place')
-    } catch (err11) {
-      console.log({ err11 })
-      Toast.show({
-        text1: 'Unable to create Place, try again.',
-        text2: err11.toString(),
-        type: 'error',
-        topOffset,
-      })
     }
+
     setShowSpinner(false)
   }
 

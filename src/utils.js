@@ -71,7 +71,7 @@ export async function getUUID() {
   let uuid
   try {
     uuid = await SecureStore.getItemAsync(CONST.UUID_KEY)
-  } catch (err001) {
+  } catch (err002) {
     // console.log({ err })
     uuid = null
   }
@@ -90,10 +90,10 @@ export async function getUUID() {
 export async function setNickName(nickName) {
   try {
     await SecureStore.setItemAsync(CONST.NICK_NAME_KEY, nickName)
-  } catch (err001) {
+  } catch (err003) {
     Toast.show({
       text1: 'Unable to store NickName',
-      text2: err001.toString(),
+      text2: err003.toString(),
       type: 'error',
       topOffset,
     })
@@ -108,10 +108,10 @@ export async function getNickName() {
 export const setPhoneNumber = async (phoneNumber) => {
   try {
     await SecureStore.setItemAsync(CONST.PHONE_NUMBER_KEY, phoneNumber)
-  } catch (err001) {
+  } catch (err004) {
     Toast.show({
       text1: 'Unable to store PhoneNumber',
-      text2: err001.toString(),
+      text2: err004.toString(),
       type: 'error',
       topOffset,
     })
@@ -126,10 +126,10 @@ export async function getPhoneNumber() {
 export const setToken = async (token) => {
   try {
     await SecureStore.setItemAsync(CONST.TOKEN_KEY, token)
-  } catch (err001) {
+  } catch (err005) {
     Toast.show({
       text1: 'Unable to store token',
-      text2: err001.toString(),
+      text2: err005.toString(),
       type: 'error',
       topOffset,
     })
@@ -158,10 +158,10 @@ export async function activationCodeGenerate({ phoneNumber, uuid }) {
         uuid,
       },
     })
-  } catch (err001) {
+  } catch (err006) {
     Toast.show({
       text1: 'Unable to generate activation code',
-      text2: err001.toString(),
+      text2: err006.toString(),
       type: 'error',
       topOffset,
     })
@@ -174,10 +174,10 @@ export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation phoneActivate(
-            $uuid: String!
-            $phoneNumber: String!
-            $smsCode: String!
-            $nickName: String!
+            $uuid: String
+            $phoneNumber: String
+            $smsCode: String
+            $nickName: String
           ) {
             phoneActivate(
               uuid: $uuid
@@ -195,10 +195,10 @@ export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
         },
       })
     ).data.phoneActivate
-  } catch (err001) {
+  } catch (err007) {
     Toast.show({
       text1: 'Unable to activate phone',
-      text2: err001.toString(),
+      text2: err007.toString(),
       type: 'error',
       topOffset,
     })
@@ -211,7 +211,7 @@ export async function nickNameTypeAhead({ phoneNumber, nickName }) {
     return (
       await CONST.gqlClient.query({
         query: gql`
-          query nickNameTypeAhead($phoneNumber: String!, $nickName: String!) {
+          query nickNameTypeAhead($phoneNumber: String, $nickName: String) {
             nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
           }
         `,
@@ -221,10 +221,10 @@ export async function nickNameTypeAhead({ phoneNumber, nickName }) {
         },
       })
     ).data.nickNameTypeAhead
-  } catch (err001) {
+  } catch (err008) {
     Toast.show({
       text1: 'Unable autocomplete',
-      text2: err001.toString(),
+      text2: err008.toString(),
       type: 'error',
       topOffset,
     })
@@ -288,10 +288,10 @@ export async function placeRead({ placeUuid }) {
     // alert(response)
 
     return { place, cards } //   // setPlaceContext({ place: {}, cards: [] })
-  } catch (err001) {
+  } catch (err009) {
     Toast.show({
       text1: 'Unable to Read Place Info',
-      text2: err001.toString(),
+      text2: err009.toString(),
       type: 'error',
       topOffset,
     })
@@ -341,10 +341,10 @@ export async function placesFeed({ latitude, longitude }) {
         fetchPolicy: 'no-cache',
       })
     ).data.placesFeed.places
-  } catch (err001) {
+  } catch (err010) {
     Toast.show({
       text1: 'Unable to Read Feed',
-      text2: err001.toString(),
+      text2: err010.toString(),
       type: 'error',
       topOffset,
     })
@@ -369,9 +369,9 @@ export async function isValidToken({ authContext, navigation }) {
       await CONST.gqlClient.query({
         query: gql`
           query isValidToken(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
           ) {
             isValidToken(uuid: $uuid, phoneNumber: $phoneNumber, token: $token)
           }
@@ -384,7 +384,7 @@ export async function isValidToken({ authContext, navigation }) {
         fetchPolicy: 'no-cache',
       })
     ).data.isValidToken
-  } catch (err001) {
+  } catch (err011) {
     // console.log({ err011 })
     navigation.navigate('PhoneCheck')
     Toast.show({
@@ -413,10 +413,10 @@ export async function isPlaceOwner({ authContext, placeUuid, navigation }) {
       await CONST.gqlClient.query({
         query: gql`
           query isPlaceOwner(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
-            $placeUuid: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $placeUuid: String
           ) {
             isPlaceOwner(
               uuid: $uuid
@@ -435,11 +435,11 @@ export async function isPlaceOwner({ authContext, placeUuid, navigation }) {
         fetchPolicy: 'no-cache',
       })
     ).data.isPlaceOwner
-  } catch (err001) {
+  } catch (err012) {
     navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Phone Number authentication is required',
-      text2: err001.toString(),
+      text2: err012.toString(),
       type: 'error',
       topOffset,
     })
@@ -470,9 +470,9 @@ export async function placeCreate({
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation placeCreate(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
             $placeName: String!
             $streetAddress1: String!
             $streetAddress2: String!
@@ -542,11 +542,11 @@ export async function placeCreate({
         },
       })
     ).data.placeCreate
-  } catch (err001) {
+  } catch (err013) {
     // navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Unable to create Place',
-      text2: err001.toString(),
+      text2: err013.toString(),
       type: 'error',
       topOffset,
     })
@@ -567,9 +567,9 @@ export async function placeCardCreate({
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation placeCardCreate(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
             $placeUuid: String!
             $cardTitle: String!
             $cardText: String!
@@ -599,11 +599,11 @@ export async function placeCardCreate({
         },
       })
     ).data.placeCardCreate
-  } catch (err001) {
+  } catch (err014) {
     // navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Unable to create Card for Place',
-      text2: err001.toString(),
+      text2: err014.toString(),
       type: 'error',
       topOffset,
     })
@@ -652,11 +652,11 @@ export async function placeCardRead({ placeUuid, cardUuid }) {
         fetchPolicy: 'no-cache',
       })
     ).data.placeCardRead
-  } catch (err001) {
+  } catch (err015) {
     // navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Unable to read Card for Place',
-      text2: err001.toString(),
+      text2: err015.toString(),
       type: 'error',
       topOffset,
     })
@@ -678,9 +678,9 @@ export async function placeCardSave({
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation placeCardSave(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
             $placeUuid: String!
             $cardUuid: String!
             $cardTitle: String!
@@ -713,11 +713,11 @@ export async function placeCardSave({
         },
       })
     ).data.placeCardSave
-  } catch (err001) {
-    // navigation.navigate('PhoneCheck')
+  } catch (err016) {
+    // console.log({ err016 })
     Toast.show({
       text1: 'Unable to save Card for Place',
-      text2: err001.toString(),
+      text2: err016.toString(),
       type: 'error',
       topOffset,
     })
@@ -739,9 +739,9 @@ export async function generateUploadUrlForCard({
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation generateUploadUrlForCard(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
             $assetKey: String!
             $contentType: String!
             $placeUuid: String!
@@ -775,11 +775,11 @@ export async function generateUploadUrlForCard({
         },
       })
     ).data.generateUploadUrlForCard
-  } catch (err001) {
+  } catch (err017) {
     // navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Unable to generate upload Url',
-      text2: err001.toString(),
+      text2: err017.toString(),
       type: 'error',
       topOffset,
     })
@@ -800,9 +800,9 @@ export async function placeCardPhotoDelete({
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation placeCardPhotoDelete(
-            $uuid: String!
-            $phoneNumber: String!
-            $token: String!
+            $uuid: String
+            $phoneNumber: String
+            $token: String
             $placeUuid: String!
             $photoUuid: String!
           ) {
@@ -824,10 +824,10 @@ export async function placeCardPhotoDelete({
         },
       })
     ).data.placeCardPhotoDelete
-  } catch (err001) {
+  } catch (err018) {
     Toast.show({
       text1: 'Unable to delete photo',
-      text2: err001.toString(),
+      text2: err018.toString(),
       type: 'error',
       topOffset,
     })
