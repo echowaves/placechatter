@@ -466,7 +466,22 @@ function PlaceCardEdit({ route, navigation }) {
           {cardPhoto && (
             <>
               <Photo photo={cardPhoto} />
-              <Button onPress={deletePhoto} size="lg" iconRight color="red">
+              <Button
+                onPress={Alert.alert('Photo Delete', 'Are you sure?', [
+                  {
+                    text: 'Delete',
+                    onPress: () => deletePhoto(),
+                  },
+                  {
+                    text: 'Cancel',
+                    onPress: () => null,
+                    style: 'cancel',
+                  },
+                ])}
+                size="lg"
+                iconRight
+                color="red"
+              >
                 {`  Delete Photo`}
                 <Icon name="delete" color="white" />
               </Button>
