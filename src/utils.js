@@ -10,6 +10,9 @@ import { gql } from '@apollo/client'
 import * as CONST from './consts'
 import { VALID } from './valid'
 
+// const { width, height } = useDimensions().window
+const topOffset = 200
+
 export async function checkPermission({
   permissionFunction,
   alertHeader,
@@ -51,15 +54,15 @@ export async function getLocation() {
 
 async function storeUUID(uuid) {
   // console.log('storing', { uuid })
-
   try {
     await SecureStore.setItemAsync(CONST.UUID_KEY, uuid)
-  } catch (err1) {
+  } catch (err001) {
     // console.log({ err1 })
     Toast.show({
       text1: 'Unable to store UUID',
-      text2: err1.toString(),
+      text2: err001.toString(),
       type: 'error',
+      topOffset,
     })
   }
 }
@@ -68,7 +71,7 @@ export async function getUUID() {
   let uuid
   try {
     uuid = await SecureStore.getItemAsync(CONST.UUID_KEY)
-  } catch (err) {
+  } catch (err001) {
     // console.log({ err })
     uuid = null
   }
@@ -87,11 +90,12 @@ export async function getUUID() {
 export async function setNickName(nickName) {
   try {
     await SecureStore.setItemAsync(CONST.NICK_NAME_KEY, nickName)
-  } catch (err) {
+  } catch (err001) {
     Toast.show({
       text1: 'Unable to store NickName',
-      text2: err.toString(),
+      text2: err001.toString(),
       type: 'error',
+      topOffset,
     })
   }
 }
@@ -104,11 +108,12 @@ export async function getNickName() {
 export const setPhoneNumber = async (phoneNumber) => {
   try {
     await SecureStore.setItemAsync(CONST.PHONE_NUMBER_KEY, phoneNumber)
-  } catch (err) {
+  } catch (err001) {
     Toast.show({
       text1: 'Unable to store PhoneNumber',
-      text2: err.toString(),
+      text2: err001.toString(),
       type: 'error',
+      topOffset,
     })
   }
 }
@@ -121,11 +126,12 @@ export async function getPhoneNumber() {
 export const setToken = async (token) => {
   try {
     await SecureStore.setItemAsync(CONST.TOKEN_KEY, token)
-  } catch (err) {
+  } catch (err001) {
     Toast.show({
       text1: 'Unable to store token',
-      text2: err.toString(),
+      text2: err001.toString(),
       type: 'error',
+      topOffset,
     })
   }
 }
@@ -140,134 +146,117 @@ export async function getToken() {
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function activationCodeGenerate({ phoneNumber, uuid }) {
-  await CONST.gqlClient.mutate({
-    mutation: gql`
-      mutation activationCodeGenerate($phoneNumber: String!, $uuid: String!) {
-        activationCodeGenerate(phoneNumber: $phoneNumber, uuid: $uuid)
-      }
-    `,
-    variables: {
-      phoneNumber,
-      uuid,
-    },
-  })
+  try {
+    await CONST.gqlClient.mutate({
+      mutation: gql`
+        mutation activationCodeGenerate($phoneNumber: String!, $uuid: String!) {
+          activationCodeGenerate(phoneNumber: $phoneNumber, uuid: $uuid)
+        }
+      `,
+      variables: {
+        phoneNumber,
+        uuid,
+      },
+    })
+  } catch (err001) {
+    Toast.show({
+      text1: 'Unable to generate activation code',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
 }
 
 export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
-  return (
-    await CONST.gqlClient.mutate({
-      mutation: gql`
-        mutation phoneActivate(
-          $uuid: String!
-          $phoneNumber: String!
-          $smsCode: String!
-          $nickName: String!
-        ) {
-          phoneActivate(
-            uuid: $uuid
-            phoneNumber: $phoneNumber
-            smsCode: $smsCode
-            nickName: $nickName
-          )
-        }
-      `,
-      variables: {
-        uuid,
-        phoneNumber,
-        smsCode,
-        nickName,
-      },
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation phoneActivate(
+            $uuid: String!
+            $phoneNumber: String!
+            $smsCode: String!
+            $nickName: String!
+          ) {
+            phoneActivate(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              smsCode: $smsCode
+              nickName: $nickName
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          smsCode,
+          nickName,
+        },
+      })
+    ).data.phoneActivate
+  } catch (err001) {
+    Toast.show({
+      text1: 'Unable to activate phone',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.phoneActivate
+  }
+  return null
 }
 
 export async function nickNameTypeAhead({ phoneNumber, nickName }) {
-  return (
-    await CONST.gqlClient.query({
-      query: gql`
-        query nickNameTypeAhead($phoneNumber: String!, $nickName: String!) {
-          nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
-        }
-      `,
-      variables: {
-        phoneNumber,
-        nickName,
-      },
+  try {
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query nickNameTypeAhead($phoneNumber: String!, $nickName: String!) {
+            nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
+          }
+        `,
+        variables: {
+          phoneNumber,
+          nickName,
+        },
+      })
+    ).data.nickNameTypeAhead
+  } catch (err001) {
+    Toast.show({
+      text1: 'Unable autocomplete',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.nickNameTypeAhead
+  }
+  return null
 }
 
 export async function placeRead({ placeUuid }) {
-  const { place, cards } = (
-    await CONST.gqlClient.query({
-      query: gql`
-        query placeRead(
-          # $uuid: String!
-          # $phoneNumber: String!
-          # $token: String!
-          $placeUuid: String!
-        ) {
-          placeRead(
-            # uuid: $uuid
-            # phoneNumber: $phoneNumber
-            # token: $token
-            placeUuid: $placeUuid
+  try {
+    const { place, cards } = (
+      await CONST.gqlClient.query({
+        query: gql`
+          query placeRead(
+            # $uuid: String!
+            # $phoneNumber: String!
+            # $token: String!
+            $placeUuid: String!
           ) {
-            place {
-              placeUuid
-              placeName
-              streetAddress1
-              streetAddress2
-              city
-              district
-              postalCode
-              region
-            }
-            cards {
-              cardUuid
-              cardTitle
-              cardText
-              photo {
-                photoUuid
-                width
-                height
-                active
-                imgUrl
-                thumbUrl
-              }
-            }
-          }
-        }
-      `,
-      variables: {
-        // uuid,
-        // phoneNumber,
-        // token,
-        placeUuid,
-      },
-      // fetchPolicy: 'network-only',
-      fetchPolicy: 'no-cache',
-    })
-  ).data.placeRead
-  // alert(response)
-
-  return { place, cards } //   // setPlaceContext({ place: {}, cards: [] })
-}
-
-export async function placesFeed({ latitude, longitude }) {
-  return (
-    await CONST.gqlClient.query({
-      query: gql`
-        query placesFeed($lat: Float!, $lon: Float!) {
-          placesFeed(lat: $lat, lon: $lon) {
-            places {
+            placeRead(
+              # uuid: $uuid
+              # phoneNumber: $phoneNumber
+              # token: $token
+              placeUuid: $placeUuid
+            ) {
               place {
                 placeUuid
-                distance
                 placeName
                 streetAddress1
                 streetAddress2
                 city
+                district
+                postalCode
                 region
               }
               cards {
@@ -279,25 +268,91 @@ export async function placesFeed({ latitude, longitude }) {
                   width
                   height
                   active
-
+                  imgUrl
                   thumbUrl
                 }
               }
             }
           }
-        }
-      `,
-      variables: {
-        lat: latitude,
-        lon: longitude,
-      },
-      // fetchPolicy: 'network-only',
-      fetchPolicy: 'no-cache',
+        `,
+        variables: {
+          // uuid,
+          // phoneNumber,
+          // token,
+          placeUuid,
+        },
+        // fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
+      })
+    ).data.placeRead
+    // alert(response)
+
+    return { place, cards } //   // setPlaceContext({ place: {}, cards: [] })
+  } catch (err001) {
+    Toast.show({
+      text1: 'Unable to Read Place Info',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.placesFeed.places
+  }
+  return null
 }
 
-export async function isValidToken({ authContext, navigation, topOffset }) {
+export async function placesFeed({ latitude, longitude }) {
+  try {
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query placesFeed($lat: Float!, $lon: Float!) {
+            placesFeed(lat: $lat, lon: $lon) {
+              places {
+                place {
+                  placeUuid
+                  distance
+                  placeName
+                  streetAddress1
+                  streetAddress2
+                  city
+                  region
+                }
+                cards {
+                  cardUuid
+                  cardTitle
+                  cardText
+                  photo {
+                    photoUuid
+                    width
+                    height
+                    active
+
+                    thumbUrl
+                  }
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          lat: latitude,
+          lon: longitude,
+        },
+        // fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
+      })
+    ).data.placesFeed.places
+  } catch (err001) {
+    Toast.show({
+      text1: 'Unable to Read Feed',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function isValidToken({ authContext, navigation }) {
   // console.log('isValidToken')
   const { uuid, phoneNumber, token } = authContext
   // console.log({ uuid })
@@ -329,25 +384,20 @@ export async function isValidToken({ authContext, navigation, topOffset }) {
         fetchPolicy: 'no-cache',
       })
     ).data.isValidToken
-  } catch (err01) {
-    console.log({ err01 })
+  } catch (err001) {
+    // console.log({ err011 })
     navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Need to confirm your phone number',
       // text2: err01.toString(),
-      type: 'info',
+      type: 'error',
       topOffset,
     })
   }
   return false
 }
 
-export async function isPlaceOwner({
-  authContext,
-  placeUuid,
-  navigation,
-  topOffset,
-}) {
+export async function isPlaceOwner({ authContext, placeUuid, navigation }) {
   const { uuid, phoneNumber, token } = authContext
   // console.log({ localToken })
   try {
@@ -385,12 +435,12 @@ export async function isPlaceOwner({
         fetchPolicy: 'no-cache',
       })
     ).data.isPlaceOwner
-  } catch (err00) {
+  } catch (err001) {
     navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Phone Number authentication is required',
-      text2: err00.toString(),
-      type: 'info',
+      text2: err001.toString(),
+      type: 'error',
       topOffset,
     })
   }
@@ -415,82 +465,93 @@ export async function placeCreate({
   lat,
   lon,
 }) {
-  return (
-    await CONST.gqlClient.mutate({
-      mutation: gql`
-        mutation placeCreate(
-          $uuid: String!
-          $phoneNumber: String!
-          $token: String!
-          $placeName: String!
-          $streetAddress1: String!
-          $streetAddress2: String!
-          $city: String!
-          $country: String!
-          $district: String!
-          $isoCountryCode: String!
-          $postalCode: String!
-          $region: String!
-          $subregion: String!
-          $timezone: String!
-          $lat: Float!
-          $lon: Float!
-        ) {
-          placeCreate(
-            uuid: $uuid
-            phoneNumber: $phoneNumber
-            token: $token
-            placeName: $placeName
-            streetAddress1: $streetAddress1
-            streetAddress2: $streetAddress2
-            city: $city
-            country: $country
-            district: $district
-            isoCountryCode: $isoCountryCode
-            postalCode: $postalCode
-            region: $region
-            subregion: $subregion
-            timezone: $timezone
-            lat: $lat
-            lon: $lon
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeCreate(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeName: String!
+            $streetAddress1: String!
+            $streetAddress2: String!
+            $city: String!
+            $country: String!
+            $district: String!
+            $isoCountryCode: String!
+            $postalCode: String!
+            $region: String!
+            $subregion: String!
+            $timezone: String!
+            $lat: Float!
+            $lon: Float!
           ) {
-            placeUuid
-            # placeName
-            # streetAddress1
-            # streetAddress2
-            # city
-            # country
-            # district
-            # isoCountryCode
-            # postalCode
-            # region
-            # subregion
-            # timezone
-            # location
-            # createdAt
+            placeCreate(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeName: $placeName
+              streetAddress1: $streetAddress1
+              streetAddress2: $streetAddress2
+              city: $city
+              country: $country
+              district: $district
+              isoCountryCode: $isoCountryCode
+              postalCode: $postalCode
+              region: $region
+              subregion: $subregion
+              timezone: $timezone
+              lat: $lat
+              lon: $lon
+            ) {
+              placeUuid
+              # placeName
+              # streetAddress1
+              # streetAddress2
+              # city
+              # country
+              # district
+              # isoCountryCode
+              # postalCode
+              # region
+              # subregion
+              # timezone
+              # location
+              # createdAt
+            }
           }
-        }
-      `,
-      variables: {
-        uuid,
-        phoneNumber,
-        token,
-        placeName,
-        streetAddress1,
-        streetAddress2,
-        city,
-        country,
-        district,
-        isoCountryCode,
-        postalCode,
-        region,
-        subregion,
-        timezone,
-        lat,
-        lon,
-      },
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeName,
+          streetAddress1,
+          streetAddress2,
+          city,
+          country,
+          district,
+          isoCountryCode,
+          postalCode,
+          region,
+          subregion,
+          timezone,
+          lat,
+          lon,
+        },
+      })
+    ).data.placeCreate
+  } catch (err001) {
+    // navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Unable to create Place',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.placeCreate
+  }
+  return null
 }
 
 export async function placeCardCreate({
@@ -501,84 +562,106 @@ export async function placeCardCreate({
   cardTitle,
   cardText,
 }) {
-  return (
-    await CONST.gqlClient.mutate({
-      mutation: gql`
-        mutation placeCardCreate(
-          $uuid: String!
-          $phoneNumber: String!
-          $token: String!
-          $placeUuid: String!
-          $cardTitle: String!
-          $cardText: String!
-        ) {
-          placeCardCreate(
-            uuid: $uuid
-            phoneNumber: $phoneNumber
-            token: $token
-            placeUuid: $placeUuid
-            cardTitle: $cardTitle
-            cardText: $cardText
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeCardCreate(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+            $cardTitle: String!
+            $cardText: String!
           ) {
-            cardUuid
-            cardTitle
-            cardText
-            active
+            placeCardCreate(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+              cardTitle: $cardTitle
+              cardText: $cardText
+            ) {
+              cardUuid
+              cardTitle
+              cardText
+              active
+            }
           }
-        }
-      `,
-      variables: {
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid,
-        cardTitle,
-        cardText,
-      },
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+          cardTitle,
+          cardText,
+        },
+      })
+    ).data.placeCardCreate
+  } catch (err001) {
+    // navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Unable to create Card for Place',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.placeCardCreate
+  }
+  return null
 }
 
 export async function placeCardRead({ placeUuid, cardUuid }) {
-  return (
-    await CONST.gqlClient.query({
-      query: gql`
-        query placeCardRead(
-          # $uuid: String!
-          # $phoneNumber: String!
-          # $token: String!
-          $placeUuid: String!
-          $cardUuid: String!
-        ) {
-          placeCardRead(
-            # uuid: $uuid
-            # phoneNumber: $phoneNumber
-            # token: $token
-            placeUuid: $placeUuid
-            cardUuid: $cardUuid
+  try {
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query placeCardRead(
+            # $uuid: String!
+            # $phoneNumber: String!
+            # $token: String!
+            $placeUuid: String!
+            $cardUuid: String!
           ) {
-            cardUuid
-            cardTitle
-            cardText
-            photo {
-              photoUuid
-              width
-              height
-              active
+            placeCardRead(
+              # uuid: $uuid
+              # phoneNumber: $phoneNumber
+              # token: $token
+              placeUuid: $placeUuid
+              cardUuid: $cardUuid
+            ) {
+              cardUuid
+              cardTitle
+              cardText
+              photo {
+                photoUuid
+                width
+                height
+                active
 
-              imgUrl
-              thumbUrl
+                imgUrl
+                thumbUrl
+              }
             }
           }
-        }
-      `,
-      variables: {
-        placeUuid,
-        cardUuid,
-      },
-      fetchPolicy: 'no-cache',
+        `,
+        variables: {
+          placeUuid,
+          cardUuid,
+        },
+        fetchPolicy: 'no-cache',
+      })
+    ).data.placeCardRead
+  } catch (err001) {
+    // navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Unable to read Card for Place',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.placeCardRead
+  }
+  return null
 }
 
 export async function placeCardSave({
@@ -590,45 +673,56 @@ export async function placeCardSave({
   cardTitle,
   cardText,
 }) {
-  return (
-    await CONST.gqlClient.mutate({
-      mutation: gql`
-        mutation placeCardSave(
-          $uuid: String!
-          $phoneNumber: String!
-          $token: String!
-          $placeUuid: String!
-          $cardUuid: String!
-          $cardTitle: String!
-          $cardText: String!
-        ) {
-          placeCardSave(
-            uuid: $uuid
-            phoneNumber: $phoneNumber
-            token: $token
-            placeUuid: $placeUuid
-            cardUuid: $cardUuid
-            cardTitle: $cardTitle
-            cardText: $cardText
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeCardSave(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+            $cardUuid: String!
+            $cardTitle: String!
+            $cardText: String!
           ) {
-            cardUuid
-            cardTitle
-            cardText
-            active
+            placeCardSave(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+              cardUuid: $cardUuid
+              cardTitle: $cardTitle
+              cardText: $cardText
+            ) {
+              cardUuid
+              cardTitle
+              cardText
+              active
+            }
           }
-        }
-      `,
-      variables: {
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid,
-        cardUuid,
-        cardTitle,
-        cardText,
-      },
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+          cardUuid,
+          cardTitle,
+          cardText,
+        },
+      })
+    ).data.placeCardSave
+  } catch (err001) {
+    // navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Unable to save Card for Place',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.placeCardSave
+  }
+  return null
 }
 
 export async function generateUploadUrlForCard({
@@ -640,46 +734,57 @@ export async function generateUploadUrlForCard({
   placeUuid,
   cardUuid,
 }) {
-  return (
-    await CONST.gqlClient.mutate({
-      mutation: gql`
-        mutation generateUploadUrlForCard(
-          $uuid: String!
-          $phoneNumber: String!
-          $token: String!
-          $assetKey: String!
-          $contentType: String!
-          $placeUuid: String!
-          $cardUuid: String!
-        ) {
-          generateUploadUrlForCard(
-            uuid: $uuid
-            phoneNumber: $phoneNumber
-            token: $token
-            assetKey: $assetKey
-            contentType: $contentType
-            placeUuid: $placeUuid
-            cardUuid: $cardUuid
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation generateUploadUrlForCard(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $assetKey: String!
+            $contentType: String!
+            $placeUuid: String!
+            $cardUuid: String!
           ) {
-            photo {
-              photoUuid
-              thumbUrl
+            generateUploadUrlForCard(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              assetKey: $assetKey
+              contentType: $contentType
+              placeUuid: $placeUuid
+              cardUuid: $cardUuid
+            ) {
+              photo {
+                photoUuid
+                thumbUrl
+              }
+              uploadUrl
             }
-            uploadUrl
           }
-        }
-      `,
-      variables: {
-        uuid,
-        phoneNumber,
-        token,
-        assetKey,
-        contentType,
-        placeUuid,
-        cardUuid,
-      },
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          assetKey,
+          contentType,
+          placeUuid,
+          cardUuid,
+        },
+      })
+    ).data.generateUploadUrlForCard
+  } catch (err001) {
+    // navigation.navigate('PhoneCheck')
+    Toast.show({
+      text1: 'Unable to generate upload Url',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.generateUploadUrlForCard
+  }
+  return null
 }
 
 export async function placeCardPhotoDelete({
@@ -690,32 +795,42 @@ export async function placeCardPhotoDelete({
   placeUuid,
   photoUuid,
 }) {
-  return (
-    await CONST.gqlClient.mutate({
-      mutation: gql`
-        mutation placeCardPhotoDelete(
-          $uuid: String!
-          $phoneNumber: String!
-          $token: String!
-          $placeUuid: String!
-          $photoUuid: String!
-        ) {
-          placeCardPhotoDelete(
-            uuid: $uuid
-            phoneNumber: $phoneNumber
-            token: $token
-            placeUuid: $placeUuid
-            photoUuid: $photoUuid
-          )
-        }
-      `,
-      variables: {
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid,
-        photoUuid,
-      },
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeCardPhotoDelete(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+            $photoUuid: String!
+          ) {
+            placeCardPhotoDelete(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+              photoUuid: $photoUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+          photoUuid,
+        },
+      })
+    ).data.placeCardPhotoDelete
+  } catch (err001) {
+    Toast.show({
+      text1: 'Unable to delete photo',
+      text2: err001.toString(),
+      type: 'error',
+      topOffset,
     })
-  ).data.placeCardPhotoDelete
+  }
+  return null
 }

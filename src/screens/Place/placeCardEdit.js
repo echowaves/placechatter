@@ -111,6 +111,54 @@ function PlaceCardEdit({ route, navigation }) {
     return { responseData, photo }
   }
 
+  const back = async () => {
+    const { place, cards } = await UTILS.placeRead({
+      placeUuid: placeContext.place.placeUuid,
+    })
+    setPlaceContext({ ...placeContext, place, cards })
+    navigation.navigate('Place')
+  }
+
+  const renderHeaderRight = () => null
+  const renderHeaderLeftUnchanged = () => (
+    <FontAwesome
+      name="chevron-left"
+      size={30}
+      style={{
+        marginLeft: 10,
+        color: CONST.MAIN_COLOR,
+        width: 60,
+      }}
+      onPress={() => {
+        back()
+      }}
+    />
+  )
+  const renderHeaderLeftChanged = () => (
+    <FontAwesome
+      name="chevron-left"
+      size={30}
+      style={{
+        marginLeft: 10,
+        color: CONST.SECONDARY_COLOR,
+        width: 60,
+      }}
+      onPress={() => {
+        Alert.alert('You have unsaved changes', 'Really want to exit?', [
+          {
+            text: 'exit',
+            onPress: () => back(),
+          },
+          {
+            text: 'continue editing',
+            onPress: () => null,
+            style: 'cancel',
+          },
+        ])
+      }}
+    />
+  )
+
   const init = async () => {
     // console.log('initializing................................')
     setShowSpinner(true)
@@ -172,190 +220,151 @@ function PlaceCardEdit({ route, navigation }) {
   }
 
   const takePhoto = async () => {
-    // launch photo capturing
-    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync()
-    // console.log({ cameraPermission })
+    try {
+      // launch photo capturing
+      const cameraPermission = await ImagePicker.requestCameraPermissionsAsync()
+      // console.log({ cameraPermission })
 
-    if (!cameraPermission?.granted) {
-      Alert.alert(
-        'Photo permission is not granted',
-        'Allow photo taking in settings',
-        [
-          {
-            text: 'Open Settings',
-            onPress: () => {
-              Linking.openSettings()
+      if (!cameraPermission?.granted) {
+        Alert.alert(
+          'Photo permission is not granted',
+          'Allow photo taking in settings',
+          [
+            {
+              text: 'Open Settings',
+              onPress: () => {
+                Linking.openSettings()
+              },
             },
-          },
-        ],
-      )
-      return
-    }
-    const mediaPermission =
-      await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!mediaPermission?.granted) {
-      Alert.alert(
-        'Photo library permission is not granted',
-        'Allow photos to be saved  on your device in settings',
-        [
-          {
-            text: 'Open Settings',
-            onPress: () => {
-              Linking.openSettings()
-            },
-          },
-        ],
-      )
-      return
-    }
-
-    const cameraReturn = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1.0,
-      // allowsEditing: true,
-      // aspect: [1, 1],
-      exif: false,
-    })
-
-    // alert(`cameraReturn.cancelled ${cameraReturn.cancelled}`)
-    if (cameraReturn.cancelled === false) {
-      setShowSpinner(true)
-
-      // have to wait, otherwise the upload will not start
-      // await dispatch(
-      //   reducer.queueFileForUpload({
-      //     cameraImgUrl: cameraReturn.uri,
-      //     type: cameraReturn.type,
-      //     location,
-      //   }),
-      // )
-      // dispatch(reducer.uploadPendingPhotos())
-      // console.log({ cameraReturn })
-      const imageWidth = cameraReturn.width
-      const imageHeight = cameraReturn.height
-      const imageCropDim = imageWidth < imageHeight ? imageWidth : imageHeight
-
-      // const croppedImage = await ImageManipulator.manipulateAsync(
-      //   cameraReturn.uri,
-      //   [
-      //     {
-      //       crop: {
-      //         originX: (imageWidth - imageCropDim) / 2,
-      //         originY: (imageHeight - imageCropDim) / 2,
-      //         height: imageCropDim,
-      //         width: imageCropDim,
-      //       },
-      //     },
-      //   ],
-      //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
-      // )
-
-      // MediaLibrary.saveToLibraryAsync(croppedImage.uri)
-
-      // const locallyThumbedImage = await ImageManipulator.manipulateAsync(
-      //   croppedImage.uri,
-      //   [{ resize: { height: 300 } }],
-      //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
-      // )
-
-      MediaLibrary.saveToLibraryAsync(cameraReturn.uri)
-
-      const locallyThumbedImage = await ImageManipulator.manipulateAsync(
-        cameraReturn.uri,
-        [{ resize: { height: 300 } }],
-        { compress: 1, format: ImageManipulator.SaveFormat.PNG },
-      )
-
-      try {
-        const response = await uploadImage({
-          placeUuid: placeContext?.place?.placeUuid,
-          contentType: 'image/png',
-          assetUri: cameraReturn.uri,
-        })
-        // console.log({ response })
-
-        // await CacheManager.addToCache({
-        //   file: cameraReturn.uri,
-        //   key: `${response.photo.photoUuid}`,
-        // })
-        // await CacheManager.addToCache({
-        //   file: locallyThumbedImage.uri,
-        //   key: `${response.photo.photoUuid}-thumb`,
-        // })
-
-        // const photosClone = photos
-        // await setPhotos([])
-        // await setPhotos([response.photo, ...photosClone])
-        // setPlaceContext({
-        //   ...placeContext,
-        //   cards: [response.photo, ...photos],
-        // })
-      } catch (err10) {
-        console.log({ err10 })
-        Toast.show({
-          text1: 'Unable to add photo',
-          text2: err10.toString(),
-          type: 'error',
-          topOffset,
-        })
+          ],
+        )
+        return
       }
-      // console.log({ responseData: response.responseData })
-      // init()
-      // console.log(reloadedPlace.photos[0])
-      // setShowSpinner(false)
-      // console.log({ reloadedPlace })
-      await init()
-      setShowSpinner(false)
+      const mediaPermission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (!mediaPermission?.granted) {
+        Alert.alert(
+          'Photo library permission is not granted',
+          'Allow photos to be saved  on your device in settings',
+          [
+            {
+              text: 'Open Settings',
+              onPress: () => {
+                Linking.openSettings()
+              },
+            },
+          ],
+        )
+        return
+      }
+
+      const cameraReturn = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1.0,
+        // allowsEditing: true,
+        // aspect: [1, 1],
+        exif: false,
+      })
+
+      // alert(`cameraReturn.cancelled ${cameraReturn.cancelled}`)
+      if (cameraReturn.cancelled === false) {
+        setShowSpinner(true)
+
+        // have to wait, otherwise the upload will not start
+        // await dispatch(
+        //   reducer.queueFileForUpload({
+        //     cameraImgUrl: cameraReturn.uri,
+        //     type: cameraReturn.type,
+        //     location,
+        //   }),
+        // )
+        // dispatch(reducer.uploadPendingPhotos())
+        // console.log({ cameraReturn })
+        const imageWidth = cameraReturn.width
+        const imageHeight = cameraReturn.height
+        const imageCropDim = imageWidth < imageHeight ? imageWidth : imageHeight
+
+        // const croppedImage = await ImageManipulator.manipulateAsync(
+        //   cameraReturn.uri,
+        //   [
+        //     {
+        //       crop: {
+        //         originX: (imageWidth - imageCropDim) / 2,
+        //         originY: (imageHeight - imageCropDim) / 2,
+        //         height: imageCropDim,
+        //         width: imageCropDim,
+        //       },
+        //     },
+        //   ],
+        //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+        // )
+
+        // MediaLibrary.saveToLibraryAsync(croppedImage.uri)
+
+        // const locallyThumbedImage = await ImageManipulator.manipulateAsync(
+        //   croppedImage.uri,
+        //   [{ resize: { height: 300 } }],
+        //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+        // )
+
+        MediaLibrary.saveToLibraryAsync(cameraReturn.uri)
+
+        const locallyThumbedImage = await ImageManipulator.manipulateAsync(
+          cameraReturn.uri,
+          [{ resize: { height: 300 } }],
+          { compress: 1, format: ImageManipulator.SaveFormat.PNG },
+        )
+
+        try {
+          const response = await uploadImage({
+            placeUuid: placeContext?.place?.placeUuid,
+            contentType: 'image/png',
+            assetUri: cameraReturn.uri,
+          })
+          // console.log({ response })
+
+          // await CacheManager.addToCache({
+          //   file: cameraReturn.uri,
+          //   key: `${response.photo.photoUuid}`,
+          // })
+          // await CacheManager.addToCache({
+          //   file: locallyThumbedImage.uri,
+          //   key: `${response.photo.photoUuid}-thumb`,
+          // })
+
+          // const photosClone = photos
+          // await setPhotos([])
+          // await setPhotos([response.photo, ...photosClone])
+          // setPlaceContext({
+          //   ...placeContext,
+          //   cards: [response.photo, ...photos],
+          // })
+        } catch (err10) {
+          console.log({ err10 })
+          Toast.show({
+            text1: 'Unable to add photo',
+            text2: err10.toString(),
+            type: 'error',
+            topOffset,
+          })
+        }
+        // console.log({ responseData: response.responseData })
+        // init()
+        // console.log(reloadedPlace.photos[0])
+        // setShowSpinner(false)
+        // console.log({ reloadedPlace })
+        await init()
+        setShowSpinner(false)
+      }
+    } catch (err002) {
+      Toast.show({
+        text1: 'Unable to take photo',
+        text2: err002.toString(),
+        type: 'error',
+        topOffset,
+      })
     }
   }
-
-  const back = async () => {
-    const { place, cards } = await UTILS.placeRead({
-      placeUuid: placeContext.place.placeUuid,
-    })
-    setPlaceContext({ ...placeContext, place, cards })
-    navigation.navigate('Place')
-  }
-
-  const renderHeaderRight = () => null
-  const renderHeaderLeftUnchanged = () => (
-    <FontAwesome
-      name="chevron-left"
-      size={30}
-      style={{
-        marginLeft: 10,
-        color: CONST.MAIN_COLOR,
-        width: 60,
-      }}
-      onPress={() => {
-        back()
-      }}
-    />
-  )
-  const renderHeaderLeftChanged = () => (
-    <FontAwesome
-      name="chevron-left"
-      size={30}
-      style={{
-        marginLeft: 10,
-        color: CONST.SECONDARY_COLOR,
-        width: 60,
-      }}
-      onPress={() => {
-        Alert.alert('You have unsaved changes', 'Really want to exit?', [
-          {
-            text: 'exit',
-            onPress: () => back(),
-          },
-          {
-            text: 'continue editing',
-            onPress: () => null,
-            style: 'cancel',
-          },
-        ])
-      }}
-    />
-  )
 
   useEffect(() => {
     navigation.setOptions({

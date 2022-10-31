@@ -41,25 +41,17 @@ const Photo = ({ photo }) => {
     photoContainer: {
       flex: 1,
       flexDirection: 'row',
+
       // backgroundColor: 'aliceblue',
+      shadowColor: 'black',
+      shadowOffset: { height: 2 },
+      shadowOpacity: 0.3,
     },
     photo: {
       flex: 1,
       resizeMode: 'contain',
       width,
       height: Math.floor(photo.height * ((width - 50) / photo.width)),
-      // width: Math.floor(photo.width),
-      // height: Math.floor(photo.height),
-      // alignSelf: 'center',
-
-      // shadowColor: 'black',
-      // shadowOffset: {
-      //   width: 5,
-      //   height: 5,
-      // },
-      // shadowOpacity: 0.5,
-      // shadowRadius: 2,
-      // elevation: 2,
     },
   })
 

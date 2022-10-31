@@ -183,7 +183,7 @@ function PlaceAdd({ navigation }) {
   }, [])
 
   async function init() {
-    UTILS.isValidToken({ authContext, navigation, topOffset })
+    UTILS.isValidToken({ authContext, navigation })
 
     let location = null
     try {
