@@ -289,6 +289,7 @@ export async function placeRead({ placeUuid }) {
 
     return { place, cards } //   // setPlaceContext({ place: {}, cards: [] })
   } catch (err009) {
+    // console.log({ err009 })
     Toast.show({
       text1: 'Unable to Read Place Info',
       text2: err009.toString(),
@@ -653,7 +654,7 @@ export async function placeCardRead({ placeUuid, cardUuid }) {
       })
     ).data.placeCardRead
   } catch (err015) {
-    // navigation.navigate('PhoneCheck')
+    // console.log(err015)
     Toast.show({
       text1: 'Unable to read Card for Place',
       text2: err015.toString(),
@@ -828,6 +829,54 @@ export async function placeCardPhotoDelete({
     Toast.show({
       text1: 'Unable to delete photo',
       text2: err018.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function placeCardDelete({
+  uuid,
+  phoneNumber,
+  token,
+
+  placeUuid,
+  cardUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeCardDelete(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $placeUuid: String!
+            $cardUuid: String!
+          ) {
+            placeCardDelete(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+              cardUuid: $cardUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+          cardUuid,
+        },
+      })
+    ).data.placeCardDelete
+  } catch (err019) {
+    Toast.show({
+      text1: 'Unable to delete card',
+      text2: err019.toString(),
       type: 'error',
       topOffset,
     })

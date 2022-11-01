@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react'
 // import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
 import * as FileSystem from 'expo-file-system'
@@ -15,6 +16,7 @@ import {
   ScrollView,
   View,
   RefreshControl,
+  InteractionManager,
 } from 'react-native'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -52,6 +54,7 @@ import Photo from './Photo'
 function Place({ navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
   // const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const [placeUuid, setPlaceUuid] = useState(placeContext.place.placeUuid)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -63,7 +66,7 @@ function Place({ navigation }) {
   const refresh = async () => {
     setShowSpinner(true)
     const { place, cards } = await UTILS.placeRead({
-      placeUuid: placeContext.place.placeUuid,
+      placeUuid,
     })
     setPlaceContext({ ...placeContext, place, cards })
 
@@ -73,6 +76,15 @@ function Place({ navigation }) {
     refresh()
   }, [])
 
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const task = InteractionManager.runAfterInteractions(() => {
+  //       refresh()``
+  //     })
+
+  //     return () => task.cancel()
+  //   }, []),
+  // )
   const renderHeaderRight = () => null
   // <Ionicons
   //   // onPress={canSubmit ? () => handleSubmit() : null}
@@ -164,11 +176,11 @@ function Place({ navigation }) {
               {card?.photo && <Photo photo={card?.photo} />}
               <Text>{card.cardText}</Text>
               <Button
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('PlaceCardEdit', {
                     cardUuid: card.cardUuid,
                   })
-                }
+                }}
                 size="sm"
                 // color="red"
                 iconRight

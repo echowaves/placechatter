@@ -81,8 +81,6 @@ function PlaceAdd({ navigation }) {
 
       setPlaceContext({ ...placeContext, place, cards })
       navigation.navigate('Place')
-
-      navigation.navigate('Place')
     } catch (err4) {
       console.log({ err4 })
       Toast.show({

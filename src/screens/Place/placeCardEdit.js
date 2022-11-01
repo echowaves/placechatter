@@ -49,12 +49,12 @@ import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
 function PlaceCardEdit({ route, navigation }) {
-  const { cardUuid } = route.params
-
-  const { width, height } = useDimensions().window
-
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const [placeUuid] = useState(placeContext.place.placeUuid)
+  const [cardUuid] = useState(route.params.cardUuid)
+
+  const { width, height } = useDimensions().window
 
   const topOffset = height / 3
 
@@ -70,7 +70,7 @@ function PlaceCardEdit({ route, navigation }) {
   const [cardTitleError, setCardTitleError] = useState('')
   const [cardTextError, setCardTextError] = useState('')
 
-  const uploadImage = async ({ placeUuid, contentType, assetUri }) => {
+  const uploadImage = async ({ contentType, assetUri }) => {
     const photoUuid = uuidv4()
     const { uuid, phoneNumber, token } = authContext
 
@@ -113,7 +113,7 @@ function PlaceCardEdit({ route, navigation }) {
 
   const back = async () => {
     const { place, cards } = await UTILS.placeRead({
-      placeUuid: placeContext.place.placeUuid,
+      placeUuid,
     })
     setPlaceContext({ ...placeContext, place, cards })
     navigation.navigate('Place')
@@ -167,19 +167,16 @@ function PlaceCardEdit({ route, navigation }) {
     //   topOffset,
     // })
     // // setAuthContext({ token, uuid, phoneNumber })
+    if (!cardUuid) {
+      return
+    }
 
     try {
       const loadedCard = await UTILS.placeCardRead({
-        placeUuid: placeContext.place.placeUuid,
+        placeUuid,
         cardUuid,
       })
       // console.log({ loadedCard })
-
-      // console.log({ loadedPlace })
-      // const { place, cards } = loadedCard
-      // setPlaceContext({ place: {}, cards: [] })
-      // setPlaceContext({ ...placeContext, place, cards })
-      // console.log({ place })
       setCardTitle(loadedCard?.cardTitle)
       setCardText(loadedCard?.cardText)
       setCardPhoto(loadedCard?.photo)
@@ -189,7 +186,7 @@ function PlaceCardEdit({ route, navigation }) {
         headerLeft: renderHeaderLeftUnchanged,
       })
     } catch (err12) {
-      console.log({ err12 })
+      // console.log({ err12 })
       Toast.show({
         text1: 'Unable to load Card info, try again.',
         text2: err12.toString(),
@@ -211,7 +208,7 @@ function PlaceCardEdit({ route, navigation }) {
       phoneNumber,
       token,
 
-      placeUuid: placeContext?.place?.placeUuid,
+      placeUuid,
       photoUuid: cardPhoto?.photoUuid,
     })
     // console.log({ returnValue })
@@ -317,7 +314,7 @@ function PlaceCardEdit({ route, navigation }) {
 
         try {
           const response = await uploadImage({
-            placeUuid: placeContext?.place?.placeUuid,
+            placeUuid,
             contentType: 'image/png',
             assetUri: cameraReturn.uri,
           })
@@ -349,7 +346,6 @@ function PlaceCardEdit({ route, navigation }) {
           })
         }
         // console.log({ responseData: response.responseData })
-        // init()
         // console.log(reloadedPlace.photos[0])
         // setShowSpinner(false)
         // console.log({ reloadedPlace })
@@ -412,7 +408,7 @@ function PlaceCardEdit({ route, navigation }) {
         uuid,
         phoneNumber,
         token,
-        placeUuid: placeContext.place.placeUuid,
+        placeUuid,
         cardUuid,
         cardTitle,
         cardText,
@@ -422,11 +418,6 @@ function PlaceCardEdit({ route, navigation }) {
         headerTitle: placeCard?.cardTitle,
         headerLeft: renderHeaderLeftUnchanged,
       })
-
-      // console.log({ response: JSON.stringify(response) })
-
-      // await navigation.popToTop()
-      // navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
     } catch (err11) {
       console.log({ err11 })
       Toast.show({
@@ -439,11 +430,51 @@ function PlaceCardEdit({ route, navigation }) {
     setShowSpinner(false)
   }
 
+  const deleteCard = async () => {
+    setShowSpinner(true)
+
+    try {
+      const { uuid, phoneNumber, token } = authContext
+      const deleted = await UTILS.placeCardDelete({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+        cardUuid,
+      })
+
+      if (deleted === true) {
+        // setCardUuid(null)
+        back()
+        // setPlaceContext({
+        //   ...placeContext,
+        //   cards: [
+        //     ...placeContext.cards.filter((card) => card.cardUuid !== cardUuid),
+        //   ],
+        // })
+        // navigation.goBack()
+      }
+      // console.log({ response: JSON.stringify(response) })
+
+      // await navigation.popToTop()
+      // navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
+    } catch (err12) {
+      console.log({ err12 })
+      Toast.show({
+        text1: 'Unable to delete card, try again.',
+        text2: err12.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+    setShowSpinner(false)
+  }
+
   return (
     <>
       <Spinner
         visible={showSpinner}
-        textContent={'Adding Card...'}
+        textContent={'Updating Card...'}
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>
@@ -524,6 +555,30 @@ function PlaceCardEdit({ route, navigation }) {
           >
             {`  Save Card`}
             <Icon name="save" color="white" />
+          </Button>
+        </Card>
+        <Card.Divider />
+        <Card>
+          <Button
+            onPress={() => {
+              Alert.alert('Card Delete', 'Are you sure?', [
+                {
+                  text: 'Delete',
+                  onPress: () => deleteCard(),
+                },
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel',
+                },
+              ])
+            }}
+            size="lg"
+            iconRight
+            color={'red'}
+          >
+            {`  Delete Card`}
+            <Icon name="delete" color="white" />
           </Button>
         </Card>
       </KeyboardAwareScrollView>
