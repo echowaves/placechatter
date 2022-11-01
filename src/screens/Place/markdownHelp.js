@@ -29,6 +29,7 @@ import {
   Icon,
   Button,
   Input,
+  ListItem,
 } from '@rneui/themed'
 
 import * as ImageManipulator from 'expo-image-manipulator'
@@ -241,15 +242,30 @@ export const markdownStyles = {
 }
 
 function MarkdownHelp({ route, navigation }) {
+  const [expanded, setExpanded] = useState(false)
+
   return (
     <>
-      <Card>
-        <Card.Title>Formatting Help</Card.Title>
-      </Card>
-      <Card>
-        <Card.Title>Headings</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+      <Card.Divider />
+
+      <ListItem.Accordion
+        content={
+          <>
+            <Icon name="help" size={30} />
+            <ListItem.Content>
+              <ListItem.Title>Formatting Help</ListItem.Title>
+            </ListItem.Content>
+          </>
+        }
+        isExpanded={expanded}
+        onPress={() => {
+          setExpanded(!expanded)
+        }}
+      >
+        <Card>
+          <Card.Title>Headings</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
   \`\`\`    
   # h1 Heading 8-)
   ## h2 Heading
@@ -266,12 +282,12 @@ function MarkdownHelp({ route, navigation }) {
   ##### h5 Heading
   ###### h6 Heading
 `}
-        </Markdown>
-      </Card>
-      <Card>
-        <Card.Title>Horizontal Rules</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+          </Markdown>
+        </Card>
+        <Card>
+          <Card.Title>Horizontal Rules</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
   \`\`\`    
   Some text above
   ___
@@ -292,12 +308,12 @@ function MarkdownHelp({ route, navigation }) {
 
   Some text below
 `}
-        </Markdown>
-      </Card>
-      <Card>
-        <Card.Title>Emphasis</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+          </Markdown>
+        </Card>
+        <Card>
+          <Card.Title>Emphasis</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
   \`\`\`    
 **This is bold text**
 
@@ -320,12 +336,12 @@ _This is italic text_
 
   ~~Strikethrough~~
 `}
-        </Markdown>
-      </Card>
-      <Card>
-        <Card.Title>Blockquotes</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+          </Markdown>
+        </Card>
+        <Card>
+          <Card.Title>Blockquotes</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
 
   \`\`\`    
   > Blockquotes can also be nested...
@@ -337,12 +353,12 @@ _This is italic text_
   >> ...by using additional greater-than signs right next to each other...
   > > > ...or with spaces between arrows.
   `}
-        </Markdown>
-      </Card>
-      <Card>
-        <Card.Title>Lists</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+          </Markdown>
+        </Card>
+        <Card>
+          <Card.Title>Lists</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
   \`\`\`              
 Unordered
 
@@ -387,12 +403,12 @@ Start numbering with offset:
 58. bar
 
   `}
-        </Markdown>
-      </Card>
-      <Card>
-        <Card.Title>Tables</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+          </Markdown>
+        </Card>
+        <Card>
+          <Card.Title>Tables</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
   \`\`\`              
   | Option | Description |
   | ------ | ----------- |
@@ -421,12 +437,12 @@ Start numbering with offset:
   | data   | path to data files to supply the data that will be passed into templates. |
   | engine | engine to be used for processing templates. Handlebars is the default. |
   | ext    | extension to be used for dest files. |  `}
-        </Markdown>
-      </Card>
-      <Card>
-        <Card.Title>Links</Card.Title>
-        <Markdown style={markdownStyles}>
-          {`
+          </Markdown>
+        </Card>
+        <Card>
+          <Card.Title>Links</Card.Title>
+          <Markdown style={markdownStyles}>
+            {`
   \`\`\`              
 [link text](https://www.google.com)
 
@@ -452,8 +468,9 @@ Autoconverted link https://www.google.com
 
 [email me](mailto:dmitry@ehowaes.com) 
 `}
-        </Markdown>
-      </Card>
+          </Markdown>
+        </Card>
+      </ListItem.Accordion>
     </>
   )
 }
