@@ -47,6 +47,8 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
+import MarkdownHelp from './markdownHelp'
+
 function PlaceCardAdd({ navigation }) {
   // const navigation = useNavigation()
   const { width, height } = useDimensions().window
@@ -190,6 +192,7 @@ function PlaceCardAdd({ navigation }) {
             <Icon name="add" color="white" />
           </Button>
         </Card>
+        <MarkdownHelp />
       </KeyboardAwareScrollView>
     </>
   )

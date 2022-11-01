@@ -18,6 +18,7 @@ import {
   RefreshControl,
   InteractionManager,
 } from 'react-native'
+import Markdown from 'react-native-markdown-display'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Linking from 'expo-linking'
@@ -50,6 +51,7 @@ import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
 import Photo from './Photo'
+import { markdownStyles } from './markdownHelp'
 
 function Place({ navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
@@ -174,7 +176,7 @@ function Place({ navigation }) {
             <Card key={index}>
               <Card.Title>{card.cardTitle}</Card.Title>
               {card?.photo && <Photo photo={card?.photo} />}
-              <Text>{card.cardText}</Text>
+              <Markdown style={markdownStyles}>{card.cardText}</Markdown>
               <Button
                 onPress={() => {
                   navigation.navigate('PlaceCardEdit', {

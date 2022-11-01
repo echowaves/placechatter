@@ -48,6 +48,8 @@ import * as CONST from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
+import MarkdownHelp from './markdownHelp'
+
 function PlaceCardEdit({ route, navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
@@ -557,6 +559,7 @@ function PlaceCardEdit({ route, navigation }) {
             <Icon name="save" color="white" />
           </Button>
         </Card>
+        <MarkdownHelp />
         <Card.Divider />
         <Card>
           <Button
