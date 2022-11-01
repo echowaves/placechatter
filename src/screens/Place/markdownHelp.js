@@ -389,6 +389,71 @@ Start numbering with offset:
   `}
         </Markdown>
       </Card>
+      <Card>
+        <Card.Title>Tables</Card.Title>
+        <Markdown style={markdownStyles}>
+          {`
+  \`\`\`              
+  | Option | Description |
+  | ------ | ----------- |
+  | data   | path to data files to supply the data that will be passed into templates. |
+  | engine | engine to be used for processing templates. Handlebars is the default. |
+  | ext    | extension to be used for dest files. |
+
+  Right aligned columns
+
+  | Option | Description |
+  | ------:| -----------:|
+  | data   | path to data files to supply the data that will be passed into templates. |
+  | engine | engine to be used for processing templates. Handlebars is the default. |
+  | ext    | extension to be used for dest files. |
+  \`\`\`              
+  | Option | Description |
+  | ------ | ----------- |
+  | data   | path to data files to supply the data that will be passed into templates. |
+  | engine | engine to be used for processing templates. Handlebars is the default. |
+  | ext    | extension to be used for dest files. |
+
+  Right aligned columns
+
+  | Option | Description |
+  | ------:| -----------:|
+  | data   | path to data files to supply the data that will be passed into templates. |
+  | engine | engine to be used for processing templates. Handlebars is the default. |
+  | ext    | extension to be used for dest files. |  `}
+        </Markdown>
+      </Card>
+      <Card>
+        <Card.Title>Links</Card.Title>
+        <Markdown style={markdownStyles}>
+          {`
+  \`\`\`              
+[link text](https://www.google.com)
+
+[link with title](https://www.google.com "title text!")
+
+Autoconverted link https://www.google.com 
+
+[Call me](phone:(123)456-7890)
+
+[message me](sms:(123)456-7890)
+
+[email me](mailto:dmitry@ehowaes.com) 
+  \`\`\`              
+[link text](https://www.google.com)
+
+[link with title](https://www.google.com "title text!")
+
+Autoconverted link https://www.google.com 
+
+[Call me](phone:(123)456-7890)
+
+[message me](sms:(123)456-7890)
+
+[email me](mailto:dmitry@ehowaes.com) 
+`}
+        </Markdown>
+      </Card>
     </>
   )
 }
