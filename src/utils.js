@@ -883,3 +883,47 @@ export async function placeCardDelete({
   }
   return null
 }
+
+export async function placeDelete({
+  uuid,
+  phoneNumber,
+  token,
+
+  placeUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeDelete(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $placeUuid: String!
+          ) {
+            placeDelete(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+        },
+      })
+    ).data.placeDelete
+  } catch (err020) {
+    Toast.show({
+      text1: 'Unable to delete place',
+      text2: err020.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}

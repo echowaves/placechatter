@@ -55,7 +55,7 @@ import { markdownStyles } from './markdownHelp'
 
 function Place({ navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
-  // const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
   const [placeUuid, setPlaceUuid] = useState(placeContext.place.placeUuid)
 
   const [showSpinner, setShowSpinner] = useState(false)
@@ -145,6 +145,38 @@ function Place({ navigation }) {
     )
   }
 
+  const deletePlace = async () => {
+    setShowSpinner(true)
+
+    try {
+      const { uuid, phoneNumber, token } = authContext
+      const deleted = await UTILS.placeDelete({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+      })
+
+      if (deleted === true) {
+        // setCardUuid(null)
+        navigation.goBack()
+      }
+      // console.log({ response: JSON.stringify(response) })
+
+      // await navigation.popToTop()
+      // navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
+    } catch (err12) {
+      console.log({ err12 })
+      Toast.show({
+        text1: 'Unable to delete card, try again.',
+        text2: err12.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+    setShowSpinner(false)
+  }
+
   // console.log('re-render')
   return (
     <SafeAreaView style={styles.container}>
@@ -206,7 +238,24 @@ function Place({ navigation }) {
         </Card>
         <Card.Divider />
         <Card>
-          <Button onPress={() => null} size="lg" color="red" iconRight>
+          <Button
+            onPress={() => {
+              Alert.alert('Delete place', 'Are you sure?', [
+                {
+                  text: 'Delete',
+                  onPress: () => deletePlace(),
+                },
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel',
+                },
+              ])
+            }}
+            size="lg"
+            color="red"
+            iconRight
+          >
             {`  Delete Place`}
             <Icon name="delete" color="white" />
           </Button>
