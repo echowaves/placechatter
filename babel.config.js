@@ -5,9 +5,6 @@ module.exports = function (api) {
     plugins: [
       'react-native-reanimated/plugin',
       'transform-inline-environment-variables',
-      {
-        include: ['NODE_ENV'],
-      },
     ],
   }
 }
