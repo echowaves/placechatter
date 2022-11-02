@@ -398,17 +398,17 @@ export async function isValidToken({ authContext, navigation }) {
   return false
 }
 
-export async function isPlaceOwner({ authContext, placeUuid, navigation }) {
-  const { uuid, phoneNumber, token } = authContext
+export async function isPlaceOwner({ uuid, phoneNumber, token, placeUuid }) {
+  // const {} = authContext
   // console.log({ localToken })
   try {
-    if (
-      !VALID.uuid(uuid) ||
-      !VALID.phoneNumber(phoneNumber) ||
-      !VALID.token(token)
-    ) {
-      throw new Error('Invalid parameters')
-    }
+    // if (
+    //   !VALID.uuid(uuid) ||
+    //   !VALID.phoneNumber(phoneNumber) ||
+    //   !VALID.token(token)
+    // ) {
+    //   throw new Error('Invalid parameters')
+    // }
 
     return (
       await CONST.gqlClient.query({
@@ -437,7 +437,7 @@ export async function isPlaceOwner({ authContext, placeUuid, navigation }) {
       })
     ).data.isPlaceOwner
   } catch (err012) {
-    navigation.navigate('PhoneCheck')
+    // navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Phone Number authentication is required',
       text2: err012.toString(),

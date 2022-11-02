@@ -58,15 +58,33 @@ function Place({ navigation }) {
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
   const [placeUuid, setPlaceUuid] = useState(placeContext.place.placeUuid)
 
+  const [canEdit, setCanEdit] = useState(false)
+
   const [showSpinner, setShowSpinner] = useState(false)
 
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
   // const [place, setPlace] = useState()
+  const init = async () => {
+    setShowSpinner(true)
+    const { uuid, phoneNumber, token } = authContext
+    // console.log({ uuid, phoneNumber, token })
+    const isPlaceOwner = await UTILS.isPlaceOwner({
+      uuid,
+      phoneNumber,
+      token,
+      placeUuid,
+    })
+    // console.log({ isPlaceOwner })
+    setCanEdit(isPlaceOwner)
+
+    setShowSpinner(false)
+  }
 
   const refresh = async () => {
     setShowSpinner(true)
+
     const { place, cards } = await UTILS.placeRead({
       placeUuid,
     })
@@ -74,10 +92,13 @@ function Place({ navigation }) {
 
     setShowSpinner(false)
   }
+
   const onRefresh = useCallback(() => {
     refresh()
   }, [])
-
+  useEffect(() => {
+    init()
+  }, [])
   // useFocusEffect(
   //   React.useCallback(() => {
   //     const task = InteractionManager.runAfterInteractions(() => {
@@ -176,7 +197,7 @@ function Place({ navigation }) {
     }
     setShowSpinner(false)
   }
-
+  // console.log({ canEdit })
   // console.log('re-render')
   return (
     <SafeAreaView style={styles.container}>
@@ -209,19 +230,21 @@ function Place({ navigation }) {
               <Card.Title>{card.cardTitle}</Card.Title>
               {card?.photo && <Photo photo={card?.photo} />}
               <Markdown style={markdownStyles}>{card.cardText}</Markdown>
-              <Button
-                onPress={() => {
-                  navigation.navigate('PlaceCardEdit', {
-                    cardUuid: card.cardUuid,
-                  })
-                }}
-                size="sm"
-                // color="red"
-                iconRight
-              >
-                {`  Edit Card`}
-                <Icon name="edit" color="white" />
-              </Button>
+              {canEdit && (
+                <Button
+                  onPress={() => {
+                    navigation.navigate('PlaceCardEdit', {
+                      cardUuid: card.cardUuid,
+                    })
+                  }}
+                  size="sm"
+                  // color="red"
+                  iconRight
+                >
+                  {`  Edit Card`}
+                  <Icon name="edit" color="white" />
+                </Button>
+              )}
             </Card>
           )
         })}
