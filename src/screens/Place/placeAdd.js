@@ -144,15 +144,15 @@ function PlaceAdd({ navigation }) {
     }
 
     if (!VALID.city(formInput.city)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      setCityError('2-50 Alpha-Numeric characters')
       return false
     }
     if (!VALID.region(formInput.region)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      setRegionError('2-50 Alpha-Numeric characters')
       return false
     }
     if (!VALID.postalCode(formInput.postalCode)) {
-      setStreetAddress1Error('2-50 Alpha-Numeric characters')
+      setPostalCodeError('2-50 Alpha-Numeric characters')
       return false
     }
 

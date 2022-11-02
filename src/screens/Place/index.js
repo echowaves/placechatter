@@ -248,41 +248,45 @@ function Place({ navigation }) {
             </Card>
           )
         })}
-        <Card>
-          <Button
-            onPress={() => navigation.navigate('PlaceCardAdd')}
-            size="lg"
-            color="green"
-            iconRight
-          >
-            {`  Add Card`}
-            <Icon name="add" color="white" />
-          </Button>
-        </Card>
-        <Card.Divider />
-        <Card>
-          <Button
-            onPress={() => {
-              Alert.alert('Delete place', 'Are you sure?', [
-                {
-                  text: 'Delete',
-                  onPress: () => deletePlace(),
-                },
-                {
-                  text: 'Cancel',
-                  onPress: () => null,
-                  style: 'cancel',
-                },
-              ])
-            }}
-            size="lg"
-            color="red"
-            iconRight
-          >
-            {`  Delete Place`}
-            <Icon name="delete" color="white" />
-          </Button>
-        </Card>
+        {canEdit && (
+          <>
+            <Card>
+              <Button
+                onPress={() => navigation.navigate('PlaceCardAdd')}
+                size="lg"
+                color="green"
+                iconRight
+              >
+                {`  Add Card`}
+                <Icon name="add" color="white" />
+              </Button>
+            </Card>
+            <Card.Divider />
+            <Card>
+              <Button
+                onPress={() => {
+                  Alert.alert('Delete place', 'Are you sure?', [
+                    {
+                      text: 'Delete',
+                      onPress: () => deletePlace(),
+                    },
+                    {
+                      text: 'Cancel',
+                      onPress: () => null,
+                      style: 'cancel',
+                    },
+                  ])
+                }}
+                size="lg"
+                color="red"
+                iconRight
+              >
+                {`  Delete Place`}
+                <Icon name="delete" color="white" />
+              </Button>
+            </Card>
+          </>
+        )}
       </KeyboardAwareScrollView>
     </SafeAreaView>
   )
