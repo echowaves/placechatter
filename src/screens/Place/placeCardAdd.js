@@ -1,201 +1,203 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
-import { useFocusEffect } from '@react-navigation/native'
+// dead code
 
-import { useDimensions } from '@react-native-community/hooks'
+// import React, { useRef, useState, useEffect, useContext } from 'react'
+// import { useFocusEffect } from '@react-navigation/native'
 
-import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons'
-import Toast from 'react-native-toast-message'
-import Spinner from 'react-native-loading-spinner-overlay'
+// import { useDimensions } from '@react-native-community/hooks'
 
-import {
-  View,
-  TouchableOpacity,
-  Alert,
-  InteractionManager,
-  ScrollView,
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-} from 'react-native'
+// import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons'
+// import Toast from 'react-native-toast-message'
+// import Spinner from 'react-native-loading-spinner-overlay'
 
-import {
-  Text,
-  Card,
-  LinearProgress,
-  Divider,
-  Badge,
-  Icon,
-  Button,
-  Input,
-} from '@rneui/themed'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+// import {
+//   View,
+//   TouchableOpacity,
+//   Alert,
+//   InteractionManager,
+//   ScrollView,
+//   SafeAreaView,
+//   StyleSheet,
+//   FlatList,
+// } from 'react-native'
 
-import { Col, Row, Grid } from 'react-native-easy-grid'
-import * as ImageManipulator from 'expo-image-manipulator'
-import * as MediaLibrary from 'expo-media-library'
-import * as ImagePicker from 'expo-image-picker'
-import * as Linking from 'expo-linking'
+// import {
+//   Text,
+//   Card,
+//   LinearProgress,
+//   Divider,
+//   Badge,
+//   Icon,
+//   Button,
+//   Input,
+// } from '@rneui/themed'
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import CachedImage, { CacheManager } from 'expo-cached-image'
-import * as FileSystem from 'expo-file-system'
+// import { Col, Row, Grid } from 'react-native-easy-grid'
+// import * as ImageManipulator from 'expo-image-manipulator'
+// import * as MediaLibrary from 'expo-media-library'
+// import * as ImagePicker from 'expo-image-picker'
+// import * as Linking from 'expo-linking'
 
-import { v4 as uuidv4 } from 'uuid'
+// import CachedImage, { CacheManager } from 'expo-cached-image'
+// import * as FileSystem from 'expo-file-system'
 
-import PropTypes from 'prop-types'
+// import { v4 as uuidv4 } from 'uuid'
 
-import * as CONST from '../../consts'
-import * as UTILS from '../../utils'
-import { VALID } from '../../valid'
+// import PropTypes from 'prop-types'
 
-import MarkdownHelp from './markdownHelp'
+// import * as CONST from '../../consts'
+// import * as UTILS from '../../utils'
+// import { VALID } from '../../valid'
 
-function PlaceCardAdd({ navigation }) {
-  // const navigation = useNavigation()
-  const { width, height } = useDimensions().window
+// import MarkdownHelp from './markdownHelp'
 
-  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+// function PlaceCardAdd({ navigation }) {
+//   // const navigation = useNavigation()
+//   const { width, height } = useDimensions().window
 
-  const topOffset = height / 3
+//   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
+//   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
-  const [showSpinner, setShowSpinner] = useState(false)
-  const [canSubmit, setCanSubmit] = useState(false)
+//   const topOffset = height / 3
 
-  const [cardTitle, setCardTitle] = useState('')
-  const [cardText, setCardText] = useState('')
+//   const [showSpinner, setShowSpinner] = useState(false)
+//   const [canSubmit, setCanSubmit] = useState(false)
 
-  const [cardTitleError, setCardTitleError] = useState('')
-  const [cardTextError, setCardTextError] = useState('')
+//   const [cardTitle, setCardTitle] = useState('')
+//   const [cardText, setCardText] = useState('')
 
-  const renderHeaderRight = () => null
-  const renderHeaderLeft = () => (
-    <FontAwesome
-      name="chevron-left"
-      size={30}
-      style={{
-        marginLeft: 10,
-        color: CONST.MAIN_COLOR,
-        width: 60,
-      }}
-      onPress={() => navigation.goBack()}
-    />
-  )
+//   const [cardTitleError, setCardTitleError] = useState('')
+//   const [cardTextError, setCardTextError] = useState('')
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: '',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-  }, [])
+//   const renderHeaderRight = () => null
+//   const renderHeaderLeft = () => (
+//     <FontAwesome
+//       name="chevron-left"
+//       size={30}
+//       style={{
+//         marginLeft: 10,
+//         color: CONST.MAIN_COLOR,
+//         width: 60,
+//       }}
+//       onPress={() => navigation.goBack()}
+//     />
+//   )
 
-  const valid = () => {
-    setCardTitleError('')
-    setCardTextError('')
-    setCanSubmit(true)
+//   useEffect(() => {
+//     navigation.setOptions({
+//       headerTitle: '',
+//       headerTintColor: CONST.MAIN_COLOR,
+//       headerRight: renderHeaderRight,
+//       headerLeft: renderHeaderLeft,
+//       headerBackTitle: '',
+//       headerStyle: {
+//         backgroundColor: CONST.NAV_COLOR,
+//       },
+//     })
+//   }, [])
 
-    if (!VALID.cardTitle(cardTitle)) {
-      setCardTitleError('4-50 characters')
-      setCanSubmit(false)
-    }
-    if (!VALID.cardText(cardText)) {
-      setCardTextError('4-1024 characters')
-      setCanSubmit(false)
-    }
-  }
+//   const valid = () => {
+//     setCardTitleError('')
+//     setCardTextError('')
+//     setCanSubmit(true)
 
-  useEffect(() => {
-    // console.log({ smsCode, nickName })
-    valid()
-  }, [cardTitle, cardText])
+//     if (!VALID.cardTitle(cardTitle)) {
+//       setCardTitleError('4-50 characters')
+//       setCanSubmit(false)
+//     }
+//     if (!VALID.cardText(cardText)) {
+//       setCardTextError('4-1024 characters')
+//       setCanSubmit(false)
+//     }
+//   }
 
-  const addCard = async () => {
-    setShowSpinner(true)
+//   useEffect(() => {
+//     // console.log({ smsCode, nickName })
+//     valid()
+//   }, [cardTitle, cardText])
 
-    const { uuid, phoneNumber, token } = authContext
+//   const addCard = async () => {
+//     setShowSpinner(true)
 
-    const placeCard = await UTILS.placeCardCreate({
-      uuid,
-      phoneNumber,
-      token,
-      placeUuid: placeContext.place.placeUuid,
-      cardTitle,
-      cardText,
-    })
+//     const { uuid, phoneNumber, token } = authContext
 
-    if (placeCard) {
-      setPlaceContext({
-        ...placeContext,
-        cards: [...placeContext.cards, placeCard],
-      })
-      navigation.navigate('Place')
-    }
+//     const placeCard = await UTILS.placeCardCreate({
+//       uuid,
+//       phoneNumber,
+//       token,
+//       placeUuid: placeContext.place.placeUuid,
+//       cardTitle,
+//       cardText,
+//     })
 
-    setShowSpinner(false)
-  }
+//     if (placeCard) {
+//       setPlaceContext({
+//         ...placeContext,
+//         cards: [...placeContext.cards, placeCard],
+//       })
+//       navigation.navigate('Place')
+//     }
 
-  return (
-    <>
-      <Spinner
-        visible={showSpinner}
-        textContent={'Adding Card...'}
-        // textStyle={styles.spinnerTextStyle}
-      />
-      <KeyboardAwareScrollView>
-        <Card>
-          {/* <Card.Title>place photos</Card.Title> */}
-          <Input
-            label="Card Title"
-            // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
-            placeholder={`enter title`}
-            errorMessage={cardTitleError}
-            value={`${cardTitle}`}
-            onChangeText={(value) => {
-              setCardTitle(value)
-              // valid()
-            }}
-            multiline={false}
-            autoCapitalize={'sentences'}
-            autoComplete={'off'}
-            autoCorrect={true}
-            // autoFocus={true}
-          />
-          <Input
-            label="Card Text"
-            // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
-            placeholder={`enter text`}
-            errorMessage={cardTextError}
-            value={`${cardText}`}
-            onChangeText={(value) => {
-              setCardText(value)
-              // valid()
-            }}
-            multiline
-            autoCapitalize={'sentences'}
-            autoComplete={'off'}
-            autoCorrect={true}
-            // autoFocus={true}
-          />
+//     setShowSpinner(false)
+//   }
 
-          <Button
-            onPress={addCard}
-            size="lg"
-            iconRight
-            color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
-          >
-            {`  Add Card`}
-            <Icon name="add" color="white" />
-          </Button>
-        </Card>
-        <MarkdownHelp />
-      </KeyboardAwareScrollView>
-    </>
-  )
-}
+//   return (
+//     <>
+//       <Spinner
+//         visible={showSpinner}
+//         textContent={'Adding Card...'}
+//         // textStyle={styles.spinnerTextStyle}
+//       />
+//       <KeyboardAwareScrollView>
+//         <Card>
+//           {/* <Card.Title>place photos</Card.Title> */}
+//           <Input
+//             label="Card Title"
+//             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
+//             placeholder={`enter title`}
+//             errorMessage={cardTitleError}
+//             value={`${cardTitle}`}
+//             onChangeText={(value) => {
+//               setCardTitle(value)
+//               // valid()
+//             }}
+//             multiline={false}
+//             autoCapitalize={'sentences'}
+//             autoComplete={'off'}
+//             autoCorrect={true}
+//             // autoFocus={true}
+//           />
+//           <Input
+//             label="Card Text"
+//             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
+//             placeholder={`enter text`}
+//             errorMessage={cardTextError}
+//             value={`${cardText}`}
+//             onChangeText={(value) => {
+//               setCardText(value)
+//               // valid()
+//             }}
+//             multiline
+//             autoCapitalize={'sentences'}
+//             autoComplete={'off'}
+//             autoCorrect={true}
+//             // autoFocus={true}
+//           />
 
-export default PlaceCardAdd
+//           <Button
+//             onPress={addCard}
+//             size="lg"
+//             iconRight
+//             color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
+//           >
+//             {`  Add Card`}
+//             <Icon name="add" color="white" />
+//           </Button>
+//         </Card>
+//         <MarkdownHelp />
+//       </KeyboardAwareScrollView>
+//     </>
+//   )
+// }
+
+// export default PlaceCardAdd

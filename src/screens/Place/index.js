@@ -197,6 +197,32 @@ function Place({ navigation }) {
     }
     setShowSpinner(false)
   }
+
+  const addCard = async () => {
+    setShowSpinner(true)
+
+    const { uuid, phoneNumber, token } = authContext
+
+    const placeCard = await UTILS.placeCardCreate({
+      uuid,
+      phoneNumber,
+      token,
+      placeUuid: placeContext.place.placeUuid,
+      cardTitle: 'New Card',
+      cardText: 'Update Card Description, add optional photo.',
+    })
+
+    if (placeCard) {
+      setPlaceContext({
+        ...placeContext,
+        cards: [...placeContext.cards, placeCard],
+      })
+      navigation.navigate('Place')
+    }
+
+    setShowSpinner(false)
+  }
+
   // console.log({ canEdit })
   // console.log('re-render')
   return (
@@ -252,7 +278,7 @@ function Place({ navigation }) {
           <>
             <Card>
               <Button
-                onPress={() => navigation.navigate('PlaceCardAdd')}
+                onPress={() => addCard()}
                 size="lg"
                 color="green"
                 iconRight

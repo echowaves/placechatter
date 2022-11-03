@@ -36,7 +36,7 @@ import * as UTILS from './src/utils'
 import PlacesList from './src/screens/PlacesList'
 import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
-import PlaceCardAdd from './src/screens/Place/placeCardAdd'
+// import PlaceCardAdd from './src/screens/Place/placeCardAdd'
 import PlaceCardEdit from './src/screens/Place/placeCardEdit'
 import PhotosSwiper from './src/screens/Place/photosSwiper'
 
@@ -200,7 +200,7 @@ function App() {
           headerShown: true,
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="PlaceCardAdd"
         component={PlaceCardAdd}
         options={{
@@ -208,7 +208,7 @@ function App() {
           gestureEnabled: false,
           headerShown: true,
         }}
-      />
+      /> */}
       <Stack.Screen
         name="PlaceCardEdit"
         component={PlaceCardEdit}
