@@ -159,6 +159,7 @@ export async function activationCodeGenerate({ phoneNumber, uuid }) {
       },
     })
   } catch (err006) {
+    console.log({ err006 })
     Toast.show({
       text1: 'Unable to generate activation code',
       text2: err006.toString(),
@@ -197,8 +198,8 @@ export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
     ).data.phoneActivate
   } catch (err007) {
     Toast.show({
-      text1: 'Unable to activate phone',
-      text2: err007.toString(),
+      text2: 'Unable to activate phone',
+      text1: err007.toString(),
       type: 'error',
       topOffset,
     })

@@ -339,23 +339,6 @@ _This is italic text_
           </Markdown>
         </Card>
         <Card>
-          <Card.Title>Blockquotes</Card.Title>
-          <Markdown style={markdownStyles}>
-            {`
-
-  \`\`\`    
-  > Blockquotes can also be nested...
-  >> ...by using additional greater-than signs right next to each other...
-  > > > ...or with spaces between arrows.
-  \`\`\`
-
-  > Blockquotes can also be nested...
-  >> ...by using additional greater-than signs right next to each other...
-  > > > ...or with spaces between arrows.
-  `}
-          </Markdown>
-        </Card>
-        <Card>
           <Card.Title>Lists</Card.Title>
           <Markdown style={markdownStyles}>
             {`
@@ -403,40 +386,6 @@ Start numbering with offset:
 58. bar
 
   `}
-          </Markdown>
-        </Card>
-        <Card>
-          <Card.Title>Tables</Card.Title>
-          <Markdown style={markdownStyles}>
-            {`
-  \`\`\`              
-  | Option | Description |
-  | ------ | ----------- |
-  | data   | path to data files to supply the data that will be passed into templates. |
-  | engine | engine to be used for processing templates. Handlebars is the default. |
-  | ext    | extension to be used for dest files. |
-
-  Right aligned columns
-
-  | Option | Description |
-  | ------:| -----------:|
-  | data   | path to data files to supply the data that will be passed into templates. |
-  | engine | engine to be used for processing templates. Handlebars is the default. |
-  | ext    | extension to be used for dest files. |
-  \`\`\`              
-  | Option | Description |
-  | ------ | ----------- |
-  | data   | path to data files to supply the data that will be passed into templates. |
-  | engine | engine to be used for processing templates. Handlebars is the default. |
-  | ext    | extension to be used for dest files. |
-
-  Right aligned columns
-
-  | Option | Description |
-  | ------:| -----------:|
-  | data   | path to data files to supply the data that will be passed into templates. |
-  | engine | engine to be used for processing templates. Handlebars is the default. |
-  | ext    | extension to be used for dest files. |  `}
           </Markdown>
         </Card>
         <Card>
