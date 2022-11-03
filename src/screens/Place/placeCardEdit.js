@@ -179,8 +179,14 @@ function PlaceCardEdit({ route, navigation }) {
         cardUuid,
       })
       // console.log({ loadedCard })
-      setCardTitle(loadedCard?.cardTitle)
-      setCardText(loadedCard?.cardText)
+      setCardTitle(
+        loadedCard?.cardTitle === 'New Card' ? '' : loadedCard?.cardTitle,
+      )
+      setCardText(
+        loadedCard?.cardText === 'Update Card Description, add optional photo.'
+          ? ''
+          : loadedCard?.cardText,
+      )
       setCardPhoto(loadedCard?.photo)
 
       navigation.setOptions({
