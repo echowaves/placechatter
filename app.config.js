@@ -25,9 +25,7 @@ export default {
     ],
     extra: {
       API_URI: process.env.API_URI,
-      REALTIME_API_URI: process.env.REALTIME_API_URI,
       API_KEY: process.env.API_KEY,
-      PRIVATE_IMG_HOST: process.env.PRIVATE_IMG_HOST,
     },
     scheme: 'placechatter',
     updates: {
@@ -40,7 +38,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: 'com.echowaves.placechatter',
-      buildNumber: '5',
+      buildNumber: '7',
       supportsTablet: true,
       associatedDomains: ['applinks:link.placechatter.com'],
       config: {
@@ -73,7 +71,7 @@ export default {
         backgroundColor: '#FFFFFF',
       },
       package: 'com.echowaves.placechatter',
-      versionCode: 5,
+      versionCode: 7,
       permissions: [
         'INTERNET',
         'SYSTEM_ALERT_WINDOW',
