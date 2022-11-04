@@ -545,15 +545,9 @@ export async function placeCreate({
       })
     ).data.placeCreate
   } catch (err013) {
+    return null
     // navigation.navigate('PhoneCheck')
-    Toast.show({
-      text1: 'Unable to create Place',
-      text2: err013.toString(),
-      type: 'error',
-      topOffset,
-    })
   }
-  return null
 }
 
 export async function placeCardCreate({

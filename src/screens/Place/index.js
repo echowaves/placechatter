@@ -240,7 +240,7 @@ function Place({ navigation }) {
         <Card>
           <Card.Title>Address</Card.Title>
           <Text>{place.streetAddress1}</Text>
-          <Text>{place.streetAddress2}</Text>
+          {place.streetAddress2 && <Text>{place.streetAddress2}</Text>}
           <Text>
             {place.city}, {place.region} {place.postalCode}
           </Text>

@@ -140,7 +140,9 @@ function PlaceItem({ item, navigation }) {
           {`${item.place.placeName}`}
         </ListItem.Title>
         <ListItem.Subtitle style={{ color: 'white' }}>
-          {`${item.place.streetAddress1}, ${item.place.city}, ${item.place.region}`}
+          {`${item.place.streetAddress1}, ${
+            item.place.streetAddress2 ? `${item.place.streetAddress2},` : ''
+          } ${item.place.city}, ${item.place.region}`}
         </ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>

@@ -56,7 +56,7 @@ function PlaceAdd({ navigation }) {
     try {
       const { uuid, phoneNumber, token } = authContext
 
-      const { placeUuid } = await UTILS.placeCreate({
+      const createdPlace = await UTILS.placeCreate({
         uuid,
         phoneNumber,
         token,
@@ -75,20 +75,31 @@ function PlaceAdd({ navigation }) {
         lon: formInput.lon,
       })
 
-      const { place, cards } = await UTILS.placeRead({
-        placeUuid,
-      })
-
-      setPlaceContext({ ...placeContext, place, cards })
-      navigation.navigate('Place')
+      if (createdPlace) {
+        const { placeUuid } = createdPlace
+        const { place, cards } = await UTILS.placeRead({
+          placeUuid,
+        })
+        setPlaceContext({ ...placeContext, place, cards })
+        navigation.navigate('Place')
+      } else {
+        throw Error('Duplicate')
+      }
     } catch (err4) {
-      console.log({ err4 })
+      // console.log({ err4 })
       Toast.show({
-        text1: 'Unable to create Place, try again.',
-        text2: err4.toString(),
+        text1: 'Unable to create Place',
+        text2: 'Duplicate?',
         type: 'error',
         topOffset,
       })
+
+      // Toast.show({
+      //   text1: 'Unable to create Place, try again.',
+      //   text2: err4.toString(),
+      //   type: 'error',
+      //   topOffset,
+      // })
     }
     setShowSpinner(false)
   }
