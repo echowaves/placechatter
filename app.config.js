@@ -38,7 +38,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: 'com.echowaves.placechatter',
-      buildNumber: '9',
+      buildNumber: '10',
       supportsTablet: true,
       associatedDomains: ['applinks:link.placechatter.com'],
       config: {
@@ -71,7 +71,7 @@ export default {
         backgroundColor: '#FFFFFF',
       },
       package: 'com.echowaves.placechatter',
-      versionCode: 9,
+      versionCode: 10,
       permissions: [
         'INTERNET',
         'SYSTEM_ALERT_WINDOW',
