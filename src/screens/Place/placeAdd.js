@@ -89,7 +89,7 @@ function PlaceAdd({ navigation }) {
       // console.log({ err4 })
       Toast.show({
         text1: 'Unable to create Place',
-        text2: 'Duplicate?',
+        text2: 'This place already exists?',
         type: 'error',
         topOffset,
       })
