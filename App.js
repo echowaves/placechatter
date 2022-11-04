@@ -117,7 +117,9 @@ function App() {
               }}
             />
           ),
-          drawerLabel: 'NickName',
+          drawerLabel: authContext?.nickName
+            ? authContext?.nickName
+            : 'confirm phone',
           // headerShown: true,
         }}
       />
