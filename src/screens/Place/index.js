@@ -233,6 +233,12 @@ function Place({ navigation }) {
         ...placeContext,
         cards: [...placeContext.cards, placeCard],
       })
+      Toast.show({
+        text1: 'Card Added to the bottom of the list',
+        // text2: err12.toString(),
+        type: 'info',
+        topOffset,
+      })
 
       //  navigation.navigate('Place')
       // await refresh()
