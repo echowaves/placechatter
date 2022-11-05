@@ -10,7 +10,7 @@
     "android": "npx expo start --android",
     "ios": "npx expo start --ios",
     "build": "eas build",
-    "publish:prod": "eas update --branch main"
+    "publish:prod": "eas update --branch production"
   },
   "dependencies": {
     "@apollo/client": "3.7.0",
