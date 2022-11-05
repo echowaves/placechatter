@@ -212,9 +212,9 @@ function PlacesList({ navigation }) {
   // console.log({ places: JSON.stringify(places) })
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Card>
+      <Card>
         <Text>test</Text>
-      </Card> */}
+      </Card>
 
       <FlatList
         data={places}
