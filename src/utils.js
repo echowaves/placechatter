@@ -344,6 +344,7 @@ export async function placesFeed({ latitude, longitude }) {
       })
     ).data.placesFeed.places
   } catch (err010) {
+    // console.log({ err010 })
     Toast.show({
       text1: 'Unable to Read Feed',
       text2: err010.toString(),
@@ -438,13 +439,14 @@ export async function isPlaceOwner({ uuid, phoneNumber, token, placeUuid }) {
       })
     ).data.isPlaceOwner
   } catch (err012) {
+    // console.log({ err012 })
     // navigation.navigate('PhoneCheck')
-    Toast.show({
-      text1: 'Phone Number authentication is required',
-      text2: err012.toString(),
-      type: 'error',
-      topOffset,
-    })
+    // Toast.show({
+    //   text1: 'Phone Number authentication is required',
+    //   text2: err012.toString(),
+    //   type: 'error',
+    //   topOffset,
+    // })
   }
   return false
 }

@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+} from 'react'
 // import { useNavigation } from '@react-navigation/native'
 import { useFocusEffect } from '@react-navigation/native'
 
@@ -20,7 +26,7 @@ import {
 } from 'react-native'
 import Markdown from 'react-native-markdown-display'
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as Linking from 'expo-linking'
 
 import {
@@ -65,6 +71,8 @@ function Place({ navigation }) {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
+  // const scrollViewRef = useRef()
+
   // const [place, setPlace] = useState()
   const init = async () => {
     setShowSpinner(true)
@@ -99,6 +107,12 @@ function Place({ navigation }) {
   useEffect(() => {
     init()
   }, [])
+
+  // useEffect(() => {
+  //   console.log('place context changed')
+  //   // scrollViewRef?.current?.scrollToEnd({ animated: true })
+  // }, [placeContext])
+
   // useFocusEffect(
   //   React.useCallback(() => {
   //     const task = InteractionManager.runAfterInteractions(() => {
@@ -212,15 +226,17 @@ function Place({ navigation }) {
       cardText: 'Update Card Description, add optional photo.',
     })
 
+    setShowSpinner(false)
+
     if (placeCard) {
       setPlaceContext({
         ...placeContext,
         cards: [...placeContext.cards, placeCard],
       })
-      navigation.navigate('Place')
-    }
 
-    setShowSpinner(false)
+      //  navigation.navigate('Place')
+      // await refresh()
+    }
   }
 
   // console.log({ canEdit })
@@ -232,7 +248,9 @@ function Place({ navigation }) {
         textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
-      <KeyboardAwareScrollView
+      <ScrollView
+        // ref={scrollViewRef}
+        // onContentSizeChange={() => } // scroll end
         refreshControl={
           <RefreshControl refreshing={showSpinner} onRefresh={onRefresh} />
         }
@@ -278,7 +296,9 @@ function Place({ navigation }) {
           <>
             <Card>
               <Button
-                onPress={() => addCard()}
+                onPress={async () => {
+                  addCard()
+                }}
                 size="lg"
                 color="green"
                 iconRight
@@ -313,7 +333,7 @@ function Place({ navigation }) {
             </Card>
           </>
         )}
-      </KeyboardAwareScrollView>
+      </ScrollView>
     </SafeAreaView>
   )
 }
