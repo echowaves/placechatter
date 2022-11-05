@@ -1,5 +1,11 @@
 export default {
   expo: {
+    runtimeVersion: {
+      policy: 'sdkVersion',
+    },
+    updates: {
+      url: 'https://u.expo.dev/c8788597-86cf-4b92-a3a1-3d27b1bd5da9',
+    },
     name: 'placechatter',
     slug: 'placechatter',
     version: '1.0.0',
@@ -24,21 +30,17 @@ export default {
       ],
     ],
     extra: {
+      eas: {
+        projectId: 'c8788597-86cf-4b92-a3a1-3d27b1bd5da9',
+      },
       API_URI: process.env.API_URI,
       API_KEY: process.env.API_KEY,
     },
     scheme: 'placechatter',
-    updates: {
-      fallbackToCacheTimeout: 0,
-      // url: "https://u.expo.dev/c8788597-86cf-4b92-a3a1-3d27b1bd5da9",
-    },
-    // runtimeVersion: {
-    //   policy: "sdkVersion",
-    // },
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: 'com.echowaves.placechatter',
-      buildNumber: '11',
+      buildNumber: '12',
       supportsTablet: true,
       associatedDomains: ['applinks:link.placechatter.com'],
       config: {
@@ -71,7 +73,7 @@ export default {
         backgroundColor: '#FFFFFF',
       },
       package: 'com.echowaves.placechatter',
-      versionCode: 11,
+      versionCode: 12,
       permissions: [
         'INTERNET',
         'SYSTEM_ALERT_WINDOW',
