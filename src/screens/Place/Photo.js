@@ -46,11 +46,14 @@ const Photo = ({ photo }) => {
       shadowColor: 'black',
       shadowOffset: { height: 2 },
       shadowOpacity: 0.3,
+      // width,
+      height: Math.floor(photo.height * ((width - 50) / photo.width)),
     },
     photo: {
-      flex: 1,
+      // flex: 1,
+      position: 'absolute',
       resizeMode: 'contain',
-      width,
+      width: '100%',
       height: Math.floor(photo.height * ((width - 50) / photo.width)),
     },
   })
@@ -60,29 +63,37 @@ const Photo = ({ photo }) => {
     <View style={styles.photoContainer}>
       <CachedImage
         source={{
+          uri: `${photo.thumbUrl}`,
+          // expiresIn: 5, // seconds. This field is optional
+        }}
+        cacheKey={`${photo.photoUuid}-thumb.webp`}
+        style={styles.photo}
+        placeholderContent={
+          // optional
+          <ActivityIndicator
+            color={CONST.MAIN_COLOR}
+            size="small"
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+            }}
+          />
+        }
+      />
+      <CachedImage
+        source={{
           uri: `${photo.imgUrl}`,
         }}
         cacheKey={`${photo.photoUuid}.webp`}
         style={styles.photo}
         placeholderContent={
-          <CachedImage
-            source={{
-              uri: `${photo.thumbUrl}`,
-              // expiresIn: 5, // seconds. This field is optional
+          <ActivityIndicator
+            color={CONST.MAIN_COLOR}
+            size="small"
+            style={{
+              flex: 1,
+              justifyContent: 'center',
             }}
-            cacheKey={`${photo.photoUuid}-thumb.webp`}
-            style={styles.photo}
-            placeholderContent={
-              // optional
-              <ActivityIndicator
-                color={CONST.MAIN_COLOR}
-                size="small"
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                }}
-              />
-            }
           />
         }
       />
