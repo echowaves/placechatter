@@ -339,6 +339,7 @@ function Place({ navigation }) {
             </Card>
           </>
         )}
+        <Card.Divider />
       </ScrollView>
     </SafeAreaView>
   )
