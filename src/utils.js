@@ -924,3 +924,251 @@ export async function placeDelete({
   }
   return null
 }
+
+export async function placePhoneCreate({
+  uuid,
+  phoneNumber,
+  token,
+
+  phone,
+  placeUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placePhoneCreate(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $phone: String
+            $placeUuid: String!
+          ) {
+            placePhoneCreate(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              phone: $phone
+              placeUuid: $placeUuid
+            ) {
+              phoneNumber
+              role
+              createdAt
+            }
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          phone,
+          placeUuid,
+        },
+      })
+    ).data.placePhoneCreate
+  } catch (err021) {
+    Toast.show({
+      text1: 'Unable to add phone to place',
+      text2: err021.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function placePhoneDelete({
+  uuid,
+  phoneNumber,
+  token,
+
+  phone,
+  placeUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placePhoneDelete(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $phone: String
+            $placeUuid: String!
+          ) {
+            placePhoneDelete(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              phone: $phone
+              placeUuid: $placeUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          phone,
+          placeUuid,
+        },
+      })
+    ).data.placePhoneDelete
+  } catch (err022) {
+    Toast.show({
+      text1: 'Unable to delete phone from place',
+      text2: err022.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function feedbackCreate({
+  uuid,
+  phoneNumber,
+  token,
+
+  feedbackText,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation feedbackCreate(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $feedbackText: String!
+          ) {
+            feedbackCreate(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              feedbackText: $feedbackText
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          feedbackText,
+        },
+      })
+    ).data.feedbackCreate
+  } catch (err023) {
+    Toast.show({
+      text1: 'Unable to post feedback',
+      text2: err023.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function placePhoneList({
+  uuid,
+  phoneNumber,
+  token,
+
+  placeUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query placePhoneList(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+          ) {
+            placePhoneList(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+            ) {
+              createdAt
+              phoneNumber
+              role
+            }
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+        },
+        // fetchPolicy: 'network-only',
+        // fetchPolicy: 'no-cache',
+      })
+    ).data.placePhoneList
+    // alert(response)
+  } catch (err024) {
+    // console.log({ err009 })
+    Toast.show({
+      text1: 'Unable to Read phones for Place',
+      text2: err024.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function feedbackList({
+  uuid,
+  phoneNumber,
+  token,
+
+  placeUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query feedbackList(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+          ) {
+            feedbackList(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+            ) {
+              createdAt
+              phoneNumber
+              role
+            }
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+        },
+        // fetchPolicy: 'network-only',
+        // fetchPolicy: 'no-cache',
+      })
+    ).data.feedbackList
+    // alert(response)
+  } catch (err025) {
+    // console.log({ err009 })
+    Toast.show({
+      text1: 'Unable to get feedback list',
+      text2: err025.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
