@@ -388,7 +388,7 @@ export async function isValidToken({ authContext, navigation }) {
     ).data.isValidToken
   } catch (err011) {
     // console.log({ err011 })
-    navigation.push('PhoneCheck')
+    navigation.navigate('PhoneCheck')
     Toast.show({
       text1: 'Need to confirm your phone number',
       // text2: err01.toString(),

@@ -177,20 +177,6 @@ function PlaceAdd({ navigation }) {
     })
   }, [formInput])
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: '',
-      headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
-      headerLeft: renderHeaderLeft,
-      headerBackTitle: '',
-      headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
-      },
-    })
-    // init()
-  }, [])
-
   async function init() {
     UTILS.isValidToken({ authContext, navigation })
 
@@ -245,16 +231,30 @@ function PlaceAdd({ navigation }) {
 
   useEffect(() => {
     navigation.setOptions({
+      headerTitle: '',
+      headerTintColor: CONST.MAIN_COLOR,
+      headerRight: renderHeaderRight,
+      headerLeft: renderHeaderLeft,
+      headerBackTitle: '',
+      headerStyle: {
+        backgroundColor: CONST.NAV_COLOR,
+      },
+    })
+    init()
+  }, [])
+
+  useEffect(() => {
+    navigation.setOptions({
       headerRight: renderHeaderRight,
     })
   }, [canSubmit])
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      init()
-    })
-    return unsubscribe
-  }, [navigation])
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     init()
+  //   })
+  //   return unsubscribe
+  // }, [navigation])
 
   const styles = StyleSheet.create({
     container: {

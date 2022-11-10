@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 // import { useNavigation } from '@react-navigation/native'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
@@ -24,31 +24,46 @@ import {
 import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
+import * as UTILS from '../../utils'
+import { VALID } from '../../valid'
 
 function Feedback({ navigation }) {
   // const navigation = useNavigation()
-
-  const [nickName, setNickName] = useState('')
-  const [nickNameEntered, setNickNameEntered] = useState(false)
+  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
 
   const [canSubmit, setCanSubmit] = useState(false)
+
+  async function init() {
+    UTILS.isValidToken({ authContext, navigation })
+  }
+
+  function renderHeaderLeft() {
+    return (
+      <FontAwesome
+        name="chevron-left"
+        size={30}
+        style={{
+          marginLeft: 10,
+          color: CONST.MAIN_COLOR,
+          width: 60,
+        }}
+        onPress={() => navigation.goBack()}
+      />
+    )
+  }
 
   useEffect(() => {
     navigation.setOptions({
       headerTitle: '',
       headerTintColor: CONST.MAIN_COLOR,
-      headerRight: renderHeaderRight,
+      headerRight: null,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    // resetFields()
-  }, [navigation])
+  }, [])
 
   const styles = StyleSheet.create({
     container: {
@@ -60,32 +75,6 @@ function Feedback({ navigation }) {
       paddingBottom: 300,
     },
   })
-
-  const renderHeaderRight = () => (
-    <Ionicons
-      // onPress={
-      //   canSubmit ? () => handleSubmit() : null
-      // }
-      name="send"
-      size={30}
-      style={{
-        marginRight: 10,
-        color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
-      }}
-    />
-  )
-  const renderHeaderLeft = () => (
-    <FontAwesome
-      name="chevron-left"
-      size={30}
-      style={{
-        marginLeft: 10,
-        color: CONST.MAIN_COLOR,
-        width: 60,
-      }}
-      onPress={() => navigation.goBack()}
-    />
-  )
 
   return (
     <SafeAreaView style={styles.container}>

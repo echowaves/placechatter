@@ -81,6 +81,7 @@ function SmsConfirm({ navigation }) {
       await setAuthContext({ ...authContext, token, nickName })
 
       navigation.goBack()
+      // navigation.pop()
       // console.log({ response })
       // alert(response)
     } catch (err3) {
@@ -128,7 +129,9 @@ function SmsConfirm({ navigation }) {
         color: CONST.MAIN_COLOR,
         width: 60,
       }}
-      onPress={() => navigation.goBack()}
+      onPress={() => {
+        navigation.goBack()
+      }}
     />
   )
 

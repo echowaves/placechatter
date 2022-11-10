@@ -87,7 +87,6 @@ function PhoneCheck({ navigation }) {
       }}
     />
   )
-
   const renderHeaderLeft = () => (
     <FontAwesome
       name="chevron-left"
@@ -97,7 +96,9 @@ function PhoneCheck({ navigation }) {
         color: CONST.MAIN_COLOR,
         width: 60,
       }}
-      onPress={() => navigation.goBack()}
+      onPress={() => {
+        navigation.goBack()
+      }}
     />
   )
 
