@@ -51,7 +51,7 @@
     "expo-status-bar": "~1.4.0",
     "expo-storage": "46.0.0",
     "expo-task-manager": "~10.3.0",
-    "expo-updates": "~0.14.3",
+    "expo-updates": "~0.14.7",
     "graphql": "^16.0.0",
     "graphql-ws": "^5.5.5",
     "isomorphic-ws": "^5.0.0",

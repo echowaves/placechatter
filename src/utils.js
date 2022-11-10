@@ -367,7 +367,6 @@ export async function isValidToken({ authContext, navigation }) {
     ) {
       throw new Error('Invalid parameters')
     }
-
     return (
       await CONST.gqlClient.query({
         query: gql`
@@ -389,7 +388,7 @@ export async function isValidToken({ authContext, navigation }) {
     ).data.isValidToken
   } catch (err011) {
     // console.log({ err011 })
-    navigation.navigate('PhoneCheck')
+    navigation.push('PhoneCheck')
     Toast.show({
       text1: 'Need to confirm your phone number',
       // text2: err01.toString(),
