@@ -23,6 +23,7 @@ import {
 } from '@expo/vector-icons'
 import Markdown from 'react-native-markdown-display'
 import Spinner from 'react-native-loading-spinner-overlay'
+import dayjs from 'dayjs'
 
 import PropTypes from 'prop-types'
 
@@ -49,6 +50,7 @@ function Feedback({ navigation }) {
       phoneNumber,
       token,
     })
+    console.log({ thelist })
     setFeedbackList(thelist)
   }
 
@@ -69,7 +71,7 @@ function Feedback({ navigation }) {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: '',
+      headerTitle: 'feedback',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: null,
       headerLeft: renderHeaderLeft,
@@ -78,6 +80,7 @@ function Feedback({ navigation }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
+    init()
   }, [])
 
   const styles = StyleSheet.create({
@@ -99,26 +102,10 @@ function Feedback({ navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView>
-        {feedbackList.map((feedback, index) => {
-          // eslint-disable-next-line no-lone-blocks
-          {
-            /* console.log(card.photoUuid) */
-          }
-
-          return (
-            <Card key={index}>
-              <Card.Title>{feedback.createdAt}</Card.Title>
-              <Markdown style={markdownStyles}>
-                {feedback.feedbackText}
-              </Markdown>
-            </Card>
-          )
-        })}
-
         <Card>
           <Button
             onPress={async () => {
-              // addCard()
+              navigation.navigate('FeedbackAdd')
             }}
             size="lg"
             color="green"
@@ -128,6 +115,27 @@ function Feedback({ navigation }) {
             <Icon name="add" color="white" />
           </Button>
         </Card>
+
+        {feedbackList.map((feedback, index) => {
+          // eslint-disable-next-line no-lone-blocks
+          {
+            /* console.log(card.photoUuid) */
+          }
+
+          return (
+            <Card key={index}>
+              <Card.Title>
+                {`${dayjs(`${feedback.createdAt}`).format(
+                  VALID.renderDateFormat,
+                )}`}
+              </Card.Title>
+              <Markdown style={markdownStyles}>
+                {feedback.feedbackText}
+              </Markdown>
+            </Card>
+          )
+        })}
+
         <Card.Divider />
         <Card.Divider />
       </ScrollView>

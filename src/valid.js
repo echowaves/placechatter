@@ -7,6 +7,7 @@ import * as CONST from './consts'
 
 export const VALID = {
   dateFormat: 'YYYY-MM-DD HH:mm:ss.SSS',
+  renderDateFormat: 'hh:mm A MMM DD YYYY',
 
   phoneNumber: function (param) {
     return /^([0-9]){10}$/.test(param)
@@ -32,29 +33,32 @@ export const VALID = {
   },
 
   token: function (param) {
-    return /^(\w){128}$/.test(param)
+    return /^(.|\s){128}$/.test(param)
   },
 
   placeName: function (param) {
-    return /^([\w\s'/_@.#&+-;~]){4,50}$/.test(param)
+    return /^(.){4,50}$/.test(param)
   },
   streetAddress: function (param) {
-    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+    return /^(.){2,50}$/.test(param)
   },
   city: function (param) {
-    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+    return /^(.){2,50}$/.test(param)
   },
   region: function (param) {
-    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+    return /^(.){2,50}$/.test(param)
   },
   postalCode: function (param) {
-    return /^([\w_@./#&+-\s]){2,50}$/.test(param)
+    return /^(.){2,50}$/.test(param)
   },
 
   cardTitle: function (param) {
-    return /^([\w\s'/_@.#&+-;~]){4,50}$/.test(param)
+    return /^(.){4,50}$/.test(param)
   },
   cardText: function (param) {
     return /^(.|\s){4,1024}$/.test(param)
+  },
+  feedbackText: function (param) {
+    return /^(.|\s){4,2000}$/.test(param)
   },
 }

@@ -38,9 +38,9 @@ import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
 // import PlaceCardAdd from './src/screens/Place/placeCardAdd'
 import PlaceCardEdit from './src/screens/Place/placeCardEdit'
-import PhotosSwiper from './src/screens/Place/photosSwiper'
 
 import Feedback from './src/screens/Feedback'
+import FeedbackAdd from './src/screens/Feedback/feedbackAdd'
 import PhoneCheck from './src/screens/PhoneCheck'
 import SmsConfirm from './src/screens/PhoneCheck/SmsConfirm'
 // import Chat from './src/screens/Chat'
@@ -221,8 +221,8 @@ function App() {
         }}
       />
       <Stack.Screen
-        name="PhotosSwiper"
-        component={PhotosSwiper}
+        name="FeedbackAdd"
+        component={FeedbackAdd}
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
