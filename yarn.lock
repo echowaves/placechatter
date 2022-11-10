@@ -4617,10 +4617,10 @@ expo-background-fetch@~11.0.1:
   dependencies:
     expo-task-manager "~11.0.0"
 
-expo-cached-image@46.0.1:
-  version "46.0.1"
-  resolved "https://registry.yarnpkg.com/expo-cached-image/-/expo-cached-image-46.0.1.tgz#a2f62450b198e93dad382300fd99aa6d06d258fa"
-  integrity sha512-HMWLpaMIzNFEP7tzLOlf3/hroqVI5FAXhwltuI3VwdMjZBC0yrEKETtKIbx1qX4R+5sTWStUysx89hLUyLR7hw==
+expo-cached-image@47.0.0:
+  version "47.0.0"
+  resolved "https://registry.yarnpkg.com/expo-cached-image/-/expo-cached-image-47.0.0.tgz#bc616145186e1cb41a26d4a6976058f4c9fdcfd4"
+  integrity sha512-3j4OZauP5p1nDcRf73DXdhUkVi0NcytzsvToEmpyzLmJfTydUrDw3vLck+pO8TS8kPSCx/5OJ7Yf76wlvcE0VA==
 
 expo-constants@~14.0.0, expo-constants@~14.0.2:
   version "14.0.2"
@@ -4779,10 +4779,10 @@ expo-status-bar@~1.4.2:
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.4.2.tgz#14f2b9a6dc7d550578421f07e0046f5fafc2b403"
   integrity sha512-ZWjO6D4ARGYfAd3SWDD3STNudHDhyBZDZjhhseqoEmsf7bS9ykny8KKOhlzJW24qIQNPhkgdvHhaw9fQwMJy3Q==
 
-expo-storage@46.0.0:
-  version "46.0.0"
-  resolved "https://registry.yarnpkg.com/expo-storage/-/expo-storage-46.0.0.tgz#17812274f7ca38f010d46f0df3d33c6ade6b83e5"
-  integrity sha512-65wpj2WfG02c7GCJ4ElOWLtJa9yJsmL+KM6gb3C+C/uMQcetmbFIT5W8a2MY51FTNzNe6bQXedKSj6/dIsJJ5g==
+expo-storage@47.0.0:
+  version "47.0.0"
+  resolved "https://registry.yarnpkg.com/expo-storage/-/expo-storage-47.0.0.tgz#ef26ad6d48b8eb6947205908338c641f7b88ba8f"
+  integrity sha512-Zax801AJAYh4yWAFoqj9Jeo41h33RkmR0DUpeyrcOjjWUXjOi3M7URfBk9T1EcrJZFQZGWdZImLMJh21Ae1U8Q==
 
 expo-structured-headers@~3.0.0:
   version "3.0.1"
