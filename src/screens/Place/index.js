@@ -57,7 +57,7 @@ import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
 import Photo from './Photo'
-import { markdownStyles } from './markdownHelp'
+import { markdownStyles } from '../../markdownHelp'
 
 function Place({ navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)

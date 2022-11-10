@@ -48,7 +48,7 @@ import * as CONST from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
-import MarkdownHelp from './markdownHelp'
+import MarkdownHelp from '../../markdownHelp'
 
 function PlaceCardEdit({ route, navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)

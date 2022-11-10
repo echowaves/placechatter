@@ -1120,13 +1120,7 @@ export async function placePhoneList({
   return null
 }
 
-export async function feedbackList({
-  uuid,
-  phoneNumber,
-  token,
-
-  placeUuid,
-}) {
+export async function feedbackList({ uuid, phoneNumber, token }) {
   try {
     return (
       await CONST.gqlClient.query({
@@ -1135,17 +1129,15 @@ export async function feedbackList({
             $uuid: String!
             $phoneNumber: String!
             $token: String!
-            $placeUuid: String!
           ) {
             feedbackList(
               uuid: $uuid
               phoneNumber: $phoneNumber
               token: $token
-              placeUuid: $placeUuid
             ) {
               createdAt
               phoneNumber
-              role
+              feedbackText
             }
           }
         `,
@@ -1153,7 +1145,6 @@ export async function feedbackList({
           uuid,
           phoneNumber,
           token,
-          placeUuid,
         },
         // fetchPolicy: 'network-only',
         // fetchPolicy: 'no-cache',
@@ -1169,5 +1160,5 @@ export async function feedbackList({
       topOffset,
     })
   }
-  return null
+  return []
 }

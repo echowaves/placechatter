@@ -45,11 +45,11 @@ import { v4 as uuidv4 } from 'uuid'
 import PropTypes from 'prop-types'
 import Markdown from 'react-native-markdown-display'
 
-import Photo from './Photo'
+import Photo from './screens/Place/Photo'
 
-import * as CONST from '../../consts'
-import { VALID } from '../../valid'
-import * as UTILS from '../../utils'
+import * as CONST from './consts'
+import { VALID } from './valid'
+import * as UTILS from './utils'
 
 export const markdownStyles = {
   // The main container

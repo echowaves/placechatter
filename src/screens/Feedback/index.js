@@ -10,6 +10,7 @@ import {
   Card,
   ListItem,
   Button,
+  Icon,
 } from '@rneui/themed'
 
 // import * as FileSystem from 'expo-file-system'
@@ -20,21 +21,35 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons'
+import Markdown from 'react-native-markdown-display'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import PropTypes from 'prop-types'
 
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
+import { markdownStyles } from '../../markdownHelp'
 
 function Feedback({ navigation }) {
   // const navigation = useNavigation()
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const [showSpinner, setShowSpinner] = useState(false)
 
+  const [feedbackList, setFeedbackList] = useState([])
   const [canSubmit, setCanSubmit] = useState(false)
 
   async function init() {
     UTILS.isValidToken({ authContext, navigation })
+
+    const { uuid, phoneNumber, token } = authContext
+
+    const thelist = await UTILS.feedbackList({
+      uuid,
+      phoneNumber,
+      token,
+    })
+    setFeedbackList(thelist)
   }
 
   function renderHeaderLeft() {
@@ -78,7 +93,44 @@ function Feedback({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Feedback</Text>
+      <Spinner
+        visible={showSpinner}
+        textContent={'Loading...'}
+        // textStyle={styles.spinnerTextStyle}
+      />
+      <ScrollView>
+        {feedbackList.map((feedback, index) => {
+          // eslint-disable-next-line no-lone-blocks
+          {
+            /* console.log(card.photoUuid) */
+          }
+
+          return (
+            <Card key={index}>
+              <Card.Title>{feedback.createdAt}</Card.Title>
+              <Markdown style={markdownStyles}>
+                {feedback.feedbackText}
+              </Markdown>
+            </Card>
+          )
+        })}
+
+        <Card>
+          <Button
+            onPress={async () => {
+              // addCard()
+            }}
+            size="lg"
+            color="green"
+            iconRight
+          >
+            {`  Add Feedback`}
+            <Icon name="add" color="white" />
+          </Button>
+        </Card>
+        <Card.Divider />
+        <Card.Divider />
+      </ScrollView>
     </SafeAreaView>
   )
 }
