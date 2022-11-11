@@ -1052,7 +1052,6 @@ export async function feedbackCreate({
               token: $token
               feedbackText: $feedbackText
             ) {
-              feedbackText
               createdAt
             }
           }
