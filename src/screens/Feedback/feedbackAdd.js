@@ -143,7 +143,6 @@ function FeedbackAdd({ route, navigation }) {
       <KeyboardAwareScrollView>
         <Card>
           <Input
-            label="Feedback Text"
             // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
             placeholder={`enter text`}
             errorMessage={feedbackTextError}
@@ -171,7 +170,6 @@ function FeedbackAdd({ route, navigation }) {
         </Card>
         <MarkdownHelp />
         <Card>
-          <Card.Title>Preview</Card.Title>
           <Markdown style={markdownStyles}>{feedbackText}</Markdown>
         </Card>
       </KeyboardAwareScrollView>
