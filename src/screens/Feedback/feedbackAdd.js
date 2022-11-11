@@ -119,9 +119,9 @@ function FeedbackAdd({ route, navigation }) {
         token,
         feedbackText,
       })
-      console.log({ feedback })
+      // console.log({ feedback })
     } catch (err11) {
-      console.log({ err11 })
+      // console.log({ err11 })
       Toast.show({
         text1: 'Unable to create feedback, try again.',
         text2: err11.toString(),
@@ -164,7 +164,7 @@ function FeedbackAdd({ route, navigation }) {
             iconRight
             color={CONST.MAIN_COLOR}
           >
-            {`  Save Feedback`}
+            {`Save Feedback ${feedbackText.length}/2000`}
             <Icon name="save" color="white" />
           </Button>
         </Card>
