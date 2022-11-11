@@ -45,9 +45,9 @@ export default {
       associatedDomains: ['applinks:link.placechatter.com'],
       config: {
         usesNonExemptEncryption: false,
-        branch: {
-          apiKey: 'key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX',
-        },
+        // branch: {
+        //   apiKey: 'key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX',
+        // },
       },
       infoPlist: {
         UIBackgroundModes: ['fetch'],
@@ -85,9 +85,9 @@ export default {
         'com.google.android.gms.permission.AD_ID',
       ],
       config: {
-        branch: {
-          apiKey: 'key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX',
-        },
+        // branch: {
+        //   apiKey: 'key_live_mb05m7GAfQH9Y3FGUao95ijaqDastcQX',
+        // },
       },
       intentFilters: [
         {
