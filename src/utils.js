@@ -367,7 +367,7 @@ export async function isValidToken({ authContext, navigation }) {
     ) {
       throw new Error('Invalid parameters')
     }
-    return (
+    const isPhoneConfirmed = (
       await CONST.gqlClient.query({
         query: gql`
           query isValidToken(
@@ -386,16 +386,21 @@ export async function isValidToken({ authContext, navigation }) {
         fetchPolicy: 'no-cache',
       })
     ).data.isValidToken
+    // console.log({ isPhoneConfirmed })
+    if (!isPhoneConfirmed) {
+      throw new Error('Have to confirm your phone number')
+    }
+    return true
   } catch (err011) {
     // console.log({ err011 })
-    navigation.navigate('PhoneCheck')
-    Toast.show({
-      text1: 'Need to confirm your phone number',
-      // text2: err01.toString(),
-      type: 'error',
-      topOffset,
-    })
   }
+  navigation.navigate('PhoneCheck')
+  Toast.show({
+    text1: 'Need to confirm your phone number',
+    // text2: err01.toString(),
+    type: 'error',
+    topOffset,
+  })
   return false
 }
 
@@ -1032,7 +1037,7 @@ export async function feedbackCreate({
   feedbackText,
 }) {
   try {
-    return (
+    const feedback = (
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation feedbackCreate(
@@ -1046,7 +1051,10 @@ export async function feedbackCreate({
               phoneNumber: $phoneNumber
               token: $token
               feedbackText: $feedbackText
-            )
+            ) {
+              feedbackText
+              createdAt
+            }
           }
         `,
         variables: {
@@ -1057,7 +1065,10 @@ export async function feedbackCreate({
         },
       })
     ).data.feedbackCreate
+    // console.log({ feedback })
+    return feedback
   } catch (err023) {
+    // console.log({ err023 })
     Toast.show({
       text1: 'Unable to post feedback',
       text2: err023.toString(),
@@ -1147,7 +1158,7 @@ export async function feedbackList({ uuid, phoneNumber, token }) {
           token,
         },
         // fetchPolicy: 'network-only',
-        // fetchPolicy: 'no-cache',
+        fetchPolicy: 'no-cache',
       })
     ).data.feedbackList
     // alert(response)

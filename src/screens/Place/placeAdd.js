@@ -50,6 +50,68 @@ function PlaceAdd({ navigation }) {
 
   const [canSubmit, setCanSubmit] = useState(false)
 
+  async function init() {
+    if (await UTILS.isValidToken({ authContext, navigation })) {
+      let location = null
+      try {
+        location = await UTILS.getLocation()
+        setCurrentLocation(location)
+      } catch (err) {
+        Toast.show({
+          text1: 'Unable to get location',
+          type: 'error',
+          topOffset,
+        })
+      }
+      if (location) {
+        const { latitude, longitude } = location.coords
+
+        const geocodedAddress = await Location.reverseGeocodeAsync(
+          {
+            latitude,
+            longitude,
+          },
+          { useGoogleMaps: false, lang: 'en' },
+        )
+        // console.log({ geocodedAddress })
+        setLocationGeocodedAddress(geocodedAddress[0])
+
+        setFormInput({
+          placeName: '',
+          streetAddress1: `${geocodedAddress[0].streetNumber || ''} ${
+            geocodedAddress[0].street || ''
+          }`,
+          streetAddress2: '',
+          city: geocodedAddress[0].city || '',
+
+          region: geocodedAddress[0].region || '',
+
+          subregion: geocodedAddress[0].subregion || '',
+
+          postalCode: geocodedAddress[0].postalCode || '',
+
+          country: geocodedAddress[0].country || '',
+          isoCountryCode: geocodedAddress[0].isoCountryCode || '',
+
+          district: geocodedAddress[0].district || '',
+          timezone: geocodedAddress[0].timezone || '',
+          lat: latitude,
+          lon: longitude,
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      init()
+    })
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe
+  }, [navigation])
+
   const handleSubmit = async () => {
     setShowSpinner(true)
 
@@ -176,58 +238,6 @@ function PlaceAdd({ navigation }) {
       headerRight: renderHeaderRight,
     })
   }, [formInput])
-
-  async function init() {
-    UTILS.isValidToken({ authContext, navigation })
-
-    let location = null
-    try {
-      location = await UTILS.getLocation()
-      setCurrentLocation(location)
-    } catch (err) {
-      Toast.show({
-        text1: 'Unable to get location',
-        type: 'error',
-        topOffset,
-      })
-    }
-    if (location) {
-      const { latitude, longitude } = location.coords
-
-      const geocodedAddress = await Location.reverseGeocodeAsync(
-        {
-          latitude,
-          longitude,
-        },
-        { useGoogleMaps: false, lang: 'en' },
-      )
-      // console.log({ geocodedAddress })
-      setLocationGeocodedAddress(geocodedAddress[0])
-
-      setFormInput({
-        placeName: '',
-        streetAddress1: `${geocodedAddress[0].streetNumber || ''} ${
-          geocodedAddress[0].street || ''
-        }`,
-        streetAddress2: '',
-        city: geocodedAddress[0].city || '',
-
-        region: geocodedAddress[0].region || '',
-
-        subregion: geocodedAddress[0].subregion || '',
-
-        postalCode: geocodedAddress[0].postalCode || '',
-
-        country: geocodedAddress[0].country || '',
-        isoCountryCode: geocodedAddress[0].isoCountryCode || '',
-
-        district: geocodedAddress[0].district || '',
-        timezone: geocodedAddress[0].timezone || '',
-        lat: latitude,
-        lon: longitude,
-      })
-    }
-  }
 
   useEffect(() => {
     navigation.setOptions({

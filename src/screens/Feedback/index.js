@@ -41,18 +41,27 @@ function Feedback({ navigation }) {
   const [canSubmit, setCanSubmit] = useState(false)
 
   async function init() {
-    UTILS.isValidToken({ authContext, navigation })
+    if (await UTILS.isValidToken({ authContext, navigation })) {
+      const { uuid, phoneNumber, token } = authContext
 
-    const { uuid, phoneNumber, token } = authContext
-
-    const thelist = await UTILS.feedbackList({
-      uuid,
-      phoneNumber,
-      token,
-    })
-    console.log({ thelist })
-    setFeedbackList(thelist)
+      const thelist = await UTILS.feedbackList({
+        uuid,
+        phoneNumber,
+        token,
+      })
+      // console.log({ thelist })
+      setFeedbackList(thelist)
+    }
   }
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      init()
+    })
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe
+  }, [navigation])
 
   function renderHeaderLeft() {
     return (
@@ -80,7 +89,6 @@ function Feedback({ navigation }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-    init()
   }, [])
 
   const styles = StyleSheet.create({

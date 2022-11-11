@@ -29,6 +29,7 @@ import {
   Button,
   Input,
 } from '@rneui/themed'
+import Markdown from 'react-native-markdown-display'
 
 import * as ImageManipulator from 'expo-image-manipulator'
 import * as MediaLibrary from 'expo-media-library'
@@ -46,7 +47,7 @@ import * as CONST from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
-import MarkdownHelp from '../../markdownHelp'
+import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 
 function FeedbackAdd({ route, navigation }) {
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
@@ -112,12 +113,13 @@ function FeedbackAdd({ route, navigation }) {
 
     try {
       const { uuid, phoneNumber, token } = authContext
-      const placeCard = await UTILS.feedbackCreate({
+      const feedback = await UTILS.feedbackCreate({
         uuid,
         phoneNumber,
         token,
         feedbackText,
       })
+      console.log({ feedback })
     } catch (err11) {
       console.log({ err11 })
       Toast.show({
@@ -168,6 +170,10 @@ function FeedbackAdd({ route, navigation }) {
           </Button>
         </Card>
         <MarkdownHelp />
+        <Card>
+          <Card.Title>Preview</Card.Title>
+          <Markdown style={markdownStyles}>{feedbackText}</Markdown>
+        </Card>
       </KeyboardAwareScrollView>
     </>
   )
