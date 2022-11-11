@@ -1128,11 +1128,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@config-plugins/react-native-branch@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@config-plugins/react-native-branch/-/react-native-branch-3.0.0.tgz#d7f8a2cc9c3ef42123b285fe281b04d2e36eeae5"
-  integrity sha512-pBdAdI8ji0VFgQ2TiAc5Np6zdep1yOKOKZ/EH2GJzyNtgCS3eDu2Y/6KntM1y1zTaZzqXquhILOMvXGHYqh86g==
-
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
