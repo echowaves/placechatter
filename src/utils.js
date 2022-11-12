@@ -588,6 +588,8 @@ export async function placeCardCreate({
               cardTitle
               cardText
               active
+              sortOrder
+              createdAt
             }
           }
         `,

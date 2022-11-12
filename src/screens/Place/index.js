@@ -64,6 +64,7 @@ function Place({ navigation }) {
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
   const [placeUuid, setPlaceUuid] = useState(placeContext.place.placeUuid)
 
+  const [isPlaceOwner, setIsPlaceOwner] = useState(false)
   const [canEdit, setCanEdit] = useState(false)
 
   const [showSpinner, setShowSpinner] = useState(false)
@@ -71,21 +72,47 @@ function Place({ navigation }) {
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
-  // const scrollViewRef = useRef()
+  const renderHeaderRight = () => {
+    if (isPlaceOwner) {
+      if (!canEdit) {
+        return (
+          <Button
+            title="edit"
+            size="sm"
+            raised={true}
+            type="outline"
+            onPress={() => setCanEdit(true)}
+          />
+        )
+      }
+      return (
+        <Button
+          title="preview"
+          size="sm"
+          raised={false}
+          type="outline"
+          onPress={() => setCanEdit(false)}
+        />
+      )
+    }
+    return null
+  }
 
   // const [place, setPlace] = useState()
   const init = async () => {
     setShowSpinner(true)
     const { uuid, phoneNumber, token } = authContext
     // console.log({ uuid, phoneNumber, token })
-    const isPlaceOwner = await UTILS.isPlaceOwner({
-      uuid,
-      phoneNumber,
-      token,
-      placeUuid,
-    })
+    setIsPlaceOwner(
+      await UTILS.isPlaceOwner({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+      }),
+    )
     // console.log({ isPlaceOwner })
-    setCanEdit(isPlaceOwner)
+    // setCanEdit(isPlaceOwner)
 
     setShowSpinner(false)
   }
@@ -104,34 +131,17 @@ function Place({ navigation }) {
   const onRefresh = useCallback(() => {
     refresh()
   }, [])
+
   useEffect(() => {
     init()
   }, [])
 
-  // useEffect(() => {
-  //   console.log('place context changed')
-  //   // scrollViewRef?.current?.scrollToEnd({ animated: true })
-  // }, [placeContext])
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    })
+  }, [isPlaceOwner, canEdit])
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const task = InteractionManager.runAfterInteractions(() => {
-  //       refresh()``
-  //     })
-
-  //     return () => task.cancel()
-  //   }, []),
-  // )
-  const renderHeaderRight = () => null
-  // <Ionicons
-  //   // onPress={canSubmit ? () => handleSubmit() : null}
-  //   name="send"
-  //   size={30}
-  //   style={{
-  //     marginRight: 10,
-  //     color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
-  //   }}
-  // />
   const renderHeaderLeft = () => (
     <FontAwesome
       name="chevron-left"
