@@ -56,7 +56,7 @@ function PlacesList({ navigation }) {
   const [places, setPlaces] = useState()
   const [refreshing, setRefreshing] = useState(false)
 
-  const init = async function () {
+  const init = async () => {
     try {
       setIsTandcAccepted(
         (await SecureStore.getItemAsync(CONSTS.IS_TANDC_ACCEPTED_KEY)) ===
@@ -67,8 +67,8 @@ function PlacesList({ navigation }) {
     }
   }
 
-  const load = async function () {
-    // setPlaces(null)
+  const load = async () => {
+    setPlaces(null)
     let location
     try {
       location = await UTILS.getLocation()
@@ -109,8 +109,9 @@ function PlacesList({ navigation }) {
     setRefreshing(false)
   }, [])
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
       navigation.setOptions({
         headerTitle: 'places near me',
         headerTintColor: CONSTS.MAIN_COLOR,
@@ -123,8 +124,10 @@ function PlacesList({ navigation }) {
       })
       init()
       load()
-    }, []),
-  )
+    })
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe
+  }, [navigation])
 
   // useEffect(() => {
   //   // resetFields()

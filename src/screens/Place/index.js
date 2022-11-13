@@ -61,6 +61,7 @@ import { markdownStyles } from '../../markdownHelp'
 
 function Place({ route, navigation }) {
   const { placeUuid } = route.params
+
   const { authContext } = useContext(CONST.AuthContext)
 
   const [currentPlace, setCurrentPlace] = useState()
@@ -166,10 +167,10 @@ function Place({ route, navigation }) {
   }, [isPlaceOwner, canEdit])
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
       // The screen is focused
-      refresh()
-      initPlaceOwner()
+      await initPlaceOwner()
+      await refresh()
     })
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe
