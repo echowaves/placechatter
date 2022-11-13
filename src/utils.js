@@ -939,6 +939,14 @@ export async function placePhoneCreate({
   phone,
   placeUuid,
 }) {
+  console.log({
+    uuid,
+    phoneNumber,
+    token,
+
+    phone,
+    placeUuid,
+  })
   try {
     return (
       await CONST.gqlClient.mutate({
@@ -971,9 +979,11 @@ export async function placePhoneCreate({
           phone,
           placeUuid,
         },
+        fetchPolicy: 'no-cache',
       })
     ).data.placePhoneCreate
   } catch (err021) {
+    // console.log({ err021 })
     Toast.show({
       text1: 'Unable to add phone to place',
       text2: err021.toString(),
@@ -1118,7 +1128,7 @@ export async function placePhoneList({
           placeUuid,
         },
         // fetchPolicy: 'network-only',
-        // fetchPolicy: 'no-cache',
+        fetchPolicy: 'no-cache',
       })
     ).data.placePhoneList
     // alert(response)

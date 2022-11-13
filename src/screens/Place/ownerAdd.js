@@ -115,6 +115,7 @@ function OwnerAdd({ route, navigation }) {
 
     try {
       const { uuid, phoneNumber, token } = authContext
+
       const owner = await UTILS.placePhoneCreate({
         uuid,
         phoneNumber,

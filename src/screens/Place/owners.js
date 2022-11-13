@@ -1,7 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
 // import { useNavigation } from '@react-navigation/native'
 
-import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from 'react-native'
 import phoneFormatter from 'phone-formatter'
 
 import {
@@ -65,6 +71,17 @@ function Owners({ route, navigation }) {
     return unsubscribe
   }, [navigation])
 
+  const refresh = async () => {
+    // console.log('refreshing')
+    setShowSpinner(true)
+    await init()
+    setShowSpinner(false)
+  }
+
+  const onRefresh = React.useCallback(() => {
+    refresh()
+  }, [])
+
   function renderHeaderLeft() {
     return (
       <FontAwesome
@@ -82,7 +99,7 @@ function Owners({ route, navigation }) {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'feedback',
+      headerTitle: 'place owners',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: null,
       headerLeft: renderHeaderLeft,
@@ -111,7 +128,11 @@ function Owners({ route, navigation }) {
         textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={showSpinner} onRefresh={onRefresh} />
+        }
+      >
         {ownersList.map((owner, index) => {
           // eslint-disable-next-line no-lone-blocks
           {
