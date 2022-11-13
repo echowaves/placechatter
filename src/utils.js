@@ -55,7 +55,7 @@ export async function getLocation() {
 async function storeUUID(uuid) {
   // console.log('storing', { uuid })
   try {
-    await SecureStore.setItemAsync(CONST.UUID_KEY, uuid)
+    await SecureStore.setItemAsync(CONST.UUID_KEY, `${uuid}`)
   } catch (err001) {
     // console.log({ err1 })
     Toast.show({
@@ -89,7 +89,7 @@ export async function getUUID() {
 
 export async function setNickName(nickName) {
   try {
-    await SecureStore.setItemAsync(CONST.NICK_NAME_KEY, nickName)
+    await SecureStore.setItemAsync(CONST.NICK_NAME_KEY, `${nickName}`)
   } catch (err003) {
     Toast.show({
       text1: 'Unable to store NickName',
@@ -107,7 +107,7 @@ export async function getNickName() {
 
 export const setPhoneNumber = async (phoneNumber) => {
   try {
-    await SecureStore.setItemAsync(CONST.PHONE_NUMBER_KEY, phoneNumber)
+    await SecureStore.setItemAsync(CONST.PHONE_NUMBER_KEY, `${phoneNumber}`)
   } catch (err004) {
     Toast.show({
       text1: 'Unable to store PhoneNumber',
@@ -125,7 +125,7 @@ export async function getPhoneNumber() {
 
 export const setToken = async (token) => {
   try {
-    await SecureStore.setItemAsync(CONST.TOKEN_KEY, token)
+    await SecureStore.setItemAsync(CONST.TOKEN_KEY, `${token}`)
   } catch (err005) {
     Toast.show({
       text1: 'Unable to store token',

@@ -57,10 +57,11 @@ const Drawer = createDrawerNavigator()
 // eslint-disable-next-line no-unused-vars
 const Stack = createStackNavigator()
 // enableFreeze(true)
-const { AuthContext, PlaceContext } = CONST
+const { AuthContext } = CONST
 
 function App() {
   const [authContext, setAuthContext] = useState()
+  const [nickName, setNickName] = useState()
 
   const init = async () => {
     setAuthContext({
@@ -74,6 +75,10 @@ function App() {
   useEffect(() => {
     init()
   }, [])
+
+  useEffect(() => {
+    setNickName(authContext?.nickName)
+  }, [authContext])
 
   const MainDrawNavigator = () => (
     <Drawer.Navigator
@@ -115,9 +120,7 @@ function App() {
               }}
             />
           ),
-          drawerLabel: authContext?.nickName
-            ? authContext?.nickName
-            : 'confirm phone',
+          drawerLabel: nickName || 'confirm phone',
           // headerShown: true,
         }}
       />

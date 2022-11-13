@@ -61,7 +61,11 @@ function PhoneCheck({ navigation }) {
 
       // console.log({ response })
       // alert(response)
-      setAuthContext({ ...authContext, phoneNumber })
+      UTILS.setToken('')
+      UTILS.setPhoneNumber('')
+      UTILS.setNickName('')
+
+      setAuthContext({ ...authContext, token: '', phoneNumber, nickName: '' })
       setShowSpinner(false)
 
       navigation.navigate('SmsConfirm')

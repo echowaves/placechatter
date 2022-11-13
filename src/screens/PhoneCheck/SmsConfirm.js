@@ -60,6 +60,15 @@ function SmsConfirm({ navigation }) {
   const [canSubmit, setCanSubmit] = useState(true)
   // const input = createRef()
 
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', async () => {
+  //     // The screen is focused
+  //     init()
+  //   })
+  //   // Return the function to unsubscribe from the event so it gets removed on unmount
+  //   return unsubscribe
+  // }, [navigation])
+
   async function handleSubmit() {
     const { uuid, phoneNumber } = authContext
 
@@ -74,11 +83,22 @@ function SmsConfirm({ navigation }) {
         nickName,
       })
 
-      UTILS.setPhoneNumber(phoneNumber)
-      UTILS.setToken(token)
-      UTILS.setNickName(nickName)
-
-      await setAuthContext({ ...authContext, token, nickName })
+      if (token) {
+        await UTILS.setToken(token)
+        await UTILS.setPhoneNumber(phoneNumber)
+        await UTILS.setNickName(nickName)
+        await setAuthContext({ ...authContext, token, phoneNumber, nickName })
+      } else {
+        await UTILS.setToken('')
+        await UTILS.setPhoneNumber('')
+        await UTILS.setNickName('')
+        await setAuthContext({
+          ...authContext,
+          token: '',
+          phoneNumber: '',
+          nickName: '',
+        })
+      }
 
       navigation.goBack()
       // navigation.pop()
@@ -86,14 +106,14 @@ function SmsConfirm({ navigation }) {
       // alert(response)
     } catch (err3) {
       console.log({ err3 })
-      await UTILS.setNickName('')
-      await UTILS.setPhoneNumber('')
       await UTILS.setToken('')
+      await UTILS.setPhoneNumber('')
+      await UTILS.setNickName('')
       setAuthContext({
         ...authContext,
-        nickName: '',
-        // phoneNumber: '',
         token: '',
+        phoneNumber: '',
+        nickName: '',
       })
       setSmsCode('')
 
