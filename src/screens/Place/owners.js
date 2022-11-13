@@ -154,6 +154,9 @@ function Owners({ route, navigation }) {
                   {`   `}
                   {owner?.nickName}
                 </Text>
+                {authContext.phoneNumber === owner.phoneNumber && (
+                  <Text>self</Text>
+                )}
                 {authContext.phoneNumber !== owner.phoneNumber && (
                   <Icon
                     name="delete"
