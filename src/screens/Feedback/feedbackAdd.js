@@ -164,8 +164,8 @@ function FeedbackAdd({ route, navigation }) {
             iconRight
             color={CONST.MAIN_COLOR}
           >
-            {`Save Feedback ${feedbackText.length}/2000`}
-            <Icon name="save" color="white" />
+            {`   Post Feedback ${feedbackText.length}/2000`}
+            <Icon name="send" color="white" />
           </Button>
         </Card>
         <MarkdownHelp />
