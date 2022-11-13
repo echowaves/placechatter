@@ -99,49 +99,6 @@ function Place({ navigation }) {
   }
 
   // const [place, setPlace] = useState()
-  const init = async () => {
-    setShowSpinner(true)
-    const { uuid, phoneNumber, token } = authContext
-    // console.log({ uuid, phoneNumber, token })
-    setIsPlaceOwner(
-      await UTILS.isPlaceOwner({
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid,
-      }),
-    )
-    // console.log({ isPlaceOwner })
-    // setCanEdit(isPlaceOwner)
-
-    setShowSpinner(false)
-  }
-
-  const refresh = async () => {
-    setShowSpinner(true)
-
-    const { place, cards } = await UTILS.placeRead({
-      placeUuid,
-    })
-    setPlaceContext({ ...placeContext, place, cards })
-
-    setShowSpinner(false)
-  }
-
-  const onRefresh = useCallback(() => {
-    refresh()
-  }, [])
-
-  useEffect(() => {
-    init()
-  }, [])
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: renderHeaderRight,
-    })
-  }, [isPlaceOwner, canEdit])
-
   const renderHeaderLeft = () => (
     <FontAwesome
       name="chevron-left"
@@ -154,8 +111,29 @@ function Place({ navigation }) {
       onPress={() => navigation.goBack()}
     />
   )
+  const init = async () => {
+    const { uuid, phoneNumber, token } = authContext
+    console.log('init')
+    setIsPlaceOwner(
+      await UTILS.isPlaceOwner({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+      }),
+    )
+  }
 
-  useEffect(() => {
+  const refresh = async () => {
+    // await init()
+    setShowSpinner(true)
+    const { uuid, phoneNumber, token } = authContext
+
+    const { place, cards } = await UTILS.placeRead({
+      placeUuid,
+    })
+    setPlaceContext({ ...placeContext, cards })
+
     navigation.setOptions({
       headerTitle: placeContext.place.placeName,
       headerTintColor: CONST.MAIN_COLOR,
@@ -166,6 +144,26 @@ function Place({ navigation }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
+
+    setShowSpinner(false)
+  }
+
+  const onRefresh = React.useCallback(() => {
+    refresh()
+  }, [])
+
+  //  useCallback(() => {
+  //   }, [])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    })
+  }, [isPlaceOwner, canEdit])
+
+  useEffect(() => {
+    // refresh()
+    init()
   }, [])
 
   const styles = StyleSheet.create({
@@ -179,8 +177,8 @@ function Place({ navigation }) {
     },
   })
 
-  const { place, cards } = placeContext
-  if (!place) {
+  // const { place, cards } = placeContext
+  if (!placeContext?.place) {
     return (
       <Spinner
         visible={true}
@@ -243,6 +241,7 @@ function Place({ navigation }) {
         ...placeContext,
         cards: [...placeContext.cards, placeCard],
       })
+      // refresh()
       Toast.show({
         text1: 'Card Added to the bottom of the list',
         // text2: err12.toString(),
@@ -273,10 +272,13 @@ function Place({ navigation }) {
       >
         <Card>
           <Card.Title>Address</Card.Title>
-          <Text>{place.streetAddress1}</Text>
-          {place.streetAddress2 && <Text>{place.streetAddress2}</Text>}
+          <Text>{placeContext?.place?.streetAddress1}</Text>
+          {placeContext?.place?.streetAddress2 && (
+            <Text>{placeContext?.place?.streetAddress2}</Text>
+          )}
           <Text>
-            {place.city}, {place.region} {place.postalCode}
+            {placeContext?.place?.city}, {placeContext?.place?.region}{' '}
+            {placeContext?.place?.postalCode}
           </Text>
         </Card>
         {placeContext.cards.map((card, index) => {
@@ -321,6 +323,20 @@ function Place({ navigation }) {
               >
                 {`  Add Card`}
                 <Icon name="add" color="white" />
+              </Button>
+            </Card>
+            <Card.Divider />
+            <Card>
+              <Button
+                onPress={async () => {
+                  navigation.navigate('Owners')
+                }}
+                size="lg"
+                color="red"
+                iconRight
+              >
+                {`  Manage Owners`}
+                <Icon name="admin-panel-settings" color="white" />
               </Button>
             </Card>
             <Card.Divider />
