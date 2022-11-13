@@ -939,14 +939,6 @@ export async function placePhoneCreate({
   phone,
   placeUuid,
 }) {
-  console.log({
-    uuid,
-    phoneNumber,
-    token,
-
-    phone,
-    placeUuid,
-  })
   try {
     return (
       await CONST.gqlClient.mutate({
