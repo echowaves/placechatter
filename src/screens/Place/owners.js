@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 // import { useNavigation } from '@react-navigation/native'
 
 import {
+  View,
   Alert,
   SafeAreaView,
   StyleSheet,
@@ -141,9 +142,57 @@ function Owners({ route, navigation }) {
 
           return (
             <Card key={index}>
-              <Text>
-                {phoneFormatter.format(owner?.phoneNumber, '(NNN) NNN-NNNN')}
-              </Text>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text>
+                  {phoneFormatter.format(owner?.phoneNumber, '(NNN) NNN-NNNN')}
+                  {`   `}
+                  {owner?.nickName}
+                </Text>
+                {authContext.phoneNumber !== owner.phoneNumber && (
+                  <Icon
+                    name="delete"
+                    color={CONST.MAIN_COLOR}
+                    onPress={() => {
+                      Alert.alert('revoke ownership', 'Are you sure?', [
+                        {
+                          text: 'Yes',
+                          onPress: async () => {
+                            const { uuid, phoneNumber, token } = authContext
+
+                            const deleted = await UTILS.placePhoneDelete({
+                              uuid,
+                              phoneNumber,
+                              token,
+
+                              phone: owner.phoneNumber,
+                              placeUuid,
+                            })
+                            if (deleted) {
+                              setOwnersList(
+                                ownersList.filter(
+                                  (item) =>
+                                    item?.phoneNumber !== owner.phoneNumber,
+                                ),
+                              )
+                            }
+                          },
+                        },
+                        {
+                          text: 'Cancel',
+                          onPress: () => null,
+                          style: 'cancel',
+                        },
+                      ])
+                    }}
+                  />
+                )}
+              </View>
             </Card>
           )
         })}
