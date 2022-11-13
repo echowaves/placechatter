@@ -46,9 +46,23 @@ function PhoneCheck({ navigation }) {
 
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [phoneNumberError, setPhoneNumberError] = useState('')
 
   const [canSubmit, setCanSubmit] = useState(false)
   const input = createRef()
+
+  const valid = () => {
+    setPhoneNumberError('')
+
+    if (!VALID.phoneNumber(phoneNumber)) {
+      setPhoneNumberError('10 digits phone number')
+    }
+  }
+
+  useEffect(() => {
+    // console.log({ smsCode, nickName })
+    valid()
+  }, [phoneNumber])
 
   const handleSubmit = async () => {
     setShowSpinner(true)
@@ -162,6 +176,8 @@ function PhoneCheck({ navigation }) {
           focus={true}
           keyboardType="numeric"
           value={phoneNumber}
+          errorStyle={{ color: 'red' }}
+          errorMessage={phoneNumberError}
           onChangeText={(value) => {
             setPhoneNumber(value)
           }}

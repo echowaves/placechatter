@@ -35,7 +35,7 @@ import { VALID } from '../../valid'
 function Owners({ route, navigation }) {
   const { placeUuid } = route.params
   // const navigation = useNavigation()
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { authContext } = useContext(CONST.AuthContext)
   const [showSpinner, setShowSpinner] = useState(false)
 
   const [ownersList, setOwnersList] = useState([])
@@ -54,6 +54,7 @@ function Owners({ route, navigation }) {
       setOwnersList(thelist)
     }
   }
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
@@ -129,7 +130,7 @@ function Owners({ route, navigation }) {
         <Card>
           <Button
             onPress={async () => {
-              navigation.navigate('OwnerAdd')
+              navigation.navigate('OwnerAdd', { placeUuid })
             }}
             size="lg"
             color="green"

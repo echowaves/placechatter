@@ -50,7 +50,9 @@ import * as UTILS from '../../utils'
 import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 
 function OwnerAdd({ route, navigation }) {
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { placeUuid } = route.params
+
+  const { authContext } = useContext(CONST.AuthContext)
 
   const { width, height } = useDimensions().window
 
@@ -58,12 +60,12 @@ function OwnerAdd({ route, navigation }) {
 
   const [showSpinner, setShowSpinner] = useState(false)
 
-  const [feedbackText, setFeedbackText] = useState('')
+  const [phone, setPhone] = useState()
 
-  const [feedbackTextError, setFeedbackTextError] = useState('')
+  const [phoneError, setPhoneError] = useState('')
 
   const back = async () => {
-    navigation.navigate('Feedback')
+    navigation.navigate('Owners', { placeUuid })
   }
 
   const renderHeaderRight = () => null
@@ -84,7 +86,7 @@ function OwnerAdd({ route, navigation }) {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Add Feedback',
+      headerTitle: 'Add Owner',
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -96,34 +98,36 @@ function OwnerAdd({ route, navigation }) {
   }, [])
 
   const valid = () => {
-    setFeedbackTextError('')
+    setPhoneError('')
 
-    if (!VALID.feedbackText(feedbackText)) {
-      setFeedbackTextError('4-2000 characters')
+    if (!VALID.phoneNumber(phone)) {
+      setPhoneError('10 digits phone number')
     }
   }
 
   useEffect(() => {
     // console.log({ smsCode, nickName })
     valid()
-  }, [feedbackText])
+  }, [phone])
 
-  const saveFeedback = async () => {
+  const saveOwner = async () => {
     setShowSpinner(true)
 
     try {
       const { uuid, phoneNumber, token } = authContext
-      const feedback = await UTILS.feedbackCreate({
+      const owner = await UTILS.placePhoneCreate({
         uuid,
         phoneNumber,
         token,
-        feedbackText,
+
+        phone,
+        placeUuid,
       })
       // console.log({ feedback })
     } catch (err11) {
       // console.log({ err11 })
       Toast.show({
-        text1: 'Unable to create feedback, try again.',
+        text1: 'Unable to add owner to place, try again.',
         text2: err11.toString(),
         type: 'error',
         topOffset,
@@ -143,34 +147,29 @@ function OwnerAdd({ route, navigation }) {
       <KeyboardAwareScrollView>
         <Card>
           <Input
-            // leftIcon={{ type: 'MaterialIcons', name: 'description' }}
-            placeholder={`enter text`}
-            errorMessage={feedbackTextError}
-            value={`${feedbackText}`}
+            label="enter 10 digits phone number"
+            placeholder="owner's mobile phone number"
+            leftIcon={{ type: 'font-awesome', name: 'mobile-phone' }}
+            focus={true}
+            keyboardType="numeric"
+            value={phone}
+            errorStyle={{ color: 'red' }}
+            errorMessage={phoneError}
             onChangeText={(value) => {
-              setFeedbackText(value)
-              // valid()
+              setPhone(value)
             }}
-            multiline
-            autoCapitalize={'sentences'}
-            autoComplete={'off'}
-            autoCorrect={true}
-            autoFocus={true}
           />
 
           <Button
-            onPress={saveFeedback}
+            disabled={phoneError}
+            onPress={saveOwner}
             size="lg"
             iconRight
             color={CONST.MAIN_COLOR}
           >
-            {`Save Feedback ${feedbackText.length}/2000`}
+            {`   Save Owner`}
             <Icon name="save" color="white" />
           </Button>
-        </Card>
-        <MarkdownHelp />
-        <Card>
-          <Markdown style={markdownStyles}>{feedbackText}</Markdown>
         </Card>
       </KeyboardAwareScrollView>
     </>
