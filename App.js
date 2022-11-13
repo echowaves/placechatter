@@ -36,6 +36,9 @@ import * as UTILS from './src/utils'
 import PlacesList from './src/screens/PlacesList'
 import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
+import Owners from './src/screens/Place/owners'
+import OwnerAdd from './src/screens/Place/ownerAdd'
+
 // import PlaceCardAdd from './src/screens/Place/placeCardAdd'
 import PlaceCardEdit from './src/screens/Place/placeCardEdit'
 
@@ -202,15 +205,24 @@ function App() {
           headerShown: true,
         }}
       />
-      {/* <Stack.Screen
-        name="PlaceCardAdd"
-        component={PlaceCardAdd}
+      <Stack.Screen
+        name="Owners"
+        component={Owners}
         options={{
           headerTintColor: CONST.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
-      /> */}
+      />
+      <Stack.Screen
+        name="OwnerAdd"
+        component={OwnerAdd}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+          headerShown: true,
+        }}
+      />
       <Stack.Screen
         name="PlaceCardEdit"
         component={PlaceCardEdit}
@@ -249,7 +261,6 @@ function App() {
       />
     </Stack.Navigator>
   )
-
   return (
     <>
       <AuthContext.Provider value={{ authContext, setAuthContext }}>

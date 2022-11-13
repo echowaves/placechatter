@@ -35,6 +35,8 @@ import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker'
 import * as Linking from 'expo-linking'
 
+import Markdown from 'react-native-markdown-display'
+
 import { CacheManager } from 'expo-cached-image'
 import * as FileSystem from 'expo-file-system'
 
@@ -48,7 +50,7 @@ import * as CONST from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
-import MarkdownHelp from '../../markdownHelp'
+import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 
 function PlaceCardEdit({ route, navigation }) {
   const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
@@ -71,6 +73,7 @@ function PlaceCardEdit({ route, navigation }) {
 
   const [cardTitleError, setCardTitleError] = useState('')
   const [cardTextError, setCardTextError] = useState('')
+  const [unchanged, setUnchanged] = useState(true)
 
   const uploadImage = async ({ contentType, assetUri }) => {
     const photoUuid = uuidv4()
@@ -189,6 +192,7 @@ function PlaceCardEdit({ route, navigation }) {
       )
       setCardPhoto(loadedCard?.photo)
 
+      setUnchanged(true)
       navigation.setOptions({
         headerTitle: loadedCard?.cardTitle,
         headerLeft: renderHeaderLeftUnchanged,
@@ -371,6 +375,7 @@ function PlaceCardEdit({ route, navigation }) {
   }
 
   useEffect(() => {
+    setUnchanged(true)
     navigation.setOptions({
       headerTitle: '',
       headerTintColor: CONST.MAIN_COLOR,
@@ -402,6 +407,7 @@ function PlaceCardEdit({ route, navigation }) {
   useEffect(() => {
     // console.log({ smsCode, nickName })
     valid()
+    setUnchanged(false)
     navigation.setOptions({
       headerLeft: renderHeaderLeftChanged,
     })
@@ -421,7 +427,7 @@ function PlaceCardEdit({ route, navigation }) {
         cardTitle,
         cardText,
       })
-
+      setUnchanged(true)
       navigation.setOptions({
         headerTitle: placeCard?.cardTitle,
         headerLeft: renderHeaderLeftUnchanged,
@@ -559,7 +565,9 @@ function PlaceCardEdit({ route, navigation }) {
             onPress={saveCard}
             size="lg"
             iconRight
-            color={canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR}
+            color={
+              canSubmit && !unchanged ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR
+            }
           >
             {`  Save Card`}
             <Icon name="save" color="white" />
@@ -567,6 +575,10 @@ function PlaceCardEdit({ route, navigation }) {
         </Card>
         <MarkdownHelp />
         <Card.Divider />
+        <Card>
+          <Markdown style={markdownStyles}>{cardText}</Markdown>
+        </Card>
+
         <Card>
           <Button
             onPress={() => {
