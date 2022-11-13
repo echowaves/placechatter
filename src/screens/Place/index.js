@@ -339,7 +339,7 @@ function Place({ route, navigation }) {
             <Card>
               <Button
                 onPress={async () => {
-                  navigation.navigate('Owners')
+                  navigation.navigate('Owners', { placeUuid })
                 }}
                 size="lg"
                 color="red"

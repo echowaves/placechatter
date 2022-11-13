@@ -958,6 +958,7 @@ export async function placePhoneCreate({
               placeUuid: $placeUuid
             ) {
               phoneNumber
+              nickName
               role
               createdAt
             }
@@ -1103,9 +1104,10 @@ export async function placePhoneList({
               token: $token
               placeUuid: $placeUuid
             ) {
-              createdAt
               phoneNumber
+              nickName
               role
+              createdAt
             }
           }
         `,

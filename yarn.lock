@@ -7998,6 +7998,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+phone-formatter@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/phone-formatter/-/phone-formatter-0.0.2.tgz#f3626c7d274860f014f70f43a87566a16b0e7ace"
+  integrity sha512-NO5rFP02TnDAHJWqF6J3cxAwxdPi6eIqOIW21Bt0QypyLOV7nZ6FfZ8I35qDr7LCKTEtB9hSrx1ynJkV5S1TJw==
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"

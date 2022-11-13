@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 // import { useNavigation } from '@react-navigation/native'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
+import phoneFormatter from 'phone-formatter'
 
 import {
   Text,
@@ -21,7 +22,7 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons'
-import Markdown from 'react-native-markdown-display'
+
 import Spinner from 'react-native-loading-spinner-overlay'
 import dayjs from 'dayjs'
 
@@ -30,27 +31,27 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
-import { markdownStyles } from '../../markdownHelp'
 
-function Owners({ navigation }) {
+function Owners({ route, navigation }) {
+  const { placeUuid } = route.params
   // const navigation = useNavigation()
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
   const [showSpinner, setShowSpinner] = useState(false)
 
-  const [feedbackList, setFeedbackList] = useState([])
-  const [canSubmit, setCanSubmit] = useState(false)
+  const [ownersList, setOwnersList] = useState([])
 
   async function init() {
     if (await UTILS.isValidToken({ authContext, navigation })) {
       const { uuid, phoneNumber, token } = authContext
 
-      const thelist = await UTILS.feedbackList({
+      const thelist = await UTILS.placePhoneList({
         uuid,
         phoneNumber,
         token,
+        placeUuid,
       })
       // console.log({ thelist })
-      setFeedbackList(thelist)
+      setOwnersList(thelist)
     }
   }
   React.useEffect(() => {
@@ -110,21 +111,7 @@ function Owners({ navigation }) {
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView>
-        <Card>
-          <Button
-            onPress={async () => {
-              navigation.navigate('FeedbackAdd')
-            }}
-            size="lg"
-            color="green"
-            iconRight
-          >
-            {`  Add Feedback`}
-            <Icon name="add" color="white" />
-          </Button>
-        </Card>
-
-        {feedbackList.map((feedback, index) => {
+        {ownersList.map((owner, index) => {
           // eslint-disable-next-line no-lone-blocks
           {
             /* console.log(card.photoUuid) */
@@ -132,17 +119,26 @@ function Owners({ navigation }) {
 
           return (
             <Card key={index}>
-              <Card.Title>
-                {`${dayjs(`${feedback.createdAt}`).format(
-                  VALID.renderDateFormat,
-                )}`}
-              </Card.Title>
-              <Markdown style={markdownStyles}>
-                {feedback.feedbackText}
-              </Markdown>
+              <Text>
+                {phoneFormatter.format(owner?.phoneNumber, '(NNN) NNN-NNNN')}
+              </Text>
             </Card>
           )
         })}
+
+        <Card>
+          <Button
+            onPress={async () => {
+              navigation.navigate('OwnerAdd')
+            }}
+            size="lg"
+            color="green"
+            iconRight
+          >
+            {`  Add Owner`}
+            <Icon name="add" color="white" />
+          </Button>
+        </Card>
 
         <Card.Divider />
         <Card.Divider />
