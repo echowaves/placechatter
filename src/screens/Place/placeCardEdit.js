@@ -53,10 +53,8 @@ import * as UTILS from '../../utils'
 import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 
 function PlaceCardEdit({ route, navigation }) {
-  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
-  const [placeUuid] = useState(placeContext.place.placeUuid)
-  const [cardUuid] = useState(route.params.cardUuid)
+  const { placeUuid, cardUuid } = route.params
+  const { authContext } = useContext(CONST.AuthContext)
 
   const { width, height } = useDimensions().window
 
@@ -117,11 +115,7 @@ function PlaceCardEdit({ route, navigation }) {
   }
 
   const back = async () => {
-    const { place, cards } = await UTILS.placeRead({
-      placeUuid,
-    })
-    setPlaceContext({ ...placeContext, place, cards })
-    navigation.navigate('Place')
+    navigation.goBack()
   }
 
   const renderHeaderRight = () => null
@@ -471,7 +465,6 @@ function PlaceCardEdit({ route, navigation }) {
       // console.log({ response: JSON.stringify(response) })
 
       // await navigation.popToTop()
-      // navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
     } catch (err12) {
       console.log({ err12 })
       Toast.show({

@@ -60,11 +60,6 @@ const Stack = createStackNavigator()
 const { AuthContext, PlaceContext } = CONST
 
 function App() {
-  const [placeContext, setPlaceContext] = useState({
-    place: {},
-    cards: [],
-  })
-
   const [authContext, setAuthContext] = useState()
 
   const init = async () => {
@@ -264,14 +259,12 @@ function App() {
   return (
     <>
       <AuthContext.Provider value={{ authContext, setAuthContext }}>
-        <PlaceContext.Provider value={{ placeContext, setPlaceContext }}>
-          <ThemeProvider>
-            <NavigationContainer>
-              <MainStackNavigator />
-            </NavigationContainer>
-            <Toast />
-          </ThemeProvider>
-        </PlaceContext.Provider>
+        <ThemeProvider>
+          <NavigationContainer>
+            <MainStackNavigator />
+          </NavigationContainer>
+          <Toast />
+        </ThemeProvider>
       </AuthContext.Provider>
     </>
   )

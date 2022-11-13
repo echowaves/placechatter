@@ -31,7 +31,6 @@ function PlaceAdd({ navigation }) {
   // const navigation = useNavigation()
 
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
-  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
 
   const [showSpinner, setShowSpinner] = useState(false)
 
@@ -139,11 +138,10 @@ function PlaceAdd({ navigation }) {
 
       if (createdPlace) {
         const { placeUuid } = createdPlace
-        const { place, cards } = await UTILS.placeRead({
-          placeUuid,
-        })
-        setPlaceContext({ ...placeContext, place, cards })
-        navigation.navigate('Place')
+        // const { place, cards } = await UTILS.placeRead({
+        //   placeUuid,
+        // })
+        navigation.navigate('Place', { placeUuid })
       } else {
         throw Error('Duplicate')
       }

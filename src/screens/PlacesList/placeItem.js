@@ -44,8 +44,6 @@ import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 
 function PlaceItem({ item, navigation }) {
-  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
-
   // eslint-disable-next-line no-shadow
   const renderPhotoItem = function ({ item, index }) {
     // console.log({ item })
@@ -88,14 +86,11 @@ function PlaceItem({ item, navigation }) {
   }
 
   // console.log({ cards: cards.filter((card) => card?.photo !== null) })
+  const { placeUuid } = item.place
   return (
     <ListItem
       onPress={async () => {
-        const { place, cards } = await UTILS.placeRead({
-          placeUuid: item.place.placeUuid,
-        })
-        setPlaceContext({ ...placeContext, place, cards })
-        navigation.navigate('Place')
+        navigation.navigate('Place', { placeUuid })
       }}
       style={{ paddingVertical: 8 }}
       Component={TouchableScale}

@@ -59,10 +59,11 @@ import { VALID } from '../../valid'
 import Photo from './Photo'
 import { markdownStyles } from '../../markdownHelp'
 
-function Place({ navigation }) {
-  const { placeContext, setPlaceContext } = useContext(CONST.PlaceContext)
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
-  const [placeUuid, setPlaceUuid] = useState(placeContext.place.placeUuid)
+function Place({ route, navigation }) {
+  const { placeUuid } = route.params
+  const { authContext } = useContext(CONST.AuthContext)
+
+  const [currentPlace, setCurrentPlace] = useState()
 
   const [isPlaceOwner, setIsPlaceOwner] = useState(false)
   const [canEdit, setCanEdit] = useState(false)
@@ -108,12 +109,11 @@ function Place({ navigation }) {
         color: CONST.MAIN_COLOR,
         width: 60,
       }}
-      onPress={() => navigation.goBack()}
+      onPress={() => navigation.navigate('PlacesList')}
     />
   )
-  const init = async () => {
+  const initPlaceOwner = async () => {
     const { uuid, phoneNumber, token } = authContext
-    console.log('init')
     setIsPlaceOwner(
       await UTILS.isPlaceOwner({
         uuid,
@@ -125,6 +125,7 @@ function Place({ navigation }) {
   }
 
   const refresh = async () => {
+    // console.log('refreshing')
     // await init()
     setShowSpinner(true)
     const { uuid, phoneNumber, token } = authContext
@@ -132,10 +133,19 @@ function Place({ navigation }) {
     const { place, cards } = await UTILS.placeRead({
       placeUuid,
     })
-    setPlaceContext({ ...placeContext, cards })
 
+    setCurrentPlace({ ...currentPlace, place, cards })
+
+    setShowSpinner(false)
+  }
+
+  const onRefresh = React.useCallback(() => {
+    refresh()
+  }, [])
+
+  useEffect(() => {
     navigation.setOptions({
-      headerTitle: placeContext.place.placeName,
+      headerTitle: currentPlace?.place?.placeName,
       headerTintColor: CONST.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
@@ -144,13 +154,7 @@ function Place({ navigation }) {
         backgroundColor: CONST.NAV_COLOR,
       },
     })
-
-    setShowSpinner(false)
-  }
-
-  const onRefresh = React.useCallback(() => {
-    refresh()
-  }, [])
+  }, [currentPlace])
 
   //  useCallback(() => {
   //   }, [])
@@ -162,9 +166,14 @@ function Place({ navigation }) {
   }, [isPlaceOwner, canEdit])
 
   useEffect(() => {
-    // refresh()
-    init()
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      refresh()
+      initPlaceOwner()
+    })
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe
+  }, [navigation])
 
   const styles = StyleSheet.create({
     container: {
@@ -178,7 +187,7 @@ function Place({ navigation }) {
   })
 
   // const { place, cards } = placeContext
-  if (!placeContext?.place) {
+  if (!currentPlace?.place) {
     return (
       <Spinner
         visible={true}
@@ -207,9 +216,8 @@ function Place({ navigation }) {
       // console.log({ response: JSON.stringify(response) })
 
       // await navigation.popToTop()
-      // navigation.navigate('Place', { placeUuid: placeContext.place.placeUuid })
     } catch (err12) {
-      console.log({ err12 })
+      // console.log({ err12 })
       Toast.show({
         text1: 'Unable to delete card, try again.',
         text2: err12.toString(),
@@ -229,7 +237,7 @@ function Place({ navigation }) {
       uuid,
       phoneNumber,
       token,
-      placeUuid: placeContext.place.placeUuid,
+      placeUuid,
       cardTitle: 'New Card',
       cardText: 'Update Card Description, add optional photo.',
     })
@@ -237,9 +245,9 @@ function Place({ navigation }) {
     setShowSpinner(false)
 
     if (placeCard) {
-      setPlaceContext({
-        ...placeContext,
-        cards: [...placeContext.cards, placeCard],
+      setCurrentPlace({
+        ...currentPlace,
+        cards: [...currentPlace.cards, placeCard],
       })
       // refresh()
       Toast.show({
@@ -249,13 +257,13 @@ function Place({ navigation }) {
         topOffset,
       })
 
-      //  navigation.navigate('Place')
       // await refresh()
     }
   }
 
   // console.log({ canEdit })
   // console.log('re-render')
+
   return (
     <SafeAreaView style={styles.container}>
       <Spinner
@@ -272,16 +280,16 @@ function Place({ navigation }) {
       >
         <Card>
           <Card.Title>Address</Card.Title>
-          <Text>{placeContext?.place?.streetAddress1}</Text>
-          {placeContext?.place?.streetAddress2 && (
-            <Text>{placeContext?.place?.streetAddress2}</Text>
+          <Text>{currentPlace?.place?.streetAddress1}</Text>
+          {currentPlace?.place?.streetAddress2 && (
+            <Text>{currentPlace?.place?.streetAddress2}</Text>
           )}
           <Text>
-            {placeContext?.place?.city}, {placeContext?.place?.region}{' '}
-            {placeContext?.place?.postalCode}
+            {currentPlace?.place?.city}, {currentPlace?.place?.region}{' '}
+            {currentPlace?.place?.postalCode}
           </Text>
         </Card>
-        {placeContext.cards.map((card, index) => {
+        {currentPlace.cards.map((card, index) => {
           // eslint-disable-next-line no-lone-blocks
           {
             /* console.log(card.photoUuid) */
@@ -296,6 +304,7 @@ function Place({ navigation }) {
                 <Button
                   onPress={() => {
                     navigation.navigate('PlaceCardEdit', {
+                      placeUuid,
                       cardUuid: card.cardUuid,
                     })
                   }}

@@ -53,7 +53,8 @@ function Feedback({ navigation }) {
       setFeedbackList(thelist)
     }
   }
-  React.useEffect(() => {
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
       init()
