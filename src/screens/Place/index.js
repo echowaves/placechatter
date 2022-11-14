@@ -307,20 +307,40 @@ function Place({ route, navigation }) {
               {card?.photo && <Photo photo={card?.photo} />}
               <Markdown style={markdownStyles}>{card.cardText}</Markdown>
               {canEdit && (
-                <Button
-                  onPress={() => {
-                    navigation.navigate('PlaceCardEdit', {
-                      placeUuid,
-                      cardUuid: card.cardUuid,
-                    })
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    alignContent: 'space-around',
                   }}
-                  size="sm"
-                  // color="red"
-                  iconRight
                 >
-                  {`  Edit Card`}
-                  <Icon name="edit" color="white" />
-                </Button>
+                  <Icon
+                    name="arrow-up"
+                    type="font-awesome-5"
+                    color={CONST.MAIN_COLOR}
+                  />
+
+                  <Button
+                    onPress={() => {
+                      navigation.navigate('PlaceCardEdit', {
+                        placeUuid,
+                        cardUuid: card.cardUuid,
+                      })
+                    }}
+                    size="sm"
+                    // color="red"
+                    iconRight
+                  >
+                    {`  Edit Card`}
+                    <Icon name="edit" color="white" />
+                  </Button>
+                  <Icon
+                    name="arrow-down"
+                    type="font-awesome-5"
+                    color={CONST.MAIN_COLOR}
+                  />
+                </View>
               )}
             </Card>
           )
