@@ -315,11 +315,15 @@ function Place({ route, navigation }) {
                     alignContent: 'space-around',
                   }}
                 >
-                  <Icon
-                    name="arrow-up"
-                    type="font-awesome-5"
-                    color={CONST.MAIN_COLOR}
-                  />
+                  {index > 0 && (
+                    <Icon
+                      name="arrow-up"
+                      type="font-awesome-5"
+                      color={CONST.MAIN_COLOR}
+                      onPress={() => {}}
+                    />
+                  )}
+                  {!(index > 0) && <Text>{`   `}</Text>}
 
                   <Button
                     onPress={() => {
@@ -335,11 +339,18 @@ function Place({ route, navigation }) {
                     {`  Edit Card`}
                     <Icon name="edit" color="white" />
                   </Button>
-                  <Icon
-                    name="arrow-down"
-                    type="font-awesome-5"
-                    color={CONST.MAIN_COLOR}
-                  />
+
+                  {index < currentPlace.cards.length - 1 && (
+                    <Icon
+                      onPress={() => {}}
+                      name="arrow-down"
+                      type="font-awesome-5"
+                      color={CONST.MAIN_COLOR}
+                    />
+                  )}
+                  {!(index < currentPlace.cards.length - 1) && (
+                    <Text>{`   `}</Text>
+                  )}
                 </View>
               )}
             </Card>
