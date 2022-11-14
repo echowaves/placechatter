@@ -269,6 +269,7 @@ function Place({ route, navigation }) {
 
   // console.log({ canEdit })
   // console.log('re-render')
+  const { uuid, phoneNumber, token } = authContext
 
   return (
     <SafeAreaView style={styles.container}>
@@ -320,7 +321,19 @@ function Place({ route, navigation }) {
                       name="arrow-up"
                       type="font-awesome-5"
                       color={CONST.MAIN_COLOR}
-                      onPress={() => {}}
+                      onPress={async () => {
+                        await UTILS.placeCardSwap({
+                          uuid,
+                          phoneNumber,
+                          token,
+
+                          placeUuid,
+
+                          cardUuid1: card.cardUuid,
+                          cardUuid2: currentPlace.cards[index - 1].cardUuid,
+                        })
+                        refresh()
+                      }}
                     />
                   )}
                   {!(index > 0) && <Text>{`   `}</Text>}
@@ -342,10 +355,22 @@ function Place({ route, navigation }) {
 
                   {index < currentPlace.cards.length - 1 && (
                     <Icon
-                      onPress={() => {}}
                       name="arrow-down"
                       type="font-awesome-5"
                       color={CONST.MAIN_COLOR}
+                      onPress={async () => {
+                        await UTILS.placeCardSwap({
+                          uuid,
+                          phoneNumber,
+                          token,
+
+                          placeUuid,
+
+                          cardUuid1: card.cardUuid,
+                          cardUuid2: currentPlace.cards[index + 1].cardUuid,
+                        })
+                        refresh()
+                      }}
                     />
                   )}
                   {!(index < currentPlace.cards.length - 1) && (

@@ -887,6 +887,59 @@ export async function placeCardDelete({
   return null
 }
 
+export async function placeCardSwap({
+  uuid,
+  phoneNumber,
+  token,
+
+  placeUuid,
+  cardUuid1,
+  cardUuid2,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation placeCardSwap(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $placeUuid: String!
+            $cardUuid1: String!
+            $cardUuid2: String!
+          ) {
+            placeCardSwap(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+              cardUuid1: $cardUuid1
+              cardUuid2: $cardUuid2
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+          cardUuid1,
+          cardUuid2,
+        },
+      })
+    ).data.placeCardSwap
+  } catch (err019) {
+    // console.log({ err019 })
+    Toast.show({
+      text1: 'Unable to swap cards',
+      text2: err019.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
 export async function placeDelete({
   uuid,
   phoneNumber,
