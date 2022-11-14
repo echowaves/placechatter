@@ -87,12 +87,12 @@ function Place({ route, navigation }) {
           }}
         >
           <Switch
+            color={CONST.MAIN_COLOR}
             value={canEdit}
             onValueChange={(value) => setCanEdit(!canEdit)}
           />
           <Text
             style={{
-              fontFamily: 'Nunito-SemiBold',
               fontSize: 10,
               fontWeight: '300',
             }}
@@ -329,7 +329,7 @@ function Place({ route, navigation }) {
                       })
                     }}
                     size="sm"
-                    // color="red"
+                    color={CONST.MAIN_COLOR}
                     iconRight
                   >
                     {`  Edit Card`}
