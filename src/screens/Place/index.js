@@ -24,6 +24,7 @@ import {
   RefreshControl,
   InteractionManager,
 } from 'react-native'
+
 import Markdown from 'react-native-markdown-display'
 
 // import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -37,6 +38,7 @@ import {
   ListItem,
   Button,
   Icon,
+  Switch,
 } from '@rneui/themed'
 
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -76,25 +78,14 @@ function Place({ route, navigation }) {
 
   const renderHeaderRight = () => {
     if (isPlaceOwner) {
-      if (!canEdit) {
-        return (
-          <Button
-            title="edit"
-            size="sm"
-            raised={true}
-            type="outline"
-            onPress={() => setCanEdit(true)}
-          />
-        )
-      }
       return (
-        <Button
-          title="preview"
-          size="sm"
-          raised={false}
-          type="outline"
-          onPress={() => setCanEdit(false)}
-        />
+        <View style={{ flex: 1, alignItems: 'center', paddingRight: 10 }}>
+          <Switch
+            value={canEdit}
+            onValueChange={(value) => setCanEdit(!canEdit)}
+          />
+          <Text>edit</Text>
+        </View>
       )
     }
     return null
