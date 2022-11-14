@@ -79,12 +79,26 @@ function Place({ route, navigation }) {
   const renderHeaderRight = () => {
     if (isPlaceOwner) {
       return (
-        <View style={{ flex: 1, alignItems: 'center', paddingRight: 10 }}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            paddingRight: 10,
+          }}
+        >
           <Switch
             value={canEdit}
             onValueChange={(value) => setCanEdit(!canEdit)}
           />
-          <Text>edit</Text>
+          <Text
+            style={{
+              fontFamily: 'Nunito-SemiBold',
+              fontSize: 10,
+              fontWeight: '300',
+            }}
+          >
+            edit
+          </Text>
         </View>
       )
     }
