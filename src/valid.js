@@ -25,7 +25,7 @@ export const VALID = {
   },
 
   nickName: function (param) {
-    return /^([a-zA-Z0-9_-]){4,30}$/.test(param)
+    return /^([a-z0-9_-]){4,30}$/.test(param)
   },
 
   smsCode: function (param) {

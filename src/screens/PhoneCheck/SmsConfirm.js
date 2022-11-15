@@ -175,14 +175,14 @@ function SmsConfirm({ navigation }) {
           }
           return true
         } catch (err1) {
-          console.log({ err1 })
-          setNickNameError('Letters and digits only')
+          // console.log({ err1 })
+          setNickNameError('Lower case Letters and Digits only')
           return false
         }
       }
       return false
     }
-    setNickNameError('Only Letters and Digits, 4-30 characters')
+    setNickNameError('Only Lower Case Letters and Digits, 4-30 characters')
     return false
   }
 
@@ -257,7 +257,7 @@ function SmsConfirm({ navigation }) {
           leftIcon={{ type: 'font-awesome', name: 'user-circle' }}
           //   keyboardType="numeric"
           value={nickName}
-          onChangeText={(value) => setNickName(value)}
+          onChangeText={(value) => setNickName(value.trim().toLowerCase())}
           errorStyle={{ color: 'red' }}
           errorMessage={nickNameError}
           autoCapitalize={'none'}
