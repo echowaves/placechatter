@@ -140,6 +140,7 @@ function Place({ route, navigation }) {
       placeUuid,
     })
 
+    setCurrentPlace({ ...currentPlace, cards: [] })
     setCurrentPlace({ ...currentPlace, place, cards })
 
     setShowSpinner(false)
@@ -322,6 +323,7 @@ function Place({ route, navigation }) {
                       type="font-awesome-5"
                       color={CONST.MAIN_COLOR}
                       onPress={async () => {
+                        setShowSpinner(true)
                         await UTILS.placeCardSwap({
                           uuid,
                           phoneNumber,
@@ -332,6 +334,7 @@ function Place({ route, navigation }) {
                           cardUuid1: card.cardUuid,
                           cardUuid2: currentPlace.cards[index - 1].cardUuid,
                         })
+                        setShowSpinner(false)
                         refresh()
                       }}
                     />
@@ -359,6 +362,7 @@ function Place({ route, navigation }) {
                       type="font-awesome-5"
                       color={CONST.MAIN_COLOR}
                       onPress={async () => {
+                        setShowSpinner(true)
                         await UTILS.placeCardSwap({
                           uuid,
                           phoneNumber,
@@ -369,6 +373,7 @@ function Place({ route, navigation }) {
                           cardUuid1: card.cardUuid,
                           cardUuid2: currentPlace.cards[index + 1].cardUuid,
                         })
+                        setShowSpinner(false)
                         refresh()
                       }}
                     />
