@@ -73,6 +73,10 @@ function PlaceCardEdit({ route, navigation }) {
   const [cardTextError, setCardTextError] = useState('')
   const [unchanged, setUnchanged] = useState(true)
 
+  const back = async () => {
+    navigation.goBack()
+  }
+
   const uploadImage = async ({ contentType, assetUri }) => {
     const photoUuid = uuidv4()
     const { uuid, phoneNumber, token } = authContext
@@ -109,13 +113,33 @@ function PlaceCardEdit({ route, navigation }) {
     // console.log({ responseData })
 
     // let's wait for the file to be processed in the backend
-    await new Promise((r) => setTimeout(r, 5000)) // eslint-disable-line no-promise-executor-return
+    // await new Promise((r) => setTimeout(r, 5000)) // eslint-disable-line no-promise-executor-return
+
+    // wait for photo to upload
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < 20; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((r) => setTimeout(r, 1000)) // eslint-disable-line no-promise-executor-return
+      // eslint-disable-next-line no-await-in-loop
+      const loadedCard = await UTILS.placeCardRead({
+        placeUuid,
+        cardUuid,
+      })
+      if (loadedCard?.photo) {
+        break
+      }
+      if (i === 19) {
+        Toast.show({
+          text1: 'Error adding photo',
+          type: 'error',
+          topOffset,
+        })
+        setShowSpinner(false)
+        back()
+      }
+    }
 
     return { responseData, photo }
-  }
-
-  const back = async () => {
-    navigation.goBack()
   }
 
   const renderHeaderRight = () => null
