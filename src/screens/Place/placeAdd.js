@@ -76,7 +76,7 @@ function PlaceAdd({ navigation }) {
         setLocationGeocodedAddress(geocodedAddress[0])
 
         setFormInput({
-          placeName: '',
+          placeName: `${geocodedAddress[0].name || ''}`,
           streetAddress1: `${geocodedAddress[0].streetNumber || ''} ${
             geocodedAddress[0].street || ''
           }`,
@@ -315,7 +315,7 @@ function PlaceAdd({ navigation }) {
             autoFocus={true}
           />
           <Input
-            disabled={true} // can't modify it, has to come from GPS
+            disabled={false} // can't modify it, has to come from GPS
             label="Street Address1"
             placeholder={`${formInput.streetAddress1}`}
             errorMessage={streetAddress1Error}
