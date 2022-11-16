@@ -246,7 +246,7 @@ function PlaceCardEdit({ route, navigation }) {
     setShowSpinner(false)
   }
 
-  const takePhoto = async () => {
+  const takePhoto = async ({ camera }) => {
     try {
       // launch photo capturing
       const cameraPermission = await ImagePicker.requestCameraPermissionsAsync()
@@ -285,16 +285,28 @@ function PlaceCardEdit({ route, navigation }) {
         return
       }
 
-      const cameraReturn = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1.0,
-        // allowsEditing: true,
-        // aspect: [1, 1],
-        exif: false,
-      })
+      let imagePickerReturn
+
+      if (camera === true) {
+        imagePickerReturn = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          quality: 1.0,
+          // allowsEditing: true,
+          // aspect: [1, 1],
+          exif: false,
+        })
+      } else {
+        imagePickerReturn = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          quality: 1.0,
+          // allowsEditing: true,
+          // aspect: [1, 1],
+          exif: false,
+        })
+      }
 
       // alert(`cameraReturn.cancelled ${cameraReturn.cancelled}`)
-      if (cameraReturn.cancelled === false) {
+      if (imagePickerReturn.canceled === false) {
         setShowSpinner(true)
 
         // have to wait, otherwise the upload will not start
@@ -307,8 +319,8 @@ function PlaceCardEdit({ route, navigation }) {
         // )
         // dispatch(reducer.uploadPendingPhotos())
         // console.log({ cameraReturn })
-        const imageWidth = cameraReturn.width
-        const imageHeight = cameraReturn.height
+        const imageWidth = imagePickerReturn.assets[0].width
+        const imageHeight = imagePickerReturn.assets[0].height
         const imageCropDim = imageWidth < imageHeight ? imageWidth : imageHeight
 
         // const croppedImage = await ImageManipulator.manipulateAsync(
@@ -334,10 +346,10 @@ function PlaceCardEdit({ route, navigation }) {
         //   { compress: 1, format: ImageManipulator.SaveFormat.PNG },
         // )
 
-        MediaLibrary.saveToLibraryAsync(cameraReturn.uri)
+        MediaLibrary.saveToLibraryAsync(imagePickerReturn.assets[0].uri)
 
         const locallyThumbedImage = await ImageManipulator.manipulateAsync(
-          cameraReturn.uri,
+          imagePickerReturn.assets[0].uri,
           [{ resize: { height: 300 } }],
           { compress: 1, format: ImageManipulator.SaveFormat.PNG },
         )
@@ -346,7 +358,7 @@ function PlaceCardEdit({ route, navigation }) {
           const response = await uploadImage({
             placeUuid,
             contentType: 'image/png',
-            assetUri: cameraReturn.uri,
+            assetUri: imagePickerReturn.assets[0].uri,
           })
           // console.log({ response })
 
@@ -529,7 +541,41 @@ function PlaceCardEdit({ route, navigation }) {
           />
 
           {!cardPhoto && (
-            <Button onPress={takePhoto} size="lg" iconRight color="green">
+            <Button
+              onPress={() => {
+                Alert.alert('Adding Photo from', 'pick the media', [
+                  {
+                    text: 'Camera',
+                    onPress: () => takePhoto({ camera: true }),
+                  },
+                  {
+                    text: 'Library',
+                    onPress: () => takePhoto({ camera: false }),
+                  },
+                  {
+                    text: 'Cancel',
+                    onPress: () => null,
+                    style: 'cancel',
+                  },
+                ])
+
+                //   Alert.alert([
+                //     '',
+                //     '',
+                //     {
+                //       text: 'Take a photo with Camera',
+                //       onPress: () => takePhoto({ camera: true }),
+                //     },
+                //     {
+                //       text: 'Upload photo from your Phone',
+                //       onPress: () => takePhoto({ camera: false }),
+                //     },
+                //   ])
+              }}
+              size="lg"
+              iconRight
+              color="green"
+            >
               {`  Add Photo`}
               <Icon name="camera" color="white" />
             </Button>
