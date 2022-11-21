@@ -38,7 +38,7 @@
     "expo-crypto": "~12.0.0",
     "expo-file-system": "~15.1.1",
     "expo-image-manipulator": "~11.0.0",
-    "expo-image-picker": "~14.0.1",
+    "expo-image-picker": "~14.0.2",
     "expo-linear-gradient": "~12.0.1",
     "expo-linking": "~3.2.3",
     "expo-location": "~15.0.1",
