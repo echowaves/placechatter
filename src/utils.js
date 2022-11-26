@@ -1231,3 +1231,55 @@ export async function feedbackList({ uuid, phoneNumber, token }) {
   }
   return []
 }
+
+export async function placeChatReadDefault({
+  uuid,
+  phoneNumber,
+  token,
+  placeUuid,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.query({
+        query: gql`
+          query placeChatReadDefault(
+            $uuid: String!
+            $phoneNumber: String!
+            $token: String!
+            $placeUuid: String!
+          ) {
+            placeChatReadDefault(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              placeUuid: $placeUuid
+            ) {
+              placeUuid
+              chatUuid
+              chatName
+              defaultChat
+              createdAt
+            }
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+        },
+        fetchPolicy: 'network-only',
+        // fetchPolicy: 'no-cache',
+      })
+    ).data.placeChatReadDefault
+  } catch (err026) {
+    // console.log({ err026 })
+    Toast.show({
+      text1: 'Unable to get default chat for place',
+      text2: err026.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}

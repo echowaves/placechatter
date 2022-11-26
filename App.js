@@ -36,6 +36,7 @@ import * as UTILS from './src/utils'
 import PlacesList from './src/screens/PlacesList'
 import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
+import Chat from './src/screens/Chat'
 import Owners from './src/screens/Place/owners'
 import OwnerAdd from './src/screens/Place/ownerAdd'
 
@@ -203,6 +204,16 @@ function App() {
           headerShown: true,
         }}
       />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          headerTintColor: CONST.MAIN_COLOR,
+          gestureEnabled: false,
+          headerShown: true,
+        }}
+      />
+
       <Stack.Screen
         name="Owners"
         component={Owners}

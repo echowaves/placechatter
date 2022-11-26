@@ -67,6 +67,7 @@ function Place({ route, navigation }) {
   const { authContext } = useContext(CONST.AuthContext)
 
   const [currentPlace, setCurrentPlace] = useState()
+  const [placeChat, setPlaceChat] = useState()
 
   const [isPlaceOwner, setIsPlaceOwner] = useState(false)
   const [canEdit, setCanEdit] = useState(false)
@@ -143,6 +144,14 @@ function Place({ route, navigation }) {
     setCurrentPlace({ ...currentPlace, cards: [] })
     setCurrentPlace({ ...currentPlace, place, cards })
 
+    setPlaceChat(
+      await UTILS.placeChatReadDefault({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+      }),
+    )
     setShowSpinner(false)
   }
 
@@ -297,6 +306,24 @@ function Place({ route, navigation }) {
             {currentPlace?.place?.postalCode}
           </Text>
         </Card>
+        <Card>
+          <Button
+            onPress={() => {
+              navigation.navigate('Chat', { chatUuid: placeChat.chatUuid })
+            }}
+            size="sm"
+            color={CONST.MAIN_COLOR}
+            iconRight
+          >
+            {`  Place Chat`}
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={24}
+              color="white"
+            />{' '}
+          </Button>
+        </Card>
+
         {currentPlace.cards.map((card, index) => {
           // eslint-disable-next-line no-lone-blocks
           {

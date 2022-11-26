@@ -170,7 +170,7 @@ function PhoneCheck({ navigation }) {
         />
         <Input
           ref={input}
-          label="enter 10 digits phone number"
+          label="Confirmation Code will be sent to this number"
           placeholder="your mobile phone number"
           leftIcon={{ type: 'font-awesome', name: 'mobile-phone' }}
           focus={true}

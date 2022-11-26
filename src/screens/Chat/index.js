@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+} from 'react'
 // import { useNavigation } from '@react-navigation/native'
 
 import { Alert, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
@@ -23,10 +29,15 @@ import {
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts.js'
+import * as CONST from '../../consts'
+import * as UTILS from '../../utils'
+import { VALID } from '../../valid'
 
-function Chat({ navigation }) {
+function Chat({ route, navigation }) {
   // const navigation = useNavigation()
+  const { chatUuid } = route.params
+
+  const { authContext } = useContext(CONST.AuthContext)
 
   const [nickName, setNickName] = useState('')
   const [nickNameEntered, setNickNameEntered] = useState(false)
