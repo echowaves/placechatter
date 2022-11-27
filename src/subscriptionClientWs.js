@@ -5,13 +5,11 @@ import Constants from 'expo-constants'
 
 import base64 from 'react-native-base64'
 
-const { ApolloClient, InMemoryCache } = require("@apollo/client")
+const { ApolloClient, InMemoryCache } = require('@apollo/client')
 const { WebSocketLink } = require('@apollo/client/link/ws')
 const WebSocket = require('isomorphic-ws')
 
-const {
-  API_URI, REALTIME_API_URI, API_KEY,
-} = Constants.manifest.extra
+const { API_URI, REALTIME_API_URI, API_KEY } = Constants.expoConfig.extra
 
 // const WSS_URL = API_URI.replace('https', 'wss').replace('appsync-api', 'appsync-realtime-api')
 // eslint-disable-next-line camelcase
@@ -25,14 +23,16 @@ const api_header = {
 // eslint-disable-next-line camelcase
 // const header_encode = obj => Buffer.from(JSON.stringify(obj), 'utf-8').toString('base64')
 // eslint-disable-next-line camelcase
-const header_encode = obj => base64.encode(JSON.stringify(obj))
+const header_encode = (obj) => base64.encode(JSON.stringify(obj))
 
 // eslint-disable-next-line camelcase
-const connection_url = `${REALTIME_API_URI}?header=${header_encode(api_header)}&payload=${header_encode({})}`
+const connection_url = `${REALTIME_API_URI}?header=${header_encode(
+  api_header,
+)}&payload=${header_encode({})}`
 
 //------------------------------------------------------------------------------------------------
-const { SubscriptionClient } = require("subscriptions-transport-ws")
-const uuid4 = require("uuid").v4
+const { SubscriptionClient } = require('subscriptions-transport-ws')
+const uuid4 = require('uuid').v4
 
 class UUIDOperationIdSubscriptionClient extends SubscriptionClient {
   generateOperationId() {
@@ -52,14 +52,17 @@ class UUIDOperationIdSubscriptionClient extends SubscriptionClient {
 }
 
 // appSyncGraphQLOperationAdapter.js
-const graphqlPrinter = require("graphql/language/printer")
+const graphqlPrinter = require('graphql/language/printer')
 
 const createAppSyncGraphQLOperationAdapter = () => ({
   applyMiddleware: async (options, next) => {
     // AppSync expects GraphQL operation to be defined as a JSON-encoded object in a "data" property
     // eslint-disable-next-line no-param-reassign
     options.data = JSON.stringify({
-      query: typeof options.query === 'string' ? options.query : graphqlPrinter.print(options.query),
+      query:
+        typeof options.query === 'string'
+          ? options.query
+          : graphqlPrinter.print(options.query),
       variables: options.variables,
     })
 
@@ -84,10 +87,14 @@ const wsLink = new WebSocketLink(
     connection_url,
     {
       // eslint-disable-next-line no-console
-      timeout: 5 * 60 * 1000, reconnect: true, lazy: true, connectionCallback: err => console.log("connectionCallback", err ? "ERR" : "OK", err || ""),
+      timeout: 5 * 60 * 1000,
+      reconnect: true,
+      lazy: true,
+      connectionCallback: (err) =>
+        console.log('connectionCallback', err ? 'ERR' : 'OK', err || ''),
     },
-    WebSocket
-  ).use([createAppSyncGraphQLOperationAdapter()])
+    WebSocket,
+  ).use([createAppSyncGraphQLOperationAdapter()]),
 )
 
 const subscriptionClient = new ApolloClient({

@@ -309,7 +309,10 @@ function Place({ route, navigation }) {
         <Card>
           <Button
             onPress={() => {
-              navigation.navigate('Chat', { chatUuid: placeChat.chatUuid })
+              navigation.navigate('Chat', {
+                chatUuid: placeChat.chatUuid,
+                placeName: currentPlace?.place?.placeName,
+              })
             }}
             size="sm"
             color={CONST.MAIN_COLOR}

@@ -1283,3 +1283,165 @@ export async function placeChatReadDefault({
   }
   return null
 }
+
+export async function messageList({
+  uuid,
+  phoneNumber,
+  token,
+
+  chatUuid,
+  lastLoaded,
+}) {
+  try {
+    const messagesList = (
+      await CONST.gqlClient.query({
+        query: gql`
+          query messageList(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $chatUuid: String!
+            $lastLoaded: AWSDateTime!
+          ) {
+            messageList(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              chatUuid: $chatUuid
+              lastLoaded: $lastLoaded
+            ) {
+              chatUuid
+              messageUuid
+              createdBy # phoneNumber
+              messageText
+              createdAt
+            }
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          chatUuid,
+          lastLoaded,
+        },
+        // fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
+      })
+    ).data.messageList
+
+    return messagesList.map((message) => ({
+      _id: message.messageUuid,
+      text: message.text,
+      pending: message.pending,
+      createdAt: message.createdAt,
+      user: {
+        _id: message.createdBy,
+        name: message.nickName,
+        // avatar: 'https://placeimg.com/140/140/any',
+      },
+    }))
+  } catch (err027) {
+    console.log({ err027 })
+    Toast.show({
+      text1: 'Unable to load messages for chat',
+      text2: err027.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function messageSend({
+  uuid,
+  phoneNumber,
+  token,
+  chatUuid,
+  messageText,
+}) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation messageSend(
+            $uuidArg: String
+            $phoneNumberArg: String
+            $tokenArg: String
+            $chatUuidArg: String
+            $messageTextArg: String
+          ) {
+            messageSend(
+              uuidArg: $uuidArg
+              phoneNumberArg: $phoneNumberArg
+              tokenArg: $tokenArg
+              chatUuidArg: $chatUuidArg
+              messageTextArg: $messageTextArg
+            ) {
+              chatUuid
+              messageUuid
+              createdBy
+              nickName
+              messageText
+              createdAt
+            }
+          }
+        `,
+        variables: {
+          uuidArg: uuid,
+          phoneNumberArg: phoneNumber,
+          tokenArg: token,
+          chatUuidArg: chatUuid,
+          messageTextArg: messageText,
+        },
+      })
+    ).data.messageSend
+  } catch (err030) {
+    Toast.show({
+      text2: 'Unable to activate phone',
+      text1: err030.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function unreadCountReset({ uuid, phoneNumber, token, chatUuid }) {
+  try {
+    return (
+      await CONST.gqlClient.mutate({
+        mutation: gql`
+          mutation unreadCountReset(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $chatUuid: String!
+          ) {
+            unreadCountReset(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              chatUuid: $chatUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          chatUuid,
+        },
+      })
+    ).data.unreadCountReset
+  } catch (err030) {
+    console.log({ err030 })
+    Toast.show({
+      text2: 'Unable to reset message count',
+      text1: err030.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
