@@ -1284,6 +1284,21 @@ export async function placeChatReadDefault({
   return null
 }
 
+function messageMapper(message) {
+  return {
+    ...message,
+    _id: message.messageUuid,
+    text: message.messageText,
+    // pending: message.pending,
+    createdAt: message.createdAt,
+    user: {
+      _id: message.createdBy,
+      name: message.nickName,
+      // avatar: 'https://placeimg.com/140/140/any',
+    },
+  }
+}
+
 export async function messageList({
   uuid,
   phoneNumber,
@@ -1292,6 +1307,7 @@ export async function messageList({
   chatUuid,
   lastLoaded,
 }) {
+  // console.log({ lastLoaded })
   try {
     const messagesList = (
       await CONST.gqlClient.query({
@@ -1330,19 +1346,11 @@ export async function messageList({
       })
     ).data.messageList
 
-    return messagesList.map((message) => ({
-      _id: message.messageUuid,
-      text: message.text,
-      pending: message.pending,
-      createdAt: message.createdAt,
-      user: {
-        _id: message.createdBy,
-        name: message.nickName,
-        // avatar: 'https://placeimg.com/140/140/any',
-      },
-    }))
+    // console.log({ messagesList })
+
+    return messagesList.map((message) => messageMapper(message))
   } catch (err027) {
-    console.log({ err027 })
+    // console.log({ err027 })
     Toast.show({
       text1: 'Unable to load messages for chat',
       text2: err027.toString(),
@@ -1357,24 +1365,36 @@ export async function messageSend({
   uuid,
   phoneNumber,
   token,
+  messageUuid,
   chatUuid,
   messageText,
 }) {
   try {
-    return (
+    // console.log({
+    //   uuid,
+    //   phoneNumber,
+    //   token,
+    //   messageUuid,
+    //   chatUuid,
+    //   messageText,
+    // })
+
+    const message = (
       await CONST.gqlClient.mutate({
         mutation: gql`
           mutation messageSend(
             $uuidArg: String
             $phoneNumberArg: String
             $tokenArg: String
-            $chatUuidArg: String
-            $messageTextArg: String
+            $messageUuidArg: String!
+            $chatUuidArg: String!
+            $messageTextArg: String!
           ) {
             messageSend(
               uuidArg: $uuidArg
               phoneNumberArg: $phoneNumberArg
               tokenArg: $tokenArg
+              messageUuidArg: $messageUuidArg
               chatUuidArg: $chatUuidArg
               messageTextArg: $messageTextArg
             ) {
@@ -1391,12 +1411,17 @@ export async function messageSend({
           uuidArg: uuid,
           phoneNumberArg: phoneNumber,
           tokenArg: token,
+          messageUuidArg: messageUuid,
           chatUuidArg: chatUuid,
           messageTextArg: messageText,
         },
       })
     ).data.messageSend
+
+    console.log({ message })
+    return messageMapper(message)
   } catch (err030) {
+    console.log({ err030 })
     Toast.show({
       text2: 'Unable to activate phone',
       text1: err030.toString(),

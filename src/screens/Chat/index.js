@@ -177,44 +177,48 @@ function Chat({ route, navigation }) {
   // }, [])
 
   const onSend = useCallback((_messages = []) => {
-    _messages.forEach((message) => {
-      ;(async () => {
-        try {
-          const { messageUuid, messageText, createdAt, createdBy, nickName } =
-            message
+    console.log(JSON.stringify(_messages))
+    _messages.forEach(async (message) => {
+      try {
+        const { text, createdAt, _id } = message
+
+        console.log({ message })
+
+        const returnedMessage = await UTILS.messageSend({
+          uuid,
+          phoneNumber,
+          token,
+          messageUuid: _id,
+          chatUuid,
+          messageText: text,
+        })
+        if (returnedMessage) {
+          console.log({ returnedMessage })
 
           setMessages((previousMessages) =>
             GiftedChat.append(previousMessages, [
               {
-                _id: messageUuid,
-                text: messageText,
+                _id: returnedMessage.messageUuid,
+                text: returnedMessage.messageText,
                 createdAt,
                 user: {
-                  _id: createdBy,
-                  name: nickName,
+                  _id: returnedMessage.createdBy,
+                  name: returnedMessage.nickName,
                   // avatar: 'https://placeimg.com/140/140/any',
                 },
               },
             ]),
           )
-
-          const returnedMessage = await UTILS.messageSend({
-            uuid,
-            phoneNumber,
-            token,
-            chatUuid,
-            messageText,
-          })
-        } catch (e) {
-          console.log('failed to send message: ', { e })
-          Toast.show({
-            text1: `Failed to send message:`,
-            text2: `${e}`,
-            type: 'error',
-            topOffset,
-          })
         }
-      })()
+      } catch (e) {
+        console.log('failed to send message: ', { e })
+        Toast.show({
+          text1: `Failed to send message:`,
+          text2: `${e}`,
+          type: 'error',
+          topOffset,
+        })
+      }
     })
   }, [])
 
@@ -301,7 +305,7 @@ function Chat({ route, navigation }) {
       chatUuid,
       lastLoaded: messages[messages.length - 1].createdAt,
     })
-
+    // console.log({ earlierMessages })
     setMessages((previousMessages) =>
       GiftedChat.prepend(previousMessages, earlierMessages),
     )
@@ -362,9 +366,10 @@ function Chat({ route, navigation }) {
         phoneNumber,
         token,
         chatUuid,
-        lastLoaded: dayjs(),
+        lastLoaded: `${dayjs().toISOString()}`,
       })
 
+      // console.log({ messagesList })
       setMessages(messagesList)
 
       UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
