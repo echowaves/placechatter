@@ -1284,7 +1284,7 @@ export async function placeChatReadDefault({
   return null
 }
 
-function messageMapper(message) {
+export function messageMapper(message) {
   // console.log({
   //   ...message,
   //   _id: message.messageUuid,

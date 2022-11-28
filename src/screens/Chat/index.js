@@ -80,10 +80,10 @@ function Chat({ route, navigation }) {
         chatUuid,
       },
     })
-    console.log({ observableObject })
+    // console.log({ observableObject })
     const subscriptionParameters = {
       onmessage() {
-        console.log('onMessage')
+        console.log('observableObject:: onMessage')
       },
       start() {
         console.log('observableObject:: Start')
@@ -92,48 +92,19 @@ function Chat({ route, navigation }) {
         console.log('observableObject:: ', { data })
         // eslint-disable-next-line no-unsafe-optional-chaining
         const { onSendMessage } = data?.data
-        // console.log({ onSendMessage })
-        setMessages((previousMessages) => {
-          const updatedMessages = previousMessages.map((message) => {
-            if (message.messageUuid === onSendMessage.messageUuid) {
-              // this is the update of the message which is already in the feed
-              return {
-                _id: onSendMessage.messageUuid,
-                text: onSendMessage.messageText,
-                createdAt: onSendMessage.createdAt,
-                user: {
-                  _id: onSendMessage.createdBy,
-                  name: onSendMessage.nickName,
-                  // avatar: 'https://placeimg.com/140/140/any',
-                },
-              }
-            }
-            return message
-          })
-          // this is a new message which was not present in the feed, let's append it to the end
-          if (
-            updatedMessages.find(
-              (message) => message.messageUuid === onSendMessage.messageUuid,
-            ) === undefined
-          ) {
-            console.log({ onSendMessage })
-            return [
-              {
-                _id: onSendMessage.messageUuid,
-                text: onSendMessage.messageText,
-                createdAt: onSendMessage.createdAt,
-                user: {
-                  _id: onSendMessage.createdBy,
-                  name: onSendMessage.nickName,
-                  // avatar: 'https://placeimg.com/140/140/any',
-                },
-              },
-              ...updatedMessages,
-            ]
-          } // if this is the new message
-          console.log({ updatedMessages })
-          return updatedMessages
-        })
+        const receivedMessage = UTILS.messageMapper(onSendMessage)
+        if (
+          // eslint-disable-next-line no-underscore-dangle
+          messages.filter((message) => message._id === receivedMessage._id)
+            .length === 0
+        ) {
+          setMessages((previousMessages) =>
+            GiftedChat.append(previousMessages, [receivedMessage]),
+          )
+        } else {
+          console.log(1)
+          // update messages here
+        }
         // update read counts
         UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
       },
@@ -180,22 +151,6 @@ function Chat({ route, navigation }) {
         const { text, createdAt, _id } = message
 
         // console.log({ message })
-        setMessages((previousMessages) =>
-          GiftedChat.append(previousMessages, [
-            {
-              _id,
-              text,
-              createdAt,
-              user: {
-                // eslint-disable-next-line no-underscore-dangle
-                _id: message.user._id,
-                // name: returnedMessage.nickName,
-                // avatar: 'https://placeimg.com/140/140/any',
-              },
-              sent: true,
-            },
-          ]),
-        )
 
         const returnedMessage = await UTILS.messageSend({
           uuid,
@@ -205,39 +160,12 @@ function Chat({ route, navigation }) {
           chatUuid,
           messageText: text,
         })
-        if (returnedMessage) {
-          // setMessages([])
-          setMessages((previousMessages) => {
-            const updatedMessages = previousMessages.map((prevMessage) => {
-              // console.log({ prevMessage, returnedMessage })
-              // eslint-disable-next-line no-underscore-dangle
-              if (prevMessage._id === _id) {
-                // this is the update of the message which is already in the feed
-                return {
-                  ...prevMessage,
-                  sent: false,
-                }
-              }
-              return prevMessage
-            })
-            return updatedMessages
-          })
-          // setMessages((previousMessages) =>
-          //   GiftedChat.append(previousMessages, [
-          //     {
-          //       _id: returnedMessage.messageUuid,
-          //       text: returnedMessage.messageText,
-          //       createdAt,
-          //       user: {
-          //         _id: returnedMessage.createdBy,
-          //         name: returnedMessage.nickName,
-          //         // avatar: 'https://placeimg.com/140/140/any',
-          //       },
-          //       recieved: true,
-          //     },
-          //   ]),
-          // )
-        }
+        // if (returnedMessage) {
+        //   // setMessages([])
+        //   setMessages((previousMessages) =>
+        //     GiftedChat.append(previousMessages, [returnedMessage]),
+        //   )
+        // }
       } catch (e) {
         console.log('failed to send message: ', { e })
         Toast.show({
@@ -248,6 +176,9 @@ function Chat({ route, navigation }) {
         })
       }
     })
+    // setMessages((previousMessages) =>
+    //   GiftedChat.append(previousMessages, _messages),
+    // )
   }, [])
 
   const styles = StyleSheet.create({

@@ -52,7 +52,6 @@
     "expo-task-manager": "~11.0.1",
     "expo-updates": "~0.15.6",
     "graphql": "^16.0.0",
-    "isomorphic-ws": "5.0.0",
     "phone-formatter": "^0.0.2",
     "prop-types": "15.8.1",
     "react": "18.1.0",
