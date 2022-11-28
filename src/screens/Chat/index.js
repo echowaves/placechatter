@@ -351,7 +351,7 @@ function Chat({ route, navigation }) {
   useEffect(() => {
     ;(async () => {
       navigation.setOptions({
-        headerTitle: `chat: ${placeName}`,
+        headerTitle: `${placeName}`,
         headerTintColor: CONST.MAIN_COLOR,
         headerRight: renderHeaderRight,
         headerLeft: renderHeaderLeft,

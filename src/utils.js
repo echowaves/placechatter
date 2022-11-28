@@ -1285,6 +1285,18 @@ export async function placeChatReadDefault({
 }
 
 function messageMapper(message) {
+  // console.log({
+  //   ...message,
+  //   _id: message.messageUuid,
+  //   text: message.messageText,
+  //   // pending: message.pending,
+  //   createdAt: message.createdAt,
+  //   user: {
+  //     _id: message.createdBy,
+  //     name: message.nickName,
+  //   },
+  // })
+
   return {
     ...message,
     _id: message.messageUuid,
@@ -1331,6 +1343,7 @@ export async function messageList({
               createdBy # phoneNumber
               messageText
               createdAt
+              nickName
             }
           }
         `,
@@ -1418,7 +1431,7 @@ export async function messageSend({
       })
     ).data.messageSend
 
-    console.log({ message })
+    // console.log({ message })
     return messageMapper(message)
   } catch (err030) {
     console.log({ err030 })
