@@ -44,12 +44,11 @@ import PropTypes from 'prop-types'
 import * as CONST from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
-// import subscriptionClient from '../../subscriptionClientWs'
+import subscriptionClient from '../../subscriptionClientWs'
 
 function Chat({ route, navigation }) {
   // const navigation = useNavigation()
   const { chatUuid, placeName } = route.params
-
   const { authContext } = useContext(CONST.AuthContext)
 
   const [messages, setMessages] = useState([])
@@ -61,120 +60,118 @@ function Chat({ route, navigation }) {
 
   const topOffset = height / 3
 
-  // useEffect(() => {
-  //   console.log(`subscribing to ${chatUuid}`)
-  //   // add subscription listener
-  //   const observableObject = subscriptionClient.subscribe({
-  //     query: gql`
-  //       subscription onSendMessage($chatUuid: String!) {
-  //         onSendMessage(chatUuid: $chatUuid) {
-  //           chatUuid
-  //           createdAt
-  //           messageUuid
-  //           text
-  //           pending
-  //           chatPhotoHash
-  //           updatedAt
-  //           uuid
-  //         }
-  //       }
-  //     `,
-  //     variables: {
-  //       chatUuid,
-  //     },
-  //   })
-  //   // console.log({ observableObject })
-  //   const subscriptionParameters = {
-  //     onmessage() {
-  //       console.log('onMessage')
-  //     },
-  //     start() {
-  //       console.log('observableObject:: Start')
-  //     },
-  //     next(data) {
-  //       // console.log('observableObject:: ', { data })
-  //       // eslint-disable-next-line no-unsafe-optional-chaining
-  //       const { onSendMessage } = data?.data
-  //       // console.log({ onSendMessage })
-  //       setMessages((previousMessages) => {
-  //         const updatedMessages = previousMessages.map((message) => {
-  //           if (message.messageUuid === onSendMessage.messageUuid) {
-  //             // this is the update of the message which is already in the feed
-  //             return {
-  //               _id: onSendMessage.messageUuid,
-  //               text: onSendMessage.messageText,
-  //               createdAt: onSendMessage.createdAt,
-  //               user: {
-  //                 _id: onSendMessage.createdBy,
-  //                 name: onSendMessage.nickName,
-  //                 // avatar: 'https://placeimg.com/140/140/any',
-  //               },
-  //             }
-  //           }
-  //           return message
-  //         })
-  //         // this is a new message which was not present in the feed, let's append it to the end
-  //         if (
-  //           updatedMessages.find(
-  //             (message) => message.messageUuid === onSendMessage.messageUuid,
-  //           ) === undefined
-  //         ) {
-  //           // console.log({ onSendMessage })
-  //           return [
-  //             {
-  //               _id: onSendMessage.messageUuid,
-  //               text: onSendMessage.messageText,
-  //               createdAt: onSendMessage.createdAt,
-  //               user: {
-  //                 _id: onSendMessage.createdBy,
-  //                 name: onSendMessage.nickName,
-  //                 // avatar: 'https://placeimg.com/140/140/any',
-  //               },
-  //             },
-  //             ...updatedMessages,
-  //           ]
-  //         } // if this is the new message
-  //         // console.log({ updatedMessages })
-  //         return updatedMessages
-  //       })
-  //       // update read counts
-  //       UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
-  //     },
-  //     error(error) {
-  //       console.error('observableObject:: subscription error', { error })
-  //       Toast.show({
-  //         text1: 'Trying to re-connect, chat may not function properly.',
-  //         // text2: 'You may want to leave this screen and come back to it again, to make it work.',
-  //         text2: JSON.stringify({ error }),
-  //         type: 'error',
-  //         topOffset,
-  //       })
-  //       console.log(
-  //         '------------------------- this is the whole new begining --------------------------------------',
-  //       )
-  //       // eslint-disable-next-line no-use-before-define
-  //       subscription.unsubscribe()
-  //       observableObject.subscribe(subscriptionParameters)
-  //       // // _return({ uuid })
-  //     },
-  //     // complete() {
-  //     //   console.log('observableObject:: subs. DONE')
-  //     // }, // never printed
-  //   }
-  //   // console.log({ observableObject })
-  //   // console.log(Object.entries(observableObject))
+  useEffect(() => {
+    console.log(`subscribing to ${chatUuid}`)
+    // add subscription listener
+    const observableObject = subscriptionClient.subscribe({
+      query: gql`
+        subscription onSendMessage($chatUuid: String!) {
+          onSendMessage(chatUuid: $chatUuid) {
+            chatUuid
+            messageUuid
+            createdBy
+            nickName
+            messageText
+            createdAt
+          }
+        }
+      `,
+      variables: {
+        chatUuid,
+      },
+    })
+    console.log({ observableObject })
+    const subscriptionParameters = {
+      onmessage() {
+        console.log('onMessage')
+      },
+      start() {
+        console.log('observableObject:: Start')
+      },
+      next(data) {
+        console.log('observableObject:: ', { data })
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const { onSendMessage } = data?.data
+        // console.log({ onSendMessage })
+        setMessages((previousMessages) => {
+          const updatedMessages = previousMessages.map((message) => {
+            if (message.messageUuid === onSendMessage.messageUuid) {
+              // this is the update of the message which is already in the feed
+              return {
+                _id: onSendMessage.messageUuid,
+                text: onSendMessage.messageText,
+                createdAt: onSendMessage.createdAt,
+                user: {
+                  _id: onSendMessage.createdBy,
+                  name: onSendMessage.nickName,
+                  // avatar: 'https://placeimg.com/140/140/any',
+                },
+              }
+            }
+            return message
+          })
+          // this is a new message which was not present in the feed, let's append it to the end
+          if (
+            updatedMessages.find(
+              (message) => message.messageUuid === onSendMessage.messageUuid,
+            ) === undefined
+          ) {
+            console.log({ onSendMessage })
+            return [
+              {
+                _id: onSendMessage.messageUuid,
+                text: onSendMessage.messageText,
+                createdAt: onSendMessage.createdAt,
+                user: {
+                  _id: onSendMessage.createdBy,
+                  name: onSendMessage.nickName,
+                  // avatar: 'https://placeimg.com/140/140/any',
+                },
+              },
+              ...updatedMessages,
+            ]
+          } // if this is the new message
+          console.log({ updatedMessages })
+          return updatedMessages
+        })
+        // update read counts
+        UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
+      },
+      error(error) {
+        console.error('observableObject:: subscription error', { error })
+        Toast.show({
+          text1: 'Trying to re-connect, chat may not function properly.',
+          // text2: 'You may want to leave this screen and come back to it again, to make it work.',
+          text2: JSON.stringify({ error }),
+          type: 'error',
+          topOffset,
+        })
+        console.log(
+          '------------------------- this is the whole new begining --------------------------------------',
+        )
+        // eslint-disable-next-line no-use-before-define
+        subscription.unsubscribe()
+        observableObject.subscribe(subscriptionParameters)
+        // // _return({ uuid })
+      },
+      // complete() {
+      //   console.log('observableObject:: subs. DONE')
+      // }, // never printed
+    }
+    // console.log({ observableObject })
+    // console.log(Object.entries(observableObject))
 
-  //   const subscription = observableObject.subscribe(subscriptionParameters)
+    const subscription = observableObject.subscribe(subscriptionParameters)
 
-  //   // const subscription = observableObject.subscribe(result => {
-  //   //   console.log('Subscription data => ', { result })
-  //   // })
+    // const subscription = observableObject.subscribe(result => {
+    //   console.log('Subscription data => ', { result })
+    // })
 
-  //   return () => {
-  //     subscription.unsubscribe()
-  //     console.log(`unsubscribing from ${chatUuid}`)
-  //   }
-  // }, [])
+    return () => {
+      subscription.unsubscribe()
+      console.log(`unsubscribing from ${chatUuid}`)
+    }
+  }, [])
 
   const onSend = useCallback((_messages = []) => {
     // console.log(JSON.stringify(_messages))

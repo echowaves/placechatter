@@ -34,6 +34,7 @@ export default {
         projectId: 'c8788597-86cf-4b92-a3a1-3d27b1bd5da9',
       },
       API_URI: process.env.API_URI,
+      REALTIME_API_URI: process.env.REALTIME_API_URI,
       API_KEY: process.env.API_KEY,
     },
     scheme: 'placechatter',
