@@ -177,12 +177,28 @@ function Chat({ route, navigation }) {
   // }, [])
 
   const onSend = useCallback((_messages = []) => {
-    console.log(JSON.stringify(_messages))
+    // console.log(JSON.stringify(_messages))
     _messages.forEach(async (message) => {
       try {
         const { text, createdAt, _id } = message
 
-        console.log({ message })
+        // console.log({ message })
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, [
+            {
+              _id,
+              text,
+              createdAt,
+              user: {
+                // eslint-disable-next-line no-underscore-dangle
+                _id: message.user._id,
+                // name: returnedMessage.nickName,
+                // avatar: 'https://placeimg.com/140/140/any',
+              },
+              sent: true,
+            },
+          ]),
+        )
 
         const returnedMessage = await UTILS.messageSend({
           uuid,
@@ -193,22 +209,37 @@ function Chat({ route, navigation }) {
           messageText: text,
         })
         if (returnedMessage) {
-          console.log({ returnedMessage })
-
-          setMessages((previousMessages) =>
-            GiftedChat.append(previousMessages, [
-              {
-                _id: returnedMessage.messageUuid,
-                text: returnedMessage.messageText,
-                createdAt,
-                user: {
-                  _id: returnedMessage.createdBy,
-                  name: returnedMessage.nickName,
-                  // avatar: 'https://placeimg.com/140/140/any',
-                },
-              },
-            ]),
-          )
+          // setMessages([])
+          setMessages((previousMessages) => {
+            const updatedMessages = previousMessages.map((prevMessage) => {
+              // console.log({ prevMessage, returnedMessage })
+              // eslint-disable-next-line no-underscore-dangle
+              if (prevMessage._id === _id) {
+                // this is the update of the message which is already in the feed
+                return {
+                  ...prevMessage,
+                  sent: false,
+                }
+              }
+              return prevMessage
+            })
+            return updatedMessages
+          })
+          // setMessages((previousMessages) =>
+          //   GiftedChat.append(previousMessages, [
+          //     {
+          //       _id: returnedMessage.messageUuid,
+          //       text: returnedMessage.messageText,
+          //       createdAt,
+          //       user: {
+          //         _id: returnedMessage.createdBy,
+          //         name: returnedMessage.nickName,
+          //         // avatar: 'https://placeimg.com/140/140/any',
+          //       },
+          //       recieved: true,
+          //     },
+          //   ]),
+          // )
         }
       } catch (e) {
         console.log('failed to send message: ', { e })
@@ -295,7 +326,7 @@ function Chat({ route, navigation }) {
   )
 
   const onLoadEarlier = async () => {
-    console.log('onLoadEarlier')
+    // console.log('onLoadEarlier')
     // setMessages([...messages, await _loadMessages({ chatUuid, pageNumber: pageNumber + 1 })])
 
     const earlierMessages = await UTILS.messageList({
