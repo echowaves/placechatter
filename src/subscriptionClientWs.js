@@ -81,6 +81,8 @@ const createAppSyncGraphQLOperationAdapter = () => ({
   },
 })
 
+// const ws = new WebSocket(connection_url)
+
 // WebSocketLink
 const wsLink = new WebSocketLink(
   new UUIDOperationIdSubscriptionClient(
@@ -93,7 +95,7 @@ const wsLink = new WebSocketLink(
       connectionCallback: (err) =>
         console.log('connectionCallback', err ? 'ERR' : 'OK', err || ''),
     },
-    WebSocket,
+    // WebSocket,
   ).use([createAppSyncGraphQLOperationAdapter()]),
 )
 
