@@ -319,7 +319,7 @@ function Place({ route, navigation }) {
             color={CONST.MAIN_COLOR}
             iconRight
           >
-            {`  Place Chat`}
+            {`  Chat`}
             <Ionicons
               name="chatbubble-ellipses-outline"
               size={24}
