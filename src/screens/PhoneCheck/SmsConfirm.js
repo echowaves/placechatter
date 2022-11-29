@@ -68,6 +68,10 @@ function SmsConfirm({ navigation }) {
   //   // Return the function to unsubscribe from the event so it gets removed on unmount
   //   return unsubscribe
   // }, [navigation])
+  const back = () => {
+    navigation.goBack()
+    navigation.goBack()
+  }
 
   async function handleSubmit() {
     const { uuid, phoneNumber } = authContext
@@ -100,7 +104,7 @@ function SmsConfirm({ navigation }) {
         })
       }
 
-      navigation.goBack()
+      back()
       // navigation.pop()
       // console.log({ response })
       // alert(response)
@@ -150,7 +154,7 @@ function SmsConfirm({ navigation }) {
         width: 60,
       }}
       onPress={() => {
-        navigation.goBack()
+        back()
       }}
     />
   )

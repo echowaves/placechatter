@@ -67,7 +67,6 @@ function Place({ route, navigation }) {
   const { authContext } = useContext(CONST.AuthContext)
 
   const [currentPlace, setCurrentPlace] = useState()
-  const [placeChat, setPlaceChat] = useState()
 
   const [isPlaceOwner, setIsPlaceOwner] = useState(false)
   const [canEdit, setCanEdit] = useState(false)
@@ -144,14 +143,6 @@ function Place({ route, navigation }) {
     setCurrentPlace({ ...currentPlace, cards: [] })
     setCurrentPlace({ ...currentPlace, place, cards })
 
-    setPlaceChat(
-      await UTILS.placeChatReadDefault({
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid,
-      }),
-    )
     setShowSpinner(false)
   }
 
@@ -308,11 +299,21 @@ function Place({ route, navigation }) {
         </Card>
         <Card>
           <Button
-            onPress={() => {
-              navigation.navigate('Chat', {
-                chatUuid: placeChat.chatUuid,
-                placeName: currentPlace?.place?.placeName,
+            onPress={async () => {
+              const placeChat = await UTILS.placeChatReadDefault({
+                uuid,
+                phoneNumber,
+                token,
+                placeUuid,
               })
+              if (placeChat) {
+                navigation.navigate('Chat', {
+                  chatUuid: placeChat.chatUuid,
+                  placeName: currentPlace?.place?.placeName,
+                })
+              } else {
+                navigation.navigate('PhoneCheck')
+              }
             }}
             size="sm"
             color={CONST.MAIN_COLOR}
