@@ -42,7 +42,7 @@ import { VALID } from '../../valid'
 
 function PhoneCheck({ navigation }) {
   // const navigation = useNavigation()
-  const [showSpinner, setShowSpinner] = useState(false)
+  // const [showSpinner, setShowSpinner] = useState(false)
 
   const { authContext, setAuthContext } = useContext(CONST.AuthContext)
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -65,10 +65,10 @@ function PhoneCheck({ navigation }) {
   }, [phoneNumber])
 
   const handleSubmit = async () => {
-    setShowSpinner(true)
+    // setShowSpinner(true)
     try {
       // const response = await
-      await UTILS.activationCodeGenerate({
+      UTILS.activationCodeGenerate({
         phoneNumber,
         uuid: authContext.uuid,
       })
@@ -80,7 +80,6 @@ function PhoneCheck({ navigation }) {
       UTILS.setNickName('')
 
       setAuthContext({ ...authContext, token: '', phoneNumber, nickName: '' })
-      setShowSpinner(false)
 
       navigation.navigate('SmsConfirm')
     } catch (err) {
@@ -91,7 +90,7 @@ function PhoneCheck({ navigation }) {
         type: 'error',
       })
     }
-    setShowSpinner(false)
+    // setShowSpinner(false)
   }
 
   const renderHeaderRight = () => (
@@ -163,11 +162,11 @@ function PhoneCheck({ navigation }) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.wrapper}>
-        <Spinner
+        {/* <Spinner
           visible={showSpinner}
-          textContent={'Loading...'}
+          textContent={'Loading..'}
           // textStyle={styles.spinnerTextStyle}
-        />
+        /> */}
         <Input
           ref={input}
           label="Confirmation Code will be sent to this number"

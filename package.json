@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "npx expo start",
-    "startc": "npx expo r -c",
+    "clear": "npm cache clean --force",
     "reset:simulator": "xcrun simctl erase all",
     "android": "npx expo start --android",
     "ios": "npx expo start --ios",
@@ -31,7 +31,7 @@
     "@rnhooks/keyboard": "1.1.0",
     "dayjs": "^1.11.6",
     "expo": "^47.0.0",
-    "expo-av": "~13.0.1",
+    "expo-av": "~13.0.2",
     "expo-background-fetch": "~11.0.1",
     "expo-cached-image": "47.0.0",
     "expo-constants": "~14.0.2",

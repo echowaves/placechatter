@@ -239,7 +239,7 @@ function SmsConfirm({ navigation }) {
       <SafeAreaView style={styles.wrapper}>
         <Spinner
           visible={showSpinner}
-          textContent={'Loading...'}
+          textContent={'Loading....'}
           // textStyle={styles.spinnerTextStyle}
         />
         <Input
