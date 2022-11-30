@@ -296,7 +296,7 @@ function PlaceAdd({ navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...7'}
+        textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
       <KeyboardAwareScrollView>

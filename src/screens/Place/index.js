@@ -274,7 +274,7 @@ function Place({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...5'}
+        textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView

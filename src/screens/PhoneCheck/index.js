@@ -164,7 +164,7 @@ function PhoneCheck({ navigation }) {
       <SafeAreaView style={styles.wrapper}>
         {/* <Spinner
           visible={showSpinner}
-          textContent={'Loading...2'}
+          textContent={'Loading...'}
           // textStyle={styles.spinnerTextStyle}
         /> */}
         <Input

@@ -126,7 +126,7 @@ function Owners({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...6'}
+        textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView

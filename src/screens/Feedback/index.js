@@ -107,7 +107,7 @@ function Feedback({ navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...1'}
+        textContent={'Loading...'}
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView>
