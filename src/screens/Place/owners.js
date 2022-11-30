@@ -35,14 +35,14 @@ import dayjs from 'dayjs'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
 function Owners({ route, navigation }) {
   const { placeUuid } = route.params
   // const navigation = useNavigation()
-  const { authContext } = useContext(CONST.AuthContext)
+  const { authContext } = useContext(CONSTS.AuthContext)
   const [showSpinner, setShowSpinner] = useState(false)
 
   const [ownersList, setOwnersList] = useState([])
@@ -90,7 +90,7 @@ function Owners({ route, navigation }) {
         size={30}
         style={{
           marginLeft: 10,
-          color: CONST.MAIN_COLOR,
+          color: CONSTS.MAIN_COLOR,
           width: 60,
         }}
         onPress={() => navigation.goBack()}
@@ -101,12 +101,12 @@ function Owners({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'place owners',
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: null,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
   }, [])
@@ -126,7 +126,7 @@ function Owners({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...'}
+        textContent={'Loading...6'}
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView
@@ -160,7 +160,7 @@ function Owners({ route, navigation }) {
                 {authContext.phoneNumber !== owner.phoneNumber && (
                   <Icon
                     name="delete"
-                    color={CONST.MAIN_COLOR}
+                    color={CONSTS.MAIN_COLOR}
                     onPress={() => {
                       Alert.alert('revoke ownership', 'Are you sure?', [
                         {

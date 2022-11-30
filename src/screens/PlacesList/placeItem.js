@@ -40,7 +40,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 
 import CachedImage from 'expo-cached-image'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 
 function PlaceItem({ item, navigation }) {

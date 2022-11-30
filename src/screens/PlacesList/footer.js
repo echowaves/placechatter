@@ -22,7 +22,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 
 function Footer() {
   const { width, height } = useDimensions().window
@@ -46,9 +46,9 @@ function Footer() {
         bottom: 35,
         right: 0,
         left: 0,
-        backgroundColor: CONST.FOOTER_COLOR,
+        backgroundColor: CONSTS.FOOTER_COLOR,
         width,
-        height: CONST.FOOTER_HEIGHT,
+        height: CONSTS.FOOTER_HEIGHT,
       }}
     >
       {/* drawer button */}
@@ -63,7 +63,7 @@ function Footer() {
           name="navicon"
           size={25}
           style={{
-            color: CONST.MAIN_COLOR,
+            color: CONSTS.MAIN_COLOR,
             position: 'absolute',
             bottom: 0,
             left: 15,

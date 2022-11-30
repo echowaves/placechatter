@@ -28,7 +28,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 
 const Photo = ({ photo }) => {
   // console.log({ photo })
@@ -71,7 +71,7 @@ const Photo = ({ photo }) => {
         placeholderContent={
           // optional
           <ActivityIndicator
-            color={CONST.MAIN_COLOR}
+            color={CONSTS.MAIN_COLOR}
             size="small"
             style={{
               flex: 1,
@@ -88,7 +88,7 @@ const Photo = ({ photo }) => {
         style={styles.photo}
         placeholderContent={
           <ActivityIndicator
-            color={CONST.MAIN_COLOR}
+            color={CONSTS.MAIN_COLOR}
             size="small"
             style={{
               flex: 1,

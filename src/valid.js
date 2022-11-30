@@ -3,7 +3,7 @@
 /* eslint-disable import/prefer-default-export */
 import Toast from 'react-native-toast-message'
 
-import * as CONST from './consts'
+import * as CONSTS from './consts'
 
 export const VALID = {
   dateFormat: 'YYYY-MM-DD HH:mm:ss.SSS',

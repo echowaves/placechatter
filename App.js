@@ -30,7 +30,7 @@ import Toast from 'react-native-toast-message'
 // eslint-disable-next-line no-unused-vars
 import { ThemeProvider } from '@rneui/themed'
 
-import * as CONST from './src/consts'
+import * as CONSTS from './src/consts'
 import * as UTILS from './src/utils'
 
 import PlacesList from './src/screens/PlacesList'
@@ -58,7 +58,7 @@ const Drawer = createDrawerNavigator()
 // eslint-disable-next-line no-unused-vars
 const Stack = createStackNavigator()
 // enableFreeze(true)
-const { AuthContext } = CONST
+const { AuthContext } = CONSTS
 
 function App() {
   const [authContext, setAuthContext] = useState()
@@ -97,7 +97,7 @@ function App() {
               size={30}
               style={{
                 marginLeft: 10,
-                color: CONST.MAIN_COLOR,
+                color: CONSTS.MAIN_COLOR,
                 width: 60,
               }}
             />
@@ -116,7 +116,7 @@ function App() {
               size={30}
               style={{
                 marginLeft: 5,
-                color: CONST.MAIN_COLOR,
+                color: CONSTS.MAIN_COLOR,
                 width: 30,
               }}
             />
@@ -136,7 +136,7 @@ function App() {
               size={30}
               style={{
                 marginLeft: 5,
-                color: CONST.MAIN_COLOR,
+                color: CONSTS.MAIN_COLOR,
                 width: 30,
               }}
             />
@@ -156,7 +156,7 @@ function App() {
               size={30}
               style={{
                 marginLeft: 5,
-                color: CONST.MAIN_COLOR,
+                color: CONSTS.MAIN_COLOR,
                 width: 30,
               }}
             />
@@ -181,7 +181,7 @@ function App() {
         name="Home"
         component={MainDrawNavigator}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           headerTitle: '',
           headerLeft: '',
           headerRight: '',
@@ -191,7 +191,7 @@ function App() {
         name="PlaceAdd"
         component={PlaceAdd}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
         }}
       />
@@ -199,7 +199,7 @@ function App() {
         name="Place"
         component={Place}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -208,7 +208,7 @@ function App() {
         name="Chat"
         component={Chat}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -218,7 +218,7 @@ function App() {
         name="Owners"
         component={Owners}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -227,7 +227,7 @@ function App() {
         name="OwnerAdd"
         component={OwnerAdd}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -236,7 +236,7 @@ function App() {
         name="PlaceCardEdit"
         component={PlaceCardEdit}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -245,7 +245,7 @@ function App() {
         name="FeedbackAdd"
         component={FeedbackAdd}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -254,7 +254,7 @@ function App() {
         name="PhoneCheck"
         component={PhoneCheck}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}
@@ -263,7 +263,7 @@ function App() {
         name="SmsConfirm"
         component={SmsConfirm}
         options={{
-          headerTintColor: CONST.MAIN_COLOR,
+          headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,
           headerShown: true,
         }}

@@ -47,7 +47,7 @@ import Markdown from 'react-native-markdown-display'
 
 import Photo from './screens/Place/Photo'
 
-import * as CONST from './consts'
+import * as CONSTS from './consts'
 import { VALID } from './valid'
 import * as UTILS from './utils'
 

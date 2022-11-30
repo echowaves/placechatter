@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import 'react-native-get-random-values'
 import { gql } from '@apollo/client'
 
-import * as CONST from './consts'
+import * as CONSTS from './consts'
 import { VALID } from './valid'
 
 // const { width, height } = useDimensions().window
@@ -55,7 +55,7 @@ export async function getLocation() {
 async function storeUUID(uuid) {
   // console.log('storing', { uuid })
   try {
-    await SecureStore.setItemAsync(CONST.UUID_KEY, `${uuid}`)
+    await SecureStore.setItemAsync(CONSTS.UUID_KEY, `${uuid}`)
   } catch (err001) {
     // console.log({ err1 })
     Toast.show({
@@ -70,7 +70,7 @@ async function storeUUID(uuid) {
 export async function getUUID() {
   let uuid
   try {
-    uuid = await SecureStore.getItemAsync(CONST.UUID_KEY)
+    uuid = await SecureStore.getItemAsync(CONSTS.UUID_KEY)
   } catch (err002) {
     // console.log({ err })
     uuid = null
@@ -89,7 +89,7 @@ export async function getUUID() {
 
 export async function setNickName(nickName) {
   try {
-    await SecureStore.setItemAsync(CONST.NICK_NAME_KEY, `${nickName}`)
+    await SecureStore.setItemAsync(CONSTS.NICK_NAME_KEY, `${nickName}`)
   } catch (err003) {
     Toast.show({
       text1: 'Unable to store NickName',
@@ -101,13 +101,13 @@ export async function setNickName(nickName) {
 }
 
 export async function getNickName() {
-  const nickName = await SecureStore.getItemAsync(CONST.NICK_NAME_KEY)
+  const nickName = await SecureStore.getItemAsync(CONSTS.NICK_NAME_KEY)
   return nickName
 }
 
 export const setPhoneNumber = async (phoneNumber) => {
   try {
-    await SecureStore.setItemAsync(CONST.PHONE_NUMBER_KEY, `${phoneNumber}`)
+    await SecureStore.setItemAsync(CONSTS.PHONE_NUMBER_KEY, `${phoneNumber}`)
   } catch (err004) {
     Toast.show({
       text1: 'Unable to store PhoneNumber',
@@ -119,13 +119,13 @@ export const setPhoneNumber = async (phoneNumber) => {
 }
 
 export async function getPhoneNumber() {
-  const phoneNumber = await SecureStore.getItemAsync(CONST.PHONE_NUMBER_KEY)
+  const phoneNumber = await SecureStore.getItemAsync(CONSTS.PHONE_NUMBER_KEY)
   return phoneNumber
 }
 
 export const setToken = async (token) => {
   try {
-    await SecureStore.setItemAsync(CONST.TOKEN_KEY, `${token}`)
+    await SecureStore.setItemAsync(CONSTS.TOKEN_KEY, `${token}`)
   } catch (err005) {
     Toast.show({
       text1: 'Unable to store token',
@@ -137,7 +137,7 @@ export const setToken = async (token) => {
 }
 
 export async function getToken() {
-  const token = await SecureStore.getItemAsync(CONST.TOKEN_KEY)
+  const token = await SecureStore.getItemAsync(CONSTS.TOKEN_KEY)
   return token
 }
 
@@ -147,7 +147,7 @@ export async function getToken() {
 
 export async function activationCodeGenerate({ phoneNumber, uuid }) {
   try {
-    await CONST.gqlClient.mutate({
+    await CONSTS.gqlClient.mutate({
       mutation: gql`
         mutation activationCodeGenerate($phoneNumber: String!, $uuid: String!) {
           activationCodeGenerate(phoneNumber: $phoneNumber, uuid: $uuid)
@@ -172,7 +172,7 @@ export async function activationCodeGenerate({ phoneNumber, uuid }) {
 export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation phoneActivate(
             $uuid: String
@@ -210,7 +210,7 @@ export async function phoneActivate({ uuid, phoneNumber, smsCode, nickName }) {
 export async function nickNameTypeAhead({ phoneNumber, nickName }) {
   try {
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query nickNameTypeAhead($phoneNumber: String, $nickName: String) {
             nickNameTypeAhead(phoneNumber: $phoneNumber, nickName: $nickName)
@@ -236,7 +236,7 @@ export async function nickNameTypeAhead({ phoneNumber, nickName }) {
 export async function placeRead({ placeUuid }) {
   try {
     const { place, cards } = (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query placeRead(
             # $uuid: String!
@@ -304,7 +304,7 @@ export async function placeRead({ placeUuid }) {
 export async function placesFeed({ latitude, longitude }) {
   try {
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query placesFeed($lat: Float!, $lon: Float!) {
             placesFeed(lat: $lat, lon: $lon) {
@@ -368,7 +368,7 @@ export async function isValidToken({ authContext, navigation }) {
       throw new Error('Invalid parameters')
     }
     const isPhoneConfirmed = (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query isValidToken(
             $uuid: String
@@ -417,7 +417,7 @@ export async function isPlaceOwner({ uuid, phoneNumber, token, placeUuid }) {
     // }
 
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query isPlaceOwner(
             $uuid: String
@@ -475,7 +475,7 @@ export async function placeCreate({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeCreate(
             $uuid: String
@@ -566,7 +566,7 @@ export async function placeCardCreate({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeCardCreate(
             $uuid: String
@@ -618,7 +618,7 @@ export async function placeCardCreate({
 export async function placeCardRead({ placeUuid, cardUuid }) {
   try {
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query placeCardRead(
             # $uuid: String!
@@ -679,7 +679,7 @@ export async function placeCardSave({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeCardSave(
             $uuid: String
@@ -740,7 +740,7 @@ export async function generateUploadUrlForCard({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation generateUploadUrlForCard(
             $uuid: String
@@ -801,7 +801,7 @@ export async function placeCardPhotoDelete({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeCardPhotoDelete(
             $uuid: String
@@ -849,7 +849,7 @@ export async function placeCardDelete({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeCardDelete(
             $uuid: String
@@ -898,7 +898,7 @@ export async function placeCardSwap({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeCardSwap(
             $uuid: String
@@ -949,7 +949,7 @@ export async function placeDelete({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placeDelete(
             $uuid: String
@@ -994,7 +994,7 @@ export async function placePhoneCreate({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placePhoneCreate(
             $uuid: String
@@ -1049,7 +1049,7 @@ export async function placePhoneDelete({
 }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation placePhoneDelete(
             $uuid: String
@@ -1096,7 +1096,7 @@ export async function feedbackCreate({
 }) {
   try {
     const feedback = (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation feedbackCreate(
             $uuid: String
@@ -1145,7 +1145,7 @@ export async function placePhoneList({
 }) {
   try {
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query placePhoneList(
             $uuid: String!
@@ -1192,7 +1192,7 @@ export async function placePhoneList({
 export async function feedbackList({ uuid, phoneNumber, token }) {
   try {
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query feedbackList(
             $uuid: String!
@@ -1240,7 +1240,7 @@ export async function placeChatReadDefault({
 }) {
   try {
     return (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query placeChatReadDefault(
             $uuid: String!
@@ -1322,7 +1322,7 @@ export async function messageList({
   // console.log({ lastLoaded })
   try {
     const messagesList = (
-      await CONST.gqlClient.query({
+      await CONSTS.gqlClient.query({
         query: gql`
           query messageList(
             $uuid: String
@@ -1393,7 +1393,7 @@ export async function messageSend({
     // })
 
     const message = (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation messageSend(
             $uuidArg: String
@@ -1448,7 +1448,7 @@ export async function messageSend({
 export async function unreadCountReset({ uuid, phoneNumber, token, chatUuid }) {
   try {
     return (
-      await CONST.gqlClient.mutate({
+      await CONSTS.gqlClient.mutate({
         mutation: gql`
           mutation unreadCountReset(
             $uuid: String

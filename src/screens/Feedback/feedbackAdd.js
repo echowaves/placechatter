@@ -43,14 +43,14 @@ import { v4 as uuidv4 } from 'uuid'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
 import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 
 function FeedbackAdd({ route, navigation }) {
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { authContext, setAuthContext } = useContext(CONSTS.AuthContext)
 
   const { width, height } = useDimensions().window
 
@@ -73,7 +73,7 @@ function FeedbackAdd({ route, navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.MAIN_COLOR,
+        color: CONSTS.MAIN_COLOR,
         width: 60,
       }}
       onPress={() => {
@@ -85,12 +85,12 @@ function FeedbackAdd({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Add Feedback',
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
   }, [])
@@ -162,7 +162,7 @@ function FeedbackAdd({ route, navigation }) {
             onPress={saveFeedback}
             size="lg"
             iconRight
-            color={CONST.MAIN_COLOR}
+            color={CONSTS.MAIN_COLOR}
           >
             {`   Post Feedback ${feedbackText.length}/2000`}
             <Icon name="send" color="white" />

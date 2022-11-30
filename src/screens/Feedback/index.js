@@ -27,14 +27,14 @@ import dayjs from 'dayjs'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 import { markdownStyles } from '../../markdownHelp'
 
 function Feedback({ navigation }) {
   // const navigation = useNavigation()
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { authContext, setAuthContext } = useContext(CONSTS.AuthContext)
   const [showSpinner, setShowSpinner] = useState(false)
 
   const [feedbackList, setFeedbackList] = useState([])
@@ -71,7 +71,7 @@ function Feedback({ navigation }) {
         size={30}
         style={{
           marginLeft: 10,
-          color: CONST.MAIN_COLOR,
+          color: CONSTS.MAIN_COLOR,
           width: 60,
         }}
         onPress={() => navigation.goBack()}
@@ -82,12 +82,12 @@ function Feedback({ navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'feedback',
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: null,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
   }, [])
@@ -107,7 +107,7 @@ function Feedback({ navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...'}
+        textContent={'Loading...1'}
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView>

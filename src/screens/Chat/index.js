@@ -41,7 +41,7 @@ import {
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 import subscriptionClient from '../../subscriptionClientWs'
@@ -49,7 +49,7 @@ import subscriptionClient from '../../subscriptionClientWs'
 function Chat({ route, navigation }) {
   // const navigation = useNavigation()
   const { chatUuid, placeName } = route.params
-  const { authContext } = useContext(CONST.AuthContext)
+  const { authContext } = useContext(CONSTS.AuthContext)
 
   const [messages, setMessages] = useState([])
   // .format("YYYY-MM-DD HH:mm:ss.SSS")
@@ -212,7 +212,7 @@ function Chat({ route, navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.MAIN_COLOR,
+        color: CONSTS.MAIN_COLOR,
         width: 60,
       }}
       onPress={() => {
@@ -234,7 +234,7 @@ function Chat({ route, navigation }) {
           style={{
             marginRight: 10,
             marginBottom: 10,
-            color: CONST.MAIN_COLOR,
+            color: CONSTS.MAIN_COLOR,
           }}
         />
       </View>
@@ -249,7 +249,7 @@ function Chat({ route, navigation }) {
         justifyContent: 'center',
       }}
     >
-      <ActivityIndicator size="large" color={CONST.MAIN_COLOR} />
+      <ActivityIndicator size="large" color={CONSTS.MAIN_COLOR} />
     </View>
   )
 
@@ -311,12 +311,12 @@ function Chat({ route, navigation }) {
     ;(async () => {
       navigation.setOptions({
         headerTitle: `${placeName}`,
-        headerTintColor: CONST.MAIN_COLOR,
+        headerTintColor: CONSTS.MAIN_COLOR,
         headerRight: renderHeaderRight,
         headerLeft: renderHeaderLeft,
         headerBackTitle: '',
         headerStyle: {
-          backgroundColor: CONST.NAV_COLOR,
+          backgroundColor: CONSTS.NAV_COLOR,
         },
       })
 

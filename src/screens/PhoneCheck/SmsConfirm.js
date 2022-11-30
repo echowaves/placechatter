@@ -38,7 +38,7 @@ import {
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
@@ -48,7 +48,7 @@ function SmsConfirm({ navigation }) {
   const topOffset = height / 3
 
   const [showSpinner, setShowSpinner] = useState(false)
-  const { authContext, setAuthContext } = useContext(CONST.AuthContext)
+  const { authContext, setAuthContext } = useContext(CONSTS.AuthContext)
 
   // console.log({ uuid, phoneNumber })
 
@@ -139,7 +139,7 @@ function SmsConfirm({ navigation }) {
       size={30}
       style={{
         marginRight: 10,
-        color: canSubmit ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR,
+        color: canSubmit ? CONSTS.MAIN_COLOR : CONSTS.SECONDARY_COLOR,
       }}
     />
   )
@@ -150,7 +150,7 @@ function SmsConfirm({ navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.MAIN_COLOR,
+        color: CONSTS.MAIN_COLOR,
         width: 60,
       }}
       onPress={() => {
@@ -197,12 +197,12 @@ function SmsConfirm({ navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'confirm code',
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
     // input.current.focus()
@@ -239,7 +239,7 @@ function SmsConfirm({ navigation }) {
       <SafeAreaView style={styles.wrapper}>
         <Spinner
           visible={showSpinner}
-          textContent={'Loading....'}
+          textContent={'Loading...3'}
           // textStyle={styles.spinnerTextStyle}
         />
         <Input

@@ -43,7 +43,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
@@ -52,7 +52,7 @@ import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 function OwnerAdd({ route, navigation }) {
   const { placeUuid } = route.params
 
-  const { authContext } = useContext(CONST.AuthContext)
+  const { authContext } = useContext(CONSTS.AuthContext)
 
   const { width, height } = useDimensions().window
 
@@ -75,7 +75,7 @@ function OwnerAdd({ route, navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.MAIN_COLOR,
+        color: CONSTS.MAIN_COLOR,
         width: 60,
       }}
       onPress={() => {
@@ -87,12 +87,12 @@ function OwnerAdd({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Add Owner',
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
   }, [])
@@ -166,7 +166,7 @@ function OwnerAdd({ route, navigation }) {
             onPress={saveOwner}
             size="lg"
             iconRight
-            color={CONST.MAIN_COLOR}
+            color={CONSTS.MAIN_COLOR}
           >
             {`   Save Owner`}
             <Icon name="save" color="white" />

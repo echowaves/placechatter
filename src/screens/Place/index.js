@@ -54,7 +54,7 @@ import {
 
 import PropTypes from 'prop-types'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 import { VALID } from '../../valid'
 
@@ -64,7 +64,7 @@ import { markdownStyles } from '../../markdownHelp'
 function Place({ route, navigation }) {
   const { placeUuid } = route.params
 
-  const { authContext } = useContext(CONST.AuthContext)
+  const { authContext } = useContext(CONSTS.AuthContext)
 
   const [currentPlace, setCurrentPlace] = useState()
 
@@ -87,7 +87,7 @@ function Place({ route, navigation }) {
           }}
         >
           <Switch
-            color={CONST.MAIN_COLOR}
+            color={CONSTS.MAIN_COLOR}
             value={canEdit}
             onValueChange={(value) => setCanEdit(!canEdit)}
           />
@@ -112,7 +112,7 @@ function Place({ route, navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.MAIN_COLOR,
+        color: CONSTS.MAIN_COLOR,
         width: 60,
       }}
       onPress={() => navigation.navigate('PlacesList')}
@@ -153,12 +153,12 @@ function Place({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: currentPlace?.place?.placeName,
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeft,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
   }, [currentPlace])
@@ -196,11 +196,9 @@ function Place({ route, navigation }) {
   // const { place, cards } = placeContext
   if (!currentPlace?.place) {
     return (
-      <Spinner
-        visible={true}
-        textContent={'Loading...'}
-        // textStyle={styles.spinnerTextStyle}
-      />
+      <View style={styles.container}>
+        <LinearProgress color={CONSTS.MAIN_COLOR} />
+      </View>
     )
   }
 
@@ -276,7 +274,7 @@ function Place({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <Spinner
         visible={showSpinner}
-        textContent={'Loading...'}
+        textContent={'Loading...5'}
         // textStyle={styles.spinnerTextStyle}
       />
       <ScrollView
@@ -316,7 +314,7 @@ function Place({ route, navigation }) {
               }
             }}
             size="sm"
-            color={CONST.MAIN_COLOR}
+            color={CONSTS.MAIN_COLOR}
             iconRight
           >
             {`  Chat`}
@@ -352,7 +350,7 @@ function Place({ route, navigation }) {
                     <Icon
                       name="arrow-up"
                       type="font-awesome-5"
-                      color={CONST.MAIN_COLOR}
+                      color={CONSTS.MAIN_COLOR}
                       onPress={async () => {
                         setShowSpinner(true)
                         await UTILS.placeCardSwap({
@@ -380,7 +378,7 @@ function Place({ route, navigation }) {
                       })
                     }}
                     size="sm"
-                    color={CONST.MAIN_COLOR}
+                    color={CONSTS.MAIN_COLOR}
                     iconRight
                   >
                     {`  Edit Card`}
@@ -391,7 +389,7 @@ function Place({ route, navigation }) {
                     <Icon
                       name="arrow-down"
                       type="font-awesome-5"
-                      color={CONST.MAIN_COLOR}
+                      color={CONSTS.MAIN_COLOR}
                       onPress={async () => {
                         setShowSpinner(true)
                         await UTILS.placeCardSwap({

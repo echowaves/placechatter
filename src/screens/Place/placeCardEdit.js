@@ -46,7 +46,7 @@ import PropTypes from 'prop-types'
 
 import Photo from './Photo'
 
-import * as CONST from '../../consts'
+import * as CONSTS from '../../consts'
 import { VALID } from '../../valid'
 import * as UTILS from '../../utils'
 
@@ -54,7 +54,7 @@ import MarkdownHelp, { markdownStyles } from '../../markdownHelp'
 
 function PlaceCardEdit({ route, navigation }) {
   const { placeUuid, cardUuid } = route.params
-  const { authContext } = useContext(CONST.AuthContext)
+  const { authContext } = useContext(CONSTS.AuthContext)
 
   const { width, height } = useDimensions().window
 
@@ -149,7 +149,7 @@ function PlaceCardEdit({ route, navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.MAIN_COLOR,
+        color: CONSTS.MAIN_COLOR,
         width: 60,
       }}
       onPress={() => {
@@ -163,7 +163,7 @@ function PlaceCardEdit({ route, navigation }) {
       size={30}
       style={{
         marginLeft: 10,
-        color: CONST.SECONDARY_COLOR,
+        color: CONSTS.SECONDARY_COLOR,
         width: 60,
       }}
       onPress={() => {
@@ -408,12 +408,12 @@ function PlaceCardEdit({ route, navigation }) {
     setUnchanged(true)
     navigation.setOptions({
       headerTitle: '',
-      headerTintColor: CONST.MAIN_COLOR,
+      headerTintColor: CONSTS.MAIN_COLOR,
       headerRight: renderHeaderRight,
       headerLeft: renderHeaderLeftUnchanged,
       headerBackTitle: '',
       headerStyle: {
-        backgroundColor: CONST.NAV_COLOR,
+        backgroundColor: CONSTS.NAV_COLOR,
       },
     })
     init()
@@ -629,7 +629,7 @@ function PlaceCardEdit({ route, navigation }) {
             size="lg"
             iconRight
             color={
-              canSubmit && !unchanged ? CONST.MAIN_COLOR : CONST.SECONDARY_COLOR
+              canSubmit && !unchanged ? CONSTS.MAIN_COLOR : CONSTS.SECONDARY_COLOR
             }
           >
             {`  Save Card`}
