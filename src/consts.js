@@ -43,7 +43,7 @@ export const NAV_COLOR = '#f0f0f0'
 export const BG_COLOR = '#ffffff'
 
 export const FOOTER_COLOR = 'rgba(230,230,230,.9)'
-export const FOOTER_HEIGHT = 30
+export const FOOTER_HEIGHT = 45
 
 export const TEXT_COLOR = '#555f61'
 export const PLACEHOLDER_TEXT_COLOR = '#ececec'

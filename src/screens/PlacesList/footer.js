@@ -40,38 +40,72 @@ function Footer() {
     //     left: 0,
     //   }}
     // >
-    <Grid
+    <View
       style={{
         position: 'absolute',
-        bottom: 35,
+        bottom: 0,
         right: 0,
         left: 0,
-        backgroundColor: CONSTS.FOOTER_COLOR,
+        // backgroundColor: 'rgba(0,0,0,0.5)',
         width,
-        height: CONSTS.FOOTER_HEIGHT,
+        // height: CONSTS.FOOTER_HEIGHT,
       }}
     >
       {/* drawer button */}
-      <Col
+      <TouchableOpacity
         style={{
           justifyContent: 'center',
           alignItems: 'center',
+          borderRadius: 50,
+          backgroundColor: 'white',
+          height: 50,
+          width: 50,
+          position: 'absolute',
+          bottom: 10,
+          left: 35,
+        }}
+        onPress={() => {
+          navigation.openDrawer()
         }}
       >
         <FontAwesome
-          onPress={() => navigation.openDrawer()}
           name="navicon"
           size={25}
           style={{
             color: CONSTS.MAIN_COLOR,
-            position: 'absolute',
-            bottom: 0,
-            left: 15,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         />
-      </Col>
-    </Grid>
-    // </SafeAreaView>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 50,
+          backgroundColor: 'white',
+          height: 50,
+          width: 50,
+          position: 'absolute',
+          bottom: 10,
+          right: 35,
+        }}
+        onPress={() => {
+          navigation.openDrawer()
+        }}
+      >
+        <Ionicons
+          name="chatbubble-ellipses"
+          size={35}
+          style={{
+            color: CONSTS.MAIN_COLOR,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
+      </TouchableOpacity>
+    </View>
   )
 }
 

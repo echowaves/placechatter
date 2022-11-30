@@ -136,7 +136,8 @@ function PlacesList({ navigation }) {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      // marginBottom: CONST.FOOTER_HEIGHT,
+      // marginBottom: CONSTS.FOOTER_HEIGHT,
+      // paddingBottom: CONSTS.FOOTER_HEIGHT,
     },
     scrollView: {
       marginHorizontal: 0,
@@ -205,7 +206,7 @@ function PlacesList({ navigation }) {
     return (
       <View style={styles.container}>
         <LinearProgress color={CONSTS.MAIN_COLOR} />
-        <View style={{ width, height: CONSTS.FOOTER_HEIGHT }}></View>
+        {/* <View style={{ width, height: CONSTS.FOOTER_HEIGHT }}></View> */}
         <Footer />
       </View>
     )
@@ -226,7 +227,6 @@ function PlacesList({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
-      <View style={{ width, height: CONSTS.FOOTER_HEIGHT }}></View>
       <Footer />
     </SafeAreaView>
   )
