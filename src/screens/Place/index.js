@@ -39,6 +39,7 @@ import {
   Button,
   Icon,
   Switch,
+  Badge,
 } from '@rneui/themed'
 
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -297,6 +298,7 @@ function Place({ route, navigation }) {
         </Card>
         <Card>
           <Button
+            style={{ alignSelf: 'center', width: width / 2 }}
             onPress={async () => {
               const placeChat = await UTILS.placeChatReadDefault({
                 uuid,
@@ -323,7 +325,15 @@ function Place({ route, navigation }) {
               size={24}
               color="white"
             />{' '}
+            {/* {unreadCounts && unreadCounts > 0 && ( */}
+            {/* )} */}
           </Button>
+          <Badge
+            // value={`${unreadCounts}`}
+            value={`100`}
+            status="error"
+            containerStyle={{ position: 'absolute', top: -5, left: width / 2 }}
+          />
         </Card>
 
         {currentPlace.cards.map((card, index) => {

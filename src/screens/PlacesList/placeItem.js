@@ -28,6 +28,7 @@ import {
   Divider,
   ListItem,
   Avatar,
+  Badge,
 } from '@rneui/themed'
 
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -43,7 +44,22 @@ import CachedImage from 'expo-cached-image'
 import * as CONSTS from '../../consts'
 import * as UTILS from '../../utils'
 
-function PlaceItem({ item, navigation }) {
+function PlaceItem({ item, chatsPhones, navigation }) {
+  const { placeUuid } = item.place
+
+  const [badgeCounts, setBadgeCounts] = useState()
+
+  useEffect(() => {
+    console.log({ chatsPhones })
+    const counts = chatsPhones
+      // .filter((obj) => placeUuid === obj.placeUuid)
+      .reduce(
+        (accumulator, chatPhone) => accumulator + chatPhone.unreadCounts,
+        0,
+      )
+    console.log({ counts })
+    setBadgeCounts(counts)
+  }, [])
   // eslint-disable-next-line no-shadow
   const renderPhotoItem = function ({ item, index }) {
     // console.log({ item })
@@ -86,7 +102,7 @@ function PlaceItem({ item, navigation }) {
   }
 
   // console.log({ cards: cards.filter((card) => card?.photo !== null) })
-  const { placeUuid } = item.place
+
   return (
     <ListItem
       onPress={async () => {
@@ -105,6 +121,14 @@ function PlaceItem({ item, navigation }) {
       ViewComponent={LinearGradient} // Only if no expo
     >
       {/* <Avatar rounded source={{ uri: avatar_url }} /> */}
+      {badgeCounts !== undefined && badgeCounts > 0 && (
+        <Badge
+          // value={`${unreadCounts}`}
+          value={`${badgeCounts}`}
+          status="error"
+          containerStyle={{ position: 'absolute', top: 15, right: 20 }}
+        />
+      )}
 
       <ListItem.Content>
         <ListItem.Title

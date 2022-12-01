@@ -1483,3 +1483,54 @@ export async function unreadCountReset({ uuid, phoneNumber, token, chatUuid }) {
   }
   return null
 }
+
+export async function unreadCounts({ uuid, phoneNumber, token }) {
+  // console.log({ lastLoaded })
+  try {
+    const chatPhones = (
+      await CONSTS.gqlClient.query({
+        query: gql`
+          query unreadCounts(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+          ) {
+            unreadCounts(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+            ) {
+              chatUuid
+              placeUuid
+              chatName
+              phoneNumber
+              lastReadAt
+              unreadCounts
+              updatedAt
+            }
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+        },
+        // fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
+      })
+    ).data.unreadCounts
+
+    // console.log({ messagesList })
+
+    return chatPhones
+  } catch (err031) {
+    // console.log({ err027 })
+    Toast.show({
+      text1: 'Unable to load unread counts',
+      text2: err031.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}

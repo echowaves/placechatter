@@ -24,7 +24,7 @@ import PropTypes from 'prop-types'
 
 import * as CONSTS from '../../consts'
 
-function Footer() {
+function Footer({ unreadCounts }) {
   const { width, height } = useDimensions().window
   const navigation = useNavigation()
 
@@ -104,6 +104,13 @@ function Footer() {
             alignItems: 'center',
           }}
         />
+        {unreadCounts && unreadCounts > 0 && (
+          <Badge
+            value={`${unreadCounts}`}
+            status="error"
+            containerStyle={{ position: 'absolute', top: 0, right: 0 }}
+          />
+        )}
       </TouchableOpacity>
     </View>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useContext } from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -48,6 +48,8 @@ import PlaceItem from './placeItem'
 
 function PlacesList({ navigation }) {
   // const navigation = useNavigation()
+  const { authContext } = useContext(CONSTS.AuthContext)
+
   const { width, height } = useDimensions().window
   const topOffset = height / 3
 
@@ -55,6 +57,8 @@ function PlacesList({ navigation }) {
 
   const [places, setPlaces] = useState()
   const [refreshing, setRefreshing] = useState(false)
+  const [unreadCounts, setUnreadCounts] = useState()
+  const [chatsPhones, setChatsPhones] = useState()
 
   const init = async () => {
     try {
@@ -65,6 +69,44 @@ function PlacesList({ navigation }) {
     } catch (err) {
       console.log('failed to setIsTandcAccepted')
     }
+  }
+
+  const renderHeaderRight = () => null
+  const renderHeaderLeft = () => {}
+
+  async function badgeLoad() {
+    const { uuid, phoneNumber, token } = authContext || {}
+    try {
+      if (!token) {
+        setUnreadCounts(null)
+        return []
+      }
+      const loadedChatPhones = await UTILS.unreadCounts({
+        uuid,
+        phoneNumber,
+        token,
+      })
+
+      // console.log({ loadedChatPhones })
+      const counts = loadedChatPhones.reduce(
+        (accumulator, object) => accumulator + object.unreadCounts,
+        0,
+      )
+      // console.log({ counts })
+      setUnreadCounts(`${counts}`)
+      return loadedChatPhones
+      //   // console.log({ places: JSON.stringify(loadedPlaces) })
+    } catch (err19) {
+      console.log({ err19 })
+      console.log('failed to load badge count')
+      Toast.show({
+        text1: 'Unable to load badge count',
+        text2: err19.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
+    return []
   }
 
   const load = async () => {
@@ -83,10 +125,14 @@ function PlacesList({ navigation }) {
 
     const { latitude, longitude } = location.coords
     try {
+      const cp = await badgeLoad()
+      console.log({ cp })
+      setChatsPhones(cp)
       const loadedPlaces = await UTILS.placesFeed({ latitude, longitude })
       // console.log({ loadedPlaces })
       // console.log('loadedPlaces.length:', loadedPlaces.length)
       setPlaces(loadedPlaces)
+
       // console.log({ places: JSON.stringify(loadedPlaces) })
     } catch (err9) {
       console.log({ err9 })
@@ -99,9 +145,6 @@ function PlacesList({ navigation }) {
       })
     }
   }
-
-  const renderHeaderRight = () => null
-  const renderHeaderLeft = () => {}
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -214,12 +257,17 @@ function PlacesList({ navigation }) {
 
   const keyExtractor = (item, index) => index.toString()
   // console.log({ places: JSON.stringify(places) })
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={places}
         renderItem={(item, index) => (
-          <PlaceItem item={item.item} navigation={navigation} />
+          <PlaceItem
+            item={item.item}
+            navigation={navigation}
+            chatsPhones={chatsPhones}
+          />
         )}
         keyExtractor={keyExtractor}
         // extraData={selectedId}
@@ -227,7 +275,7 @@ function PlacesList({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
-      <Footer />
+      <Footer unreadCounts={unreadCounts} />
     </SafeAreaView>
   )
 }
