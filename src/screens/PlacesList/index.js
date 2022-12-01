@@ -126,7 +126,7 @@ function PlacesList({ navigation }) {
     const { latitude, longitude } = location.coords
     try {
       const cp = await badgeLoad()
-      console.log({ cp })
+      // console.log({ cp })
       setChatsPhones(cp)
       const loadedPlaces = await UTILS.placesFeed({ latitude, longitude })
       // console.log({ loadedPlaces })
@@ -266,7 +266,9 @@ function PlacesList({ navigation }) {
           <PlaceItem
             item={item.item}
             navigation={navigation}
-            chatsPhones={chatsPhones}
+            chatsPhones={chatsPhones.filter(
+              (obj) => item?.item?.place?.placeUuid === obj?.placeUuid,
+            )}
           />
         )}
         keyExtractor={keyExtractor}

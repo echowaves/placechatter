@@ -50,14 +50,12 @@ function PlaceItem({ item, chatsPhones, navigation }) {
   const [badgeCounts, setBadgeCounts] = useState()
 
   useEffect(() => {
-    console.log({ chatsPhones })
-    const counts = chatsPhones
-      // .filter((obj) => placeUuid === obj.placeUuid)
-      .reduce(
-        (accumulator, chatPhone) => accumulator + chatPhone.unreadCounts,
-        0,
-      )
-    console.log({ counts })
+    // console.log({ chatsPhones })
+    const counts = chatsPhones.reduce(
+      (accumulator, chatPhone) => accumulator + chatPhone.unreadCounts,
+      0,
+    )
+    // console.log({ counts })
     setBadgeCounts(counts)
   }, [])
   // eslint-disable-next-line no-shadow
