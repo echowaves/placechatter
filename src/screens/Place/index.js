@@ -192,6 +192,9 @@ function Place({ route, navigation }) {
   }
 
   const onRefresh = React.useCallback(() => {
+    initPlaceOwner()
+    initChat()
+
     refresh()
   }, [])
 
