@@ -69,6 +69,9 @@ function Place({ route, navigation }) {
 
   const [currentPlace, setCurrentPlace] = useState()
 
+  const [placeChat, setPlaceChat] = useState()
+  const [chatsCounts, setChatsCounts] = useState()
+
   const [isPlaceOwner, setIsPlaceOwner] = useState(false)
   const [canEdit, setCanEdit] = useState(false)
 
@@ -119,6 +122,7 @@ function Place({ route, navigation }) {
       onPress={() => navigation.navigate('PlacesList')}
     />
   )
+
   const initPlaceOwner = async () => {
     const { uuid, phoneNumber, token } = authContext
     setIsPlaceOwner(
@@ -129,6 +133,46 @@ function Place({ route, navigation }) {
         placeUuid,
       }),
     )
+  }
+
+  const initChat = async () => {
+    const { uuid, phoneNumber, token } = authContext
+    try {
+      if (!token) {
+        setChatsCounts(null)
+      }
+
+      const loadedPlaceChat = await UTILS.placeChatReadDefault({
+        uuid,
+        phoneNumber,
+        token,
+        placeUuid,
+      })
+
+      const loadedChatPhones = await UTILS.unreadCounts({
+        uuid,
+        phoneNumber,
+        token,
+      })
+      // console.log({ loadedChatPhones })
+      const counts = loadedChatPhones
+        .filter((obj) => loadedPlaceChat.chatUuid === obj?.chatUuid)
+        .reduce((accumulator, object) => accumulator + object.unreadCounts, 0)
+
+      // console.log({ counts, loadedPlaceChat })
+
+      setPlaceChat(loadedPlaceChat)
+      setChatsCounts(counts)
+    } catch (err33) {
+      console.log({ err33 })
+      console.log('failed to load chats count')
+      Toast.show({
+        text1: 'Unable to load chats count',
+        text2: err33.toString(),
+        type: 'error',
+        topOffset,
+      })
+    }
   }
 
   const refresh = async () => {
@@ -176,7 +220,8 @@ function Place({ route, navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       // The screen is focused
-      await initPlaceOwner()
+      initPlaceOwner()
+      initChat()
       await refresh()
     })
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -300,12 +345,6 @@ function Place({ route, navigation }) {
           <Button
             style={{ alignSelf: 'center', width: width / 2 }}
             onPress={async () => {
-              const placeChat = await UTILS.placeChatReadDefault({
-                uuid,
-                phoneNumber,
-                token,
-                placeUuid,
-              })
               if (placeChat) {
                 navigation.navigate('Chat', {
                   chatUuid: placeChat.chatUuid,
@@ -328,12 +367,18 @@ function Place({ route, navigation }) {
             {/* {unreadCounts && unreadCounts > 0 && ( */}
             {/* )} */}
           </Button>
-          <Badge
-            // value={`${unreadCounts}`}
-            value={`100`}
-            status="error"
-            containerStyle={{ position: 'absolute', top: -5, left: width / 2 }}
-          />
+          {chatsCounts > 0 && (
+            <Badge
+              // value={`${unreadCounts}`}
+              value={`${chatsCounts}`}
+              status="error"
+              containerStyle={{
+                position: 'absolute',
+                top: -5,
+                left: width / 2,
+              }}
+            />
+          )}
         </Card>
 
         {currentPlace.cards.map((card, index) => {
