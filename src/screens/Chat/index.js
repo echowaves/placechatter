@@ -23,6 +23,7 @@ import {
   Card,
   ListItem,
   Button,
+  Switch,
 } from '@rneui/themed'
 
 // import * as FileSystem from 'expo-file-system'
@@ -52,6 +53,9 @@ function Chat({ route, navigation }) {
   const { authContext } = useContext(CONSTS.AuthContext)
 
   const [messages, setMessages] = useState([])
+
+  const [isSubscribed, setIsSubscribed] = useState()
+
   // .format("YYYY-MM-DD HH:mm:ss.SSS")
   // const [lastRead, setLastRead] = useState(moment())
 
@@ -61,7 +65,7 @@ function Chat({ route, navigation }) {
   const topOffset = height / 3
 
   useEffect(() => {
-    console.log(`subscribing to ${chatUuid}`)
+    // console.log(`subscribing to ${chatUuid}`)
     // add subscription listener
     const observableObject = subscriptionClient.subscribe({
       query: gql`
@@ -89,10 +93,11 @@ function Chat({ route, navigation }) {
         console.log('observableObject:: Start')
       },
       next(data) {
-        console.log('observableObject:: ', { data })
+        // console.log('observableObject:: ', { data })
         // eslint-disable-next-line no-unsafe-optional-chaining
         const { onSendMessage } = data?.data
         const receivedMessage = UTILS.messageMapper(onSendMessage)
+        // this is new message
         if (
           // eslint-disable-next-line no-underscore-dangle
           messages.filter((message) => message._id === receivedMessage._id)
@@ -102,7 +107,8 @@ function Chat({ route, navigation }) {
             GiftedChat.append(previousMessages, [receivedMessage]),
           )
         } else {
-          console.log(1)
+          // received a message which already in the chat, potential update
+          console.log('message updating')
           // update messages here
         }
         // update read counts
@@ -140,7 +146,7 @@ function Chat({ route, navigation }) {
 
     return () => {
       subscription.unsubscribe()
-      console.log(`unsubscribing from ${chatUuid}`)
+      // console.log(`unsubscribing from ${chatUuid}`)
     }
   }, [])
 
@@ -166,6 +172,7 @@ function Chat({ route, navigation }) {
         //     GiftedChat.append(previousMessages, [returnedMessage]),
         //   )
         // }
+        setIsSubscribed(true)
       } catch (e) {
         console.log('failed to send message: ', { e })
         Toast.show({
@@ -204,7 +211,38 @@ function Chat({ route, navigation }) {
     navigation.goBack()
   }
 
-  const renderHeaderRight = () => {}
+  const renderHeaderRight = () => (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        paddingRight: 10,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 10,
+          fontWeight: '300',
+        }}
+      >
+        {isSubscribed ? 'subscribed' : 'unsubscribed'}
+      </Text>
+      <Switch
+        color={CONSTS.MAIN_COLOR}
+        value={isSubscribed}
+        onValueChange={async (value) => {
+          // console.log({ value })
+          if (value) {
+            await UTILS.chatSubscribe({ uuid, phoneNumber, token, chatUuid })
+            setIsSubscribed(true)
+          } else {
+            await UTILS.chatUnsubscribe({ uuid, phoneNumber, token, chatUuid })
+            setIsSubscribed(false)
+          }
+        }}
+      />
+    </View>
+  )
 
   const renderHeaderLeft = () => (
     <FontAwesome
@@ -262,7 +300,9 @@ function Chat({ route, navigation }) {
       phoneNumber,
       token,
       chatUuid,
-      lastLoaded: messages[messages.length - 1].createdAt,
+      lastLoaded: messages.length
+        ? messages[messages.length - 1].createdAt
+        : `${dayjs().toISOString()}`,
     })
     // console.log({ earlierMessages })
     setMessages((previousMessages) =>
@@ -332,8 +372,22 @@ function Chat({ route, navigation }) {
       setMessages(messagesList)
 
       UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
+
+      setIsSubscribed(
+        await UTILS.isSubscribedToChat({ uuid, phoneNumber, token, chatUuid }),
+      )
     })()
   }, [])
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    })
+  }, [isSubscribed])
+
+  useEffect(() => {
+    // console.log({ isSubscribed })
+  }, [isSubscribed])
 
   return (
     <SafeAreaView style={styles.container}>

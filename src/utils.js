@@ -1534,3 +1534,123 @@ export async function unreadCounts({ uuid, phoneNumber, token }) {
   }
   return null
 }
+
+export async function isSubscribedToChat({
+  uuid,
+  phoneNumber,
+  token,
+  chatUuid,
+}) {
+  // console.log({ lastLoaded })
+  try {
+    const isSubscribed = (
+      await CONSTS.gqlClient.query({
+        query: gql`
+          query isSubscribedToChat(
+            $uuid: String
+            $phoneNumber: String
+            $token: String
+            $chatUuid: String!
+          ) {
+            isSubscribedToChat(
+              uuid: $uuid
+              phoneNumber: $phoneNumber
+              token: $token
+              chatUuid: $chatUuid
+            )
+          }
+        `,
+        variables: {
+          uuid,
+          phoneNumber,
+          token,
+          chatUuid,
+        },
+        // fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
+      })
+    ).data.isSubscribedToChat
+    return isSubscribed
+  } catch (err032) {
+    // console.log({ err032 })
+    Toast.show({
+      text1: 'Unable to check if subscribed to chat',
+      text2: err032.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+  return null
+}
+
+export async function chatSubscribe({ uuid, phoneNumber, token, chatUuid }) {
+  try {
+    await CONSTS.gqlClient.mutate({
+      mutation: gql`
+        mutation chatSubscribe(
+          $uuid: String
+          $phoneNumber: String
+          $token: String
+          $chatUuid: String!
+        ) {
+          chatSubscribe(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            chatUuid: $chatUuid
+          )
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        chatUuid,
+      },
+    })
+  } catch (err033) {
+    // console.log({ err033 })
+    Toast.show({
+      text1: 'Unable to Subscribe to chat',
+      text2: err033.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+}
+
+export async function chatUnsubscribe({ uuid, phoneNumber, token, chatUuid }) {
+  try {
+    await CONSTS.gqlClient.mutate({
+      mutation: gql`
+        mutation chatUnsubscribe(
+          $uuid: String
+          $phoneNumber: String
+          $token: String
+          $chatUuid: String!
+        ) {
+          chatUnsubscribe(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            chatUuid: $chatUuid
+          )
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        chatUuid,
+      },
+    })
+  } catch (err034) {
+    // console.log({ err033 })
+    Toast.show({
+      text1: 'Unable to Unsubscribe from chat',
+      text2: err034.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+}
