@@ -37,6 +37,7 @@ import PlacesList from './src/screens/PlacesList'
 import PlaceAdd from './src/screens/Place/placeAdd'
 import Place from './src/screens/Place'
 import Chat from './src/screens/Chat'
+import MyChats from './src/screens/Chat/myChats'
 import Owners from './src/screens/Place/owners'
 import OwnerAdd from './src/screens/Place/ownerAdd'
 
@@ -207,6 +208,15 @@ function App() {
       <Stack.Screen
         name="Chat"
         component={Chat}
+        options={{
+          headerTintColor: CONSTS.MAIN_COLOR,
+          gestureEnabled: false,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="MyChats"
+        component={MyChats}
         options={{
           headerTintColor: CONSTS.MAIN_COLOR,
           gestureEnabled: false,

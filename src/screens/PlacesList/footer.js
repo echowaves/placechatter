@@ -92,7 +92,7 @@ function Footer({ unreadCounts }) {
           right: 35,
         }}
         onPress={() => {
-          navigation.openDrawer()
+          navigation.navigate('MyChats')
         }}
       >
         <Ionicons

@@ -48,7 +48,7 @@ import subscriptionClient from '../../subscriptionClientWs'
 
 function Chat({ route, navigation }) {
   // const navigation = useNavigation()
-  const { chatUuid, placeName } = route.params
+  const { chatUuid, chatName } = route.params
   const { authContext } = useContext(CONSTS.AuthContext)
 
   const [messages, setMessages] = useState([])
@@ -310,7 +310,7 @@ function Chat({ route, navigation }) {
   useEffect(() => {
     ;(async () => {
       navigation.setOptions({
-        headerTitle: `${placeName}`,
+        headerTitle: `${chatName}`,
         headerTintColor: CONSTS.MAIN_COLOR,
         headerRight: renderHeaderRight,
         headerLeft: renderHeaderLeft,

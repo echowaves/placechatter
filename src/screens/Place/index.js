@@ -351,7 +351,7 @@ function Place({ route, navigation }) {
               if (placeChat) {
                 navigation.navigate('Chat', {
                   chatUuid: placeChat.chatUuid,
-                  placeName: currentPlace?.place?.placeName,
+                  chatName: placeChat.chatName,
                 })
               } else {
                 navigation.navigate('PhoneCheck')
