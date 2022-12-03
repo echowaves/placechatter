@@ -45,7 +45,7 @@ function MyChats({ navigation }) {
   const { authContext } = useContext(CONSTS.AuthContext)
   const [showSpinner, setShowSpinner] = useState(false)
 
-  const [chatsList, setChatsList] = useState([])
+  const [chatsList, setChatsList] = useState()
 
   async function init() {
     if (await UTILS.isValidToken({ authContext, navigation })) {
@@ -121,6 +121,28 @@ function MyChats({ navigation }) {
       paddingBottom: 300,
     },
   })
+  if (chatsList === undefined) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <LinearProgress color={CONSTS.MAIN_COLOR} />
+      </SafeAreaView>
+    )
+  }
+
+  if (chatsList.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text
+          style={{
+            color: CONSTS.MAIN_COLOR,
+          }}
+        >
+          You do not follow any chats yet. Start chatting in some place to see a
+          list of your chats here.
+        </Text>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
