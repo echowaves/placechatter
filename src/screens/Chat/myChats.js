@@ -191,9 +191,6 @@ function MyChats({ navigation }) {
             </Card>
           )
         })}
-
-        <Card.Divider />
-        <Card.Divider />
       </ScrollView>
     </SafeAreaView>
   )
