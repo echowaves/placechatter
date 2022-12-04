@@ -1,4 +1,4 @@
-import React, { useRef, useState /* useEffect */ } from 'react'
+import React, { useRef, useState /* useEffect */, useContext } from 'react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 import { useDimensions } from '@react-native-community/hooks'
@@ -27,6 +27,8 @@ import * as CONSTS from '../../consts'
 function Footer({ unreadCounts }) {
   const { width, height } = useDimensions().window
   const navigation = useNavigation()
+  const { authContext } = useContext(CONSTS.AuthContext)
+  const { token } = authContext || {}
 
   return (
     // <SafeAreaView
@@ -92,7 +94,11 @@ function Footer({ unreadCounts }) {
           right: 35,
         }}
         onPress={() => {
-          navigation.navigate('MyChats')
+          if (token) {
+            navigation.navigate('MyChats')
+          } else {
+            navigation.navigate('PhoneCheck')
+          }
         }}
       >
         <Ionicons

@@ -140,29 +140,30 @@ function Place({ route, navigation }) {
     try {
       if (!token) {
         setChatsCounts(null)
+      } else {
+        const loadedPlaceChat = await UTILS.placeChatReadDefault({
+          uuid,
+          phoneNumber,
+          token,
+          placeUuid,
+        })
+
+        // console.log({ counts, loadedPlaceChat })
+
+        setPlaceChat(loadedPlaceChat)
+
+        const loadedChatPhones = await UTILS.unreadCounts({
+          uuid,
+          phoneNumber,
+          token,
+        })
+        // console.log({ loadedChatPhones })
+        const counts = loadedChatPhones
+          .filter((obj) => loadedPlaceChat.chatUuid === obj?.chatUuid)
+          .reduce((accumulator, object) => accumulator + object.unreadCounts, 0)
+
+        setChatsCounts(counts)
       }
-
-      const loadedPlaceChat = await UTILS.placeChatReadDefault({
-        uuid,
-        phoneNumber,
-        token,
-        placeUuid,
-      })
-
-      const loadedChatPhones = await UTILS.unreadCounts({
-        uuid,
-        phoneNumber,
-        token,
-      })
-      // console.log({ loadedChatPhones })
-      const counts = loadedChatPhones
-        .filter((obj) => loadedPlaceChat.chatUuid === obj?.chatUuid)
-        .reduce((accumulator, object) => accumulator + object.unreadCounts, 0)
-
-      // console.log({ counts, loadedPlaceChat })
-
-      setPlaceChat(loadedPlaceChat)
-      setChatsCounts(counts)
     } catch (err33) {
       console.log({ err33 })
       console.log('failed to load chats count')

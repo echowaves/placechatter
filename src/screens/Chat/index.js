@@ -14,6 +14,7 @@ import {
   ScrollView,
   View,
   ActivityIndicator,
+  Clipboard,
 } from 'react-native'
 
 import {
@@ -25,6 +26,8 @@ import {
   Button,
   Switch,
 } from '@rneui/themed'
+
+import { useActionSheet } from '@expo/react-native-action-sheet'
 
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
@@ -55,6 +58,7 @@ function Chat({ route, navigation }) {
   const [messages, setMessages] = useState([])
 
   const [isSubscribed, setIsSubscribed] = useState()
+  const { showActionSheetWithOptions } = useActionSheet()
 
   // .format("YYYY-MM-DD HH:mm:ss.SSS")
   // const [lastRead, setLastRead] = useState(moment())
@@ -149,6 +153,31 @@ function Chat({ route, navigation }) {
       // console.log(`unsubscribing from ${chatUuid}`)
     }
   }, [])
+
+  const onPress = (context, message) => {
+    // console.log({ context, message })
+    context.actionSheet().showActionSheetWithOptions()
+    // console.log(context.actionSheet().showActionSheetWithOptions())
+
+    if (message?.text) {
+      const options = ['Copy Text', 'Cancel']
+      const cancelButtonIndex = options.length - 1
+      context.actionSheet().showActionSheetWithOptions(
+        {
+          options,
+          cancelButtonIndex,
+        },
+        (buttonIndex) => {
+          // eslint-disable-next-line default-case
+          switch (buttonIndex) {
+            case 0:
+              Clipboard.setString(message.text)
+              break
+          }
+        },
+      )
+    }
+  }
 
   const onSend = useCallback((_messages = []) => {
     // console.log(JSON.stringify(_messages))
@@ -394,6 +423,7 @@ function Chat({ route, navigation }) {
       <GiftedChat
         messages={messages}
         onSend={(sentMessages) => onSend(sentMessages)}
+        onPress={(context, message) => onPress(context, message)}
         user={{
           _id: phoneNumber,
         }}

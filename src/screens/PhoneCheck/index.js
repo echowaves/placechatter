@@ -24,6 +24,7 @@ import {
   Button,
   Icon,
 } from '@rneui/themed'
+import { useDimensions } from '@react-native-community/hooks'
 
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
@@ -43,6 +44,9 @@ import { VALID } from '../../valid'
 function PhoneCheck({ navigation }) {
   // const navigation = useNavigation()
   // const [showSpinner, setShowSpinner] = useState(false)
+  const { width, height } = useDimensions().window
+
+  const topOffset = height / 3
 
   const { authContext, setAuthContext } = useContext(CONSTS.AuthContext)
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -58,6 +62,15 @@ function PhoneCheck({ navigation }) {
       setPhoneNumberError('10 digits phone number')
     }
   }
+
+  useEffect(() => {
+    Toast.show({
+      text1: 'Need to confirm your phone number',
+      // text2: err01.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }, [])
 
   useEffect(() => {
     // console.log({ smsCode, nickName })
