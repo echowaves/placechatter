@@ -27,7 +27,7 @@ import {
   Switch,
 } from '@rneui/themed'
 
-import { useActionSheet } from '@expo/react-native-action-sheet'
+// import { useActionSheet } from '@expo/react-native-action-sheet'
 
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
@@ -43,6 +43,8 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons'
 
+// import { useActionSheet } from '@expo/react-native-action-sheet'
+
 import PropTypes from 'prop-types'
 
 import * as CONSTS from '../../consts'
@@ -57,14 +59,17 @@ function Chat({ route, navigation }) {
 
   const [messages, setMessages] = useState([])
 
+  const [enteredText, setEnteredText] = useState('')
+
   const [isSubscribed, setIsSubscribed] = useState()
-  const { showActionSheetWithOptions } = useActionSheet()
+  // const { showActionSheetWithOptions } = useActionSheet()
 
   // .format("YYYY-MM-DD HH:mm:ss.SSS")
   // const [lastRead, setLastRead] = useState(moment())
 
   const { uuid, phoneNumber, token } = authContext
   const { width, height } = useDimensions().window
+  // const { showActionSheetWithOptions } = useActionSheet()
 
   const topOffset = height / 3
 
@@ -155,26 +160,19 @@ function Chat({ route, navigation }) {
   }, [])
 
   const onPress = (context, message) => {
-    // console.log({ context, message })
-    context.actionSheet().showActionSheetWithOptions()
-    // console.log(context.actionSheet().showActionSheetWithOptions())
-
     if (message?.text) {
-      const options = ['Copy Text', 'Cancel']
-      const cancelButtonIndex = options.length - 1
+      const options = ['Delete', 'Report Abuse', 'Cancel']
+      // const cancelButtonIndex = options.length - 1
+      const cancelButtonIndex = 0
+      const destructiveButtonIndex = 1
       context.actionSheet().showActionSheetWithOptions(
         {
+          title: `${message.text}`,
           options,
           cancelButtonIndex,
+          destructiveButtonIndex,
         },
-        (buttonIndex) => {
-          // eslint-disable-next-line default-case
-          switch (buttonIndex) {
-            case 0:
-              Clipboard.setString(message.text)
-              break
-          }
-        },
+        (buttonIndex) => {},
       )
     }
   }
@@ -430,6 +428,18 @@ function Chat({ route, navigation }) {
         // alwaysShowSend
         renderSend={renderSend}
         renderLoading={renderLoading}
+        text={enteredText}
+        onInputTextChanged={(text) => {
+          if (VALID.messageText(text)) {
+            setEnteredText(text)
+          } else {
+            Toast.show({
+              text1: 'message 1-1024 characters',
+              type: 'error',
+              topOffset,
+            })
+          }
+        }}
         // scrollToBottomComponent={scrollToBottomComponent}
         infiniteScroll
         loadEarlier

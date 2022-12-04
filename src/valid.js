@@ -61,4 +61,8 @@ export const VALID = {
   feedbackText: function (param) {
     return /^(.|\s){4,2000}$/.test(param)
   },
+
+  messageText: function (param) {
+    return /^(.|\s){0,1024}$/.test(param)
+  },
 }
