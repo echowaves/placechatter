@@ -14,7 +14,6 @@ import {
   ScrollView,
   View,
   ActivityIndicator,
-  Clipboard,
 } from 'react-native'
 
 import {
@@ -162,9 +161,28 @@ function Chat({ route, navigation }) {
   const onPress = (context, message) => {
     if (message?.text) {
       const options = ['Delete', 'Report Abuse', 'Cancel']
+      const destructiveButtonIndex = 0
+      const cancelButtonIndex = 2
+
+      const icons = [
+        <FontAwesome
+          name="trash"
+          size={20}
+          style={{ color: CONSTS.MAIN_COLOR }}
+        />,
+        <FontAwesome
+          name="ban"
+          size={20}
+          // style={{ color: CONSTS.MAIN_COLOR }}
+        />,
+        <FontAwesome
+          name="remove"
+          size={20}
+          // style={{ color: CONSTS.MAIN_COLOR }}
+        />,
+      ]
+
       // const cancelButtonIndex = options.length - 1
-      const cancelButtonIndex = 0
-      const destructiveButtonIndex = 1
       context.actionSheet().showActionSheetWithOptions(
         {
           title: `${message.text.slice(0, 100)} ${
@@ -173,8 +191,22 @@ function Chat({ route, navigation }) {
           options,
           cancelButtonIndex,
           destructiveButtonIndex,
+          icons,
         },
-        (buttonIndex) => {},
+        (buttonIndex) => {
+          switch (buttonIndex) {
+            case destructiveButtonIndex:
+              // Delete
+              break
+
+            case 1:
+              // Report Abuse
+              break
+
+            case cancelButtonIndex:
+            // Canceled
+          }
+        },
       )
     }
   }
