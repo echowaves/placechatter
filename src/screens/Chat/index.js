@@ -167,7 +167,9 @@ function Chat({ route, navigation }) {
       const destructiveButtonIndex = 1
       context.actionSheet().showActionSheetWithOptions(
         {
-          title: `${message.text}`,
+          title: `${message.text.slice(0, 100)} ${
+            message.text.length > 100 ? '...' : ''
+          }`,
           options,
           cancelButtonIndex,
           destructiveButtonIndex,
