@@ -204,7 +204,11 @@ function Chat({ route, navigation }) {
               break
 
             case cancelButtonIndex:
+              break
+
             // Canceled
+            default:
+              break
           }
         },
       )
