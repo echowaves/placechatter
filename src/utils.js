@@ -1340,6 +1340,7 @@ export async function messageList({
               messageText
               createdAt
               nickName
+              deleted
             }
           }
         `,

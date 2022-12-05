@@ -30,7 +30,7 @@ import {
 
 // import * as FileSystem from 'expo-file-system'
 import Toast from 'react-native-toast-message'
-import { GiftedChat, Send } from 'react-native-gifted-chat'
+import { GiftedChat, Send, Bubble, MessageText } from 'react-native-gifted-chat'
 import { useDimensions } from '@react-native-community/hooks'
 
 import dayjs from 'dayjs'
@@ -498,14 +498,67 @@ function Chat({ route, navigation }) {
     // console.log({ isSubscribed })
   }, [isSubscribed])
 
+  const renderBubble = (props) => {
+    // console.log(props.currentMessage.deleted)
+    if (props.currentMessage.deleted === false) return <Bubble {...props} />
+    return (
+      <Bubble
+        {...props}
+        textStyle={{
+          right: {
+            color: 'black',
+            fontSize: '10',
+          },
+        }}
+        wrapperStyle={{
+          right: {
+            backgroundColor: 'grey',
+            marginRight: 5,
+            marginVertical: 5,
+          },
+          left: {
+            marginVertical: 5,
+          },
+        }}
+      />
+    )
+  }
+  const renderMessageText = (props) => {
+    // console.log(props.currentMessage.deleted)
+    if (props.currentMessage.deleted === false)
+      return <MessageText {...props} />
+
+    return (
+      <MessageText
+        {...props}
+        textStyle={{
+          right: {
+            color: 'lightgrey',
+            fontSize: '10',
+          },
+          left: {
+            color: 'grey',
+            fontSize: '10',
+          },
+        }}
+        wrapperStyle={{
+          right: {
+            backgroundColor: 'grey',
+            marginRight: 5,
+            marginVertical: 5,
+          },
+          left: {
+            marginVertical: 5,
+          },
+        }}
+      />
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <GiftedChat
         ref={chatRef}
-        // shouldUpdateMessage={() => true}
-        // shouldUpdateMessage={(props, nextProps) =>
-        //   props.extraData !== nextProps.extraData
-        // }
         messages={messages}
         onSend={(sentMessages) => onSend(sentMessages)}
         onPress={(context, message) => onPress(context, message)}
@@ -515,6 +568,8 @@ function Chat({ route, navigation }) {
         // alwaysShowSend
         renderSend={renderSend}
         renderLoading={renderLoading}
+        // renderBubble={renderBubble}
+        renderMessageText={renderMessageText}
         text={enteredText}
         onInputTextChanged={(text) => {
           if (VALID.messageText(text)) {
