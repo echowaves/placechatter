@@ -52,6 +52,8 @@ import { VALID } from '../../valid'
 import subscriptionClient from '../../subscriptionClientWs'
 
 function Chat({ route, navigation }) {
+  const chatRef = useRef(null)
+
   // const navigation = useNavigation()
   const { chatUuid, chatName } = route.params
   const { authContext } = useContext(CONSTS.AuthContext)
@@ -71,7 +73,10 @@ function Chat({ route, navigation }) {
   // const { showActionSheetWithOptions } = useActionSheet()
 
   const topOffset = height / 3
-
+  const resetMessages = async (newMessages) => {
+    await setMessages([])
+    await setMessages([...newMessages])
+  }
   useEffect(() => {
     // console.log(`subscribing to ${chatUuid}`)
     // add subscription listener
@@ -85,6 +90,7 @@ function Chat({ route, navigation }) {
             nickName
             messageText
             createdAt
+            deleted
           }
         }
       `,
@@ -106,21 +112,32 @@ function Chat({ route, navigation }) {
         const { onSendMessage } = data?.data
         const receivedMessage = UTILS.messageMapper(onSendMessage)
         // this is new message
-        if (
-          // eslint-disable-next-line no-underscore-dangle
-          messages.filter((message) => message._id === receivedMessage._id)
-            .length === 0
-        ) {
-          setMessages((previousMessages) =>
-            GiftedChat.append(previousMessages, [receivedMessage]),
-          )
+        const prevMessages = chatRef.current.state.messages
+
+        // console.log({ messages: chatRef.current.state.messages })
+
+        if (receivedMessage.deleted === false) {
+          // subscribe to chat only for new messages
+          UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
+          // this is new message -- append
+          setMessages(GiftedChat.append(prevMessages, [receivedMessage]))
         } else {
-          // received a message which already in the chat, potential update
-          console.log('message updating')
-          // update messages here
+          const updatedMessages = prevMessages.map((message) => {
+            // eslint-disable-next-line no-underscore-dangle
+            if (message._id === receivedMessage._id) {
+              return {
+                ...message,
+                messageText: '...deleted...',
+                text: '...deleted...',
+              }
+            }
+            return { ...message }
+          })
+          setMessages(GiftedChat.append(undefined, updatedMessages))
+
+          // resetMessages([...updatedMessages])
+          // setMessages(GiftedChat.append(prevMessages, [receivedMessage]))
         }
-        // update read counts
-        UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
       },
       error(error) {
         console.error('observableObject:: subscription error', { error })
@@ -157,6 +174,39 @@ function Chat({ route, navigation }) {
       // console.log(`unsubscribing from ${chatUuid}`)
     }
   }, [])
+
+  const deleteMessage = async ({ message }) => {
+    try {
+      const { text, createdAt, _id } = message
+
+      // console.log({ message })
+
+      const returnedMessage = await UTILS.messageSend({
+        uuid,
+        phoneNumber,
+        token,
+        messageUuid: _id,
+        chatUuid,
+        messageText: 'ignored',
+        deleted: true,
+      })
+      // if (returnedMessage) {
+      //   // setMessages([])
+      //   setMessages((previousMessages) =>
+      //     GiftedChat.append(previousMessages, [returnedMessage]),
+      //   )
+      // }
+      // setIsSubscribed(true)
+    } catch (e) {
+      console.log('failed to send message: ', { e })
+      Toast.show({
+        text1: `Failed to delete message:`,
+        text2: `${e}`,
+        type: 'error',
+        topOffset,
+      })
+    }
+  }
 
   const onPress = (context, message) => {
     if (message?.text) {
@@ -197,10 +247,22 @@ function Chat({ route, navigation }) {
           switch (buttonIndex) {
             case destructiveButtonIndex:
               // Delete
+              deleteMessage({
+                message,
+              })
               break
 
             case 1:
               // Report Abuse
+              // reportAbuse({
+              //   uuid,
+              //   phoneNumber,
+              //   token,
+              //   messageUuid,
+              //   chatUuid,
+              //   messageText,
+              //   deleted,
+              // })
               break
 
             case cancelButtonIndex:
@@ -230,6 +292,7 @@ function Chat({ route, navigation }) {
           messageUuid: _id,
           chatUuid,
           messageText: text,
+          deleted: false,
         })
         // if (returnedMessage) {
         //   // setMessages([])
@@ -457,6 +520,11 @@ function Chat({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <GiftedChat
+        ref={chatRef}
+        // shouldUpdateMessage={() => true}
+        // shouldUpdateMessage={(props, nextProps) =>
+        //   props.extraData !== nextProps.extraData
+        // }
         messages={messages}
         onSend={(sentMessages) => onSend(sentMessages)}
         onPress={(context, message) => onPress(context, message)}

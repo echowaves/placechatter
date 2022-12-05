@@ -1294,7 +1294,9 @@ export function messageMapper(message) {
   return {
     ...message,
     _id: message.messageUuid,
-    text: message.messageText,
+    text: message.deleted === true ? '...deleted...' : message.messageText,
+    messageText:
+      message.deleted === true ? '...deleted...' : message.messageText,
     // pending: message.pending,
     createdAt: message.createdAt,
     user: {
@@ -1375,6 +1377,7 @@ export async function messageSend({
   messageUuid,
   chatUuid,
   messageText,
+  deleted,
 }) {
   try {
     // console.log({
@@ -1396,6 +1399,7 @@ export async function messageSend({
             $messageUuidArg: String!
             $chatUuidArg: String!
             $messageTextArg: String!
+            $deletedArg: Boolean!
           ) {
             messageSend(
               uuidArg: $uuidArg
@@ -1404,6 +1408,7 @@ export async function messageSend({
               messageUuidArg: $messageUuidArg
               chatUuidArg: $chatUuidArg
               messageTextArg: $messageTextArg
+              deletedArg: $deletedArg
             ) {
               chatUuid
               messageUuid
@@ -1411,6 +1416,7 @@ export async function messageSend({
               nickName
               messageText
               createdAt
+              deleted
             }
           }
         `,
@@ -1421,6 +1427,7 @@ export async function messageSend({
           messageUuidArg: messageUuid,
           chatUuidArg: chatUuid,
           messageTextArg: messageText,
+          deletedArg: deleted,
         },
       })
     ).data.messageSend
@@ -1466,11 +1473,11 @@ export async function unreadCountReset({ uuid, phoneNumber, token, chatUuid }) {
         },
       })
     ).data.unreadCountReset
-  } catch (err030) {
-    console.log({ err030 })
+  } catch (err035) {
+    console.log({ err035 })
     Toast.show({
       text2: 'Unable to reset message count',
-      text1: err030.toString(),
+      text1: err035.toString(),
       type: 'error',
       topOffset,
     })
