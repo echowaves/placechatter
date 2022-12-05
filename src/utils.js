@@ -1294,9 +1294,9 @@ export function messageMapper(message) {
   return {
     ...message,
     _id: message.messageUuid,
-    text: message.deleted === true ? '...deleted...' : message.messageText,
-    messageText:
-      message.deleted === true ? '...deleted...' : message.messageText,
+    text: message.messageText,
+    // messageText:
+    //   message.deleted === true ? '...deleted...' : message.messageText,
     // pending: message.pending,
     createdAt: message.createdAt,
     user: {

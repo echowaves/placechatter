@@ -73,10 +73,7 @@ function Chat({ route, navigation }) {
   // const { showActionSheetWithOptions } = useActionSheet()
 
   const topOffset = height / 3
-  const resetMessages = async (newMessages) => {
-    await setMessages([])
-    await setMessages([...newMessages])
-  }
+
   useEffect(() => {
     // console.log(`subscribing to ${chatUuid}`)
     // add subscription listener
@@ -111,11 +108,11 @@ function Chat({ route, navigation }) {
         // eslint-disable-next-line no-unsafe-optional-chaining
         const { onSendMessage } = data?.data
         const receivedMessage = UTILS.messageMapper(onSendMessage)
-        // this is new message
+        // console.log({ onSendMessage })
+        // console.log({ receivedMessage })
+
         const prevMessages = chatRef.current.state.messages
-
-        // console.log({ messages: chatRef.current.state.messages })
-
+        // this is new message
         if (receivedMessage.deleted === false) {
           // subscribe to chat only for new messages
           UTILS.unreadCountReset({ uuid, phoneNumber, token, chatUuid })
@@ -125,13 +122,9 @@ function Chat({ route, navigation }) {
           const updatedMessages = prevMessages.map((message) => {
             // eslint-disable-next-line no-underscore-dangle
             if (message._id === receivedMessage._id) {
-              return {
-                ...message,
-                messageText: '...deleted...',
-                text: '...deleted...',
-              }
+              return receivedMessage // this message is modified
             }
-            return { ...message }
+            return message
           })
           setMessages(GiftedChat.append(undefined, updatedMessages))
 
@@ -190,13 +183,6 @@ function Chat({ route, navigation }) {
         messageText: 'ignored',
         deleted: true,
       })
-      // if (returnedMessage) {
-      //   // setMessages([])
-      //   setMessages((previousMessages) =>
-      //     GiftedChat.append(previousMessages, [returnedMessage]),
-      //   )
-      // }
-      // setIsSubscribed(true)
     } catch (e) {
       console.log('failed to send message: ', { e })
       Toast.show({
@@ -294,12 +280,7 @@ function Chat({ route, navigation }) {
           messageText: text,
           deleted: false,
         })
-        // if (returnedMessage) {
-        //   // setMessages([])
-        //   setMessages((previousMessages) =>
-        //     GiftedChat.append(previousMessages, [returnedMessage]),
-        //   )
-        // }
+
         setIsSubscribed(true)
       } catch (e) {
         console.log('failed to send message: ', { e })
