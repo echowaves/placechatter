@@ -53,6 +53,7 @@ import subscriptionClient from '../../subscriptionClientWs'
 
 function Chat({ route, navigation }) {
   const chatRef = useRef(null)
+  const self = this
 
   // const navigation = useNavigation()
   const { chatUuid, chatName } = route.params
@@ -168,7 +169,7 @@ function Chat({ route, navigation }) {
     }
   }, [])
 
-  const deleteMessage = async ({ message }) => {
+  const handleDelete = async ({ message }) => {
     try {
       const { text, createdAt, _id } = message
 
@@ -195,7 +196,7 @@ function Chat({ route, navigation }) {
   }
 
   const onPress = (context, message) => {
-    if (message?.text) {
+    if (message?.text && !message?.deleted) {
       const options = ['Delete', 'Report Abuse', 'Cancel']
       const destructiveButtonIndex = 0
       const cancelButtonIndex = 2
@@ -233,13 +234,24 @@ function Chat({ route, navigation }) {
           switch (buttonIndex) {
             case destructiveButtonIndex:
               // Delete
-              deleteMessage({
-                message,
-              })
+              Alert.alert('Delete message', 'Are you sure?', [
+                {
+                  text: 'Delete',
+                  onPress: () => handleDelete({ message }),
+                },
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel',
+                },
+              ])
+
               break
 
             case 1:
               // Report Abuse
+              // handleReportAbuse({ message })
+
               // reportAbuse({
               //   uuid,
               //   phoneNumber,
