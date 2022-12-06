@@ -98,7 +98,7 @@ function Place({ route, navigation }) {
           <Text
             style={{
               fontSize: 10,
-              fontWeight: '300',
+              fontWeight: 300,
             }}
           >
             edit

@@ -365,7 +365,7 @@ function Chat({ route, navigation }) {
       <Text
         style={{
           fontSize: 10,
-          fontWeight: '300',
+          fontWeight: 300,
         }}
       >
         {isSubscribed ? 'subscribed' : 'unsubscribed'}
@@ -541,7 +541,7 @@ function Chat({ route, navigation }) {
         textStyle={{
           right: {
             color: 'black',
-            fontSize: '10',
+            fontSize: 10,
           },
         }}
         wrapperStyle={{
@@ -568,11 +568,11 @@ function Chat({ route, navigation }) {
         textStyle={{
           right: {
             color: 'lightgrey',
-            fontSize: '10',
+            fontSize: 10,
           },
           left: {
             color: 'grey',
-            fontSize: '10',
+            fontSize: 10,
           },
         }}
         wrapperStyle={{
