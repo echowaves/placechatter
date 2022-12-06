@@ -63,14 +63,14 @@ function PhoneCheck({ navigation }) {
     }
   }
 
-  useEffect(() => {
-    Toast.show({
-      text1: 'Need to confirm your phone number',
-      // text2: err01.toString(),
-      type: 'error',
-      topOffset,
-    })
-  }, [])
+  // useEffect(() => {
+  //   Toast.show({
+  //     text1: 'Need to confirm your phone number',
+  //     // text2: err01.toString(),
+  //     type: 'error',
+  //     topOffset,
+  //   })
+  // }, [])
 
   useEffect(() => {
     // console.log({ smsCode, nickName })
