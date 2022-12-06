@@ -195,6 +195,28 @@ function Chat({ route, navigation }) {
     }
   }
 
+  const handleReportAbuse = async ({ message }) => {
+    try {
+      const { text, createdAt, _id } = message
+
+      // console.log({ message })
+
+      const returnedMessage = await UTILS.abuseReportCreate({
+        uuid,
+        phoneNumber,
+        token,
+        messageUuid: _id,
+      })
+    } catch (e) {
+      Toast.show({
+        text1: `Failed to report abuse:`,
+        text2: `${e}`,
+        type: 'error',
+        topOffset,
+      })
+    }
+  }
+
   const onPress = (context, message) => {
     if (message?.text && !message?.deleted) {
       const options = ['Delete', 'Report Abuse', 'Cancel']
@@ -245,22 +267,22 @@ function Chat({ route, navigation }) {
                   style: 'cancel',
                 },
               ])
-
               break
 
             case 1:
               // Report Abuse
-              // handleReportAbuse({ message })
 
-              // reportAbuse({
-              //   uuid,
-              //   phoneNumber,
-              //   token,
-              //   messageUuid,
-              //   chatUuid,
-              //   messageText,
-              //   deleted,
-              // })
+              Alert.alert('Report message', 'Are you sure?', [
+                {
+                  text: 'Report Abuse',
+                  onPress: () => handleReportAbuse({ message }),
+                },
+                {
+                  text: 'Cancel',
+                  onPress: () => null,
+                  style: 'cancel',
+                },
+              ])
               break
 
             case cancelButtonIndex:

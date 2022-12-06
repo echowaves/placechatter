@@ -1656,3 +1656,49 @@ export async function chatUnsubscribe({ uuid, phoneNumber, token, chatUuid }) {
     })
   }
 }
+
+export async function abuseReportCreate({
+  uuid,
+  phoneNumber,
+  token,
+  messageUuid,
+}) {
+  try {
+    await CONSTS.gqlClient.mutate({
+      mutation: gql`
+        mutation abuseReportCreate(
+          $uuid: String
+          $phoneNumber: String
+          $token: String
+          $messageUuid: String!
+        ) {
+          abuseReportCreate(
+            uuid: $uuid
+            phoneNumber: $phoneNumber
+            token: $token
+            messageUuid: $messageUuid
+          )
+        }
+      `,
+      variables: {
+        uuid,
+        phoneNumber,
+        token,
+        messageUuid,
+      },
+    })
+    Toast.show({
+      text1: 'Report submitted',
+      type: 'info',
+      topOffset,
+    })
+  } catch (err035) {
+    // console.log({ err033 })
+    Toast.show({
+      text1: 'Unable to submit abuse report',
+      text2: err035.toString(),
+      type: 'error',
+      topOffset,
+    })
+  }
+}
