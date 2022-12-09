@@ -41,7 +41,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: 'com.echowaves.placechatter',
-      buildNumber: '27',
+      buildNumber: '28',
       supportsTablet: false,
       associatedDomains: ['applinks:link.placechatter.com'],
       config: {
@@ -53,11 +53,11 @@ export default {
       infoPlist: {
         UIBackgroundModes: ['fetch'],
         NSLocationAlwaysUsageDescription:
-          'We need to know your location so that we can show you places in your area.',
+          'By sharing your location, you allow PlaceChatter to show places near your. Your location is never used for tracking and never shared with other parties',
         NSLocationWhenInUseUsageDescription:
-          'You need to enable your location, in order to see places that are closest to you.',
+          'By sharing your location, you allow PlaceChatter to show places near your. Your location is never used for tracking and never shared with other parties',
         NSLocationAlwaysAndWhenInUseUsageDescription:
-          'You need to enable your location, in order to see places that are closest to you.',
+          'By sharing your location, you allow PlaceChatter to show places near your. Your location is never used for tracking and never shared with other parties',
         NSMotionUsageDescription:
           'This will help us to improve the relevance of places that you can see related to you location.',
         NSPhotoLibraryAddUsageDescription:
@@ -74,7 +74,7 @@ export default {
         backgroundColor: '#FFFFFF',
       },
       package: 'com.echowaves.placechatter',
-      versionCode: 27,
+      versionCode: 28,
       permissions: [
         'INTERNET',
         'SYSTEM_ALERT_WINDOW',
