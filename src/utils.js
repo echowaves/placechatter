@@ -1526,7 +1526,7 @@ export async function unreadCounts({ uuid, phoneNumber, token }) {
 
     return chatPhones
   } catch (err031) {
-    // console.log({ err027 })
+    console.log({ err031 })
     Toast.show({
       text1: 'Unable to load unread counts',
       text2: err031.toString(),

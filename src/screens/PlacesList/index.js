@@ -81,11 +81,12 @@ function PlacesList({ navigation }) {
         setUnreadCounts(null)
         return []
       }
-      const loadedChatPhones = await UTILS.unreadCounts({
-        uuid,
-        phoneNumber,
-        token,
-      })
+      const loadedChatPhones =
+        (await UTILS.unreadCounts({
+          uuid,
+          phoneNumber,
+          token,
+        })) || []
 
       // console.log({ loadedChatPhones })
       const counts = loadedChatPhones.reduce(
