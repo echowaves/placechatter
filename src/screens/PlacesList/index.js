@@ -29,6 +29,7 @@ import {
   ListItem,
   Avatar,
 } from '@rneui/themed'
+import * as Linking from 'expo-linking'
 
 import Spinner from 'react-native-loading-spinner-overlay'
 
@@ -54,6 +55,7 @@ function PlacesList({ navigation }) {
   const topOffset = height / 3
 
   const [isTandcAccepted, setIsTandcAccepted] = useState(false)
+  const [isLocationEnabled, setIsLocationEnabled] = useState(false)
 
   const [places, setPlaces] = useState()
   const [refreshing, setRefreshing] = useState(false)
@@ -61,15 +63,20 @@ function PlacesList({ navigation }) {
   const [chatsPhones, setChatsPhones] = useState()
 
   const init = async () => {
-    try {
-      setIsTandcAccepted(
-        (await SecureStore.getItemAsync(CONSTS.IS_TANDC_ACCEPTED_KEY)) ===
-          'true',
-      )
-    } catch (err) {
-      console.log('failed to setIsTandcAccepted')
+    setIsTandcAccepted(
+      (await SecureStore.getItemAsync(CONSTS.IS_TANDC_ACCEPTED_KEY)) === 'true',
+    )
+    const { status } = await Location.requestForegroundPermissionsAsync()
+    // console.log({ status })
+    if (status === 'granted') {
+      setIsLocationEnabled()
+      setIsLocationEnabled(true)
     }
   }
+
+  // useEffect(() => {
+  //   init()
+  // }, [])
 
   const renderHeaderRight = () => null
   const renderHeaderLeft = () => {}
@@ -112,46 +119,67 @@ function PlacesList({ navigation }) {
 
   const load = async () => {
     setPlaces(null)
-    let location
+    // console.log({ isLocationEnabled })
     try {
-      location = await UTILS.getLocation()
+      if (isLocationEnabled) {
+        // console.log('loading')
+
+        const location = await UTILS.getLocation()
+        if (location) {
+          const { latitude, longitude } = location.coords
+          try {
+            const cp = await badgeLoad()
+            // console.log({ cp })
+            setChatsPhones(cp)
+            const loadedPlaces = await UTILS.placesFeed({ latitude, longitude })
+            // console.log({ loadedPlaces })
+            // console.log('loadedPlaces.length:', loadedPlaces.length)
+            setPlaces(loadedPlaces)
+
+            // console.log({ places: JSON.stringify(loadedPlaces) })
+          } catch (err9) {
+            console.log({ err9 })
+            console.log('failed to load places')
+            Toast.show({
+              text1: 'Unable to load Places',
+              text2: err9.toString(),
+              type: 'error',
+              topOffset,
+            })
+          }
+        }
+      }
     } catch (err) {
+      setIsLocationEnabled(false)
       Toast.show({
         text1: 'Unable to get location',
-        type: 'error',
-        topOffset,
-      })
-      return
-    }
-
-    const { latitude, longitude } = location.coords
-    try {
-      const cp = await badgeLoad()
-      // console.log({ cp })
-      setChatsPhones(cp)
-      const loadedPlaces = await UTILS.placesFeed({ latitude, longitude })
-      // console.log({ loadedPlaces })
-      // console.log('loadedPlaces.length:', loadedPlaces.length)
-      setPlaces(loadedPlaces)
-
-      // console.log({ places: JSON.stringify(loadedPlaces) })
-    } catch (err9) {
-      console.log({ err9 })
-      console.log('failed to load places')
-      Toast.show({
-        text1: 'Unable to load Places',
-        text2: err9.toString(),
         type: 'error',
         topOffset,
       })
     }
   }
 
+  useEffect(() => {
+    load()
+  }, [isLocationEnabled])
+
   const onRefresh = useCallback(() => {
+    // if (!isLocationEnabled) {
+    //   init()
+    // }
     setRefreshing(true)
+    init()
     load()
     setRefreshing(false)
   }, [])
+
+  // useEffect(() => {
+  //   // setRefreshing(true)
+  //   if (isLocationEnabled) {
+  //     load()
+  //   }
+  //   // setRefreshing(false)
+  // }, [isLocationEnabled])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -240,6 +268,47 @@ function PlacesList({ navigation }) {
                 }}
               />
             </ListItem>
+          </Card>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
+
+  if (!isLocationEnabled) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          // extraData={selectedId}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Card>
+            <Text
+              style={{
+                color: CONSTS.MAIN_COLOR,
+              }}
+            >
+              PlaceChatter shows you place nearest to your current location.
+            </Text>
+          </Card>
+
+          <Card>
+            <Text
+              style={{
+                color: CONSTS.MAIN_COLOR,
+              }}
+            >
+              You must enable Location in Settings and Try Again.
+            </Text>
+          </Card>
+          <Card>
+            <Button
+              onPress={() => Linking.openSettings()}
+              color={CONSTS.MAIN_COLOR}
+            >
+              Open Settings
+            </Button>
           </Card>
         </ScrollView>
       </SafeAreaView>

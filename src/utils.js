@@ -28,28 +28,22 @@ export async function checkPermission({
           Linking.openSettings()
         },
       },
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
     ])
   }
   return status
 }
 
 export async function getLocation() {
-  const locationPermission = await checkPermission({
-    permissionFunction: Location.requestForegroundPermissionsAsync,
-    alertHeader:
-      'PlaceChatter shows you place nearest to your current location.',
-    alertBody: 'You need to enable Location in Settings and Try Again.',
+  const location = await Location.getCurrentPositionAsync({
+    accuracy: Location.Accuracy.BestForNavigation,
   })
-
-  if (locationPermission === 'granted') {
-    const location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.BestForNavigation,
-    })
-    // console.log({ location })
-    return location
-    // initially set the location that is last known -- works much faster this way
-  }
-  return null
+  // console.log({ location })
+  return location
 }
 
 async function storeUUID(uuid) {

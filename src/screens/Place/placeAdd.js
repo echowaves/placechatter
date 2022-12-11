@@ -62,6 +62,7 @@ function PlaceAdd({ navigation }) {
           topOffset,
         })
       }
+      console.log({ location })
       if (location) {
         const { latitude, longitude } = location.coords
 

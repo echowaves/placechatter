@@ -132,14 +132,16 @@ function MyChats({ navigation }) {
   if (chatsList.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text
-          style={{
-            color: CONSTS.MAIN_COLOR,
-          }}
-        >
-          You do not follow any chats yet. Start chatting in some place to see a
-          list of your chats here.
-        </Text>
+        <Card>
+          <Text
+            style={{
+              color: CONSTS.MAIN_COLOR,
+            }}
+          >
+            You do not follow any chats yet. Start chatting in some place to see
+            a list of your chats here.
+          </Text>
+        </Card>
       </SafeAreaView>
     )
   }

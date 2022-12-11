@@ -629,7 +629,9 @@ function PlaceCardEdit({ route, navigation }) {
             size="lg"
             iconRight
             color={
-              canSubmit && !unchanged ? CONSTS.MAIN_COLOR : CONSTS.SECONDARY_COLOR
+              canSubmit && !unchanged
+                ? CONSTS.MAIN_COLOR
+                : CONSTS.SECONDARY_COLOR
             }
           >
             {`  Save Card`}
