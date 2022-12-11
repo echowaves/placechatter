@@ -37,7 +37,7 @@ export async function getLocation() {
   const locationPermission = await checkPermission({
     permissionFunction: Location.requestForegroundPermissionsAsync,
     alertHeader:
-      'Placechatter shows you place closest on your current location.',
+      'PlaceChatter shows you place nearest to your current location.',
     alertBody: 'You need to enable Location in Settings and Try Again.',
   })
 
