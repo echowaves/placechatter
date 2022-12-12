@@ -23,7 +23,10 @@ import {
   View,
   RefreshControl,
   InteractionManager,
+  TouchableOpacity,
 } from 'react-native'
+
+import { useActionSheet } from '@expo/react-native-action-sheet'
 
 import Markdown from 'react-native-markdown-display'
 
@@ -78,6 +81,9 @@ function Place({ route, navigation }) {
   const [showSpinner, setShowSpinner] = useState(false)
 
   const { width, height } = useDimensions().window
+
+  const { showActionSheetWithOptions } = useActionSheet()
+
   const topOffset = height / 3
 
   const renderHeaderRight = () => {
@@ -318,6 +324,75 @@ function Place({ route, navigation }) {
   // console.log({ canEdit })
   // console.log('re-render')
   const { uuid, phoneNumber, token } = authContext
+  const handleReportAbuse = async () => {
+    try {
+      // console.log({ message })
+      const returnedMessage = await UTILS.messageSend({
+        uuid,
+        phoneNumber,
+        token,
+
+        messageUuid: uuidv4(),
+        chatUuid: placeChat.chatUuid,
+        messageText: 'this place has been reported',
+        deleted: false,
+      })
+      // console.log({ returnedMessage })
+      await UTILS.abuseReportCreate({
+        uuid,
+        phoneNumber,
+        token,
+        messageUuid: returnedMessage.messageUuid,
+      })
+    } catch (e) {
+      console.log('failed to report place: ', { e })
+      Toast.show({
+        text1: `Failed to report place:`,
+        text2: `${e}`,
+        type: 'error',
+        topOffset,
+      })
+    }
+  }
+
+  const onCardPress = () => {
+    const options = ['Report Place', 'Cancel']
+    const destructiveButtonIndex = 0
+    const cancelButtonIndex = 1
+    showActionSheetWithOptions(
+      {
+        // title: `${currentPlace?.place?.placeName}`,
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      (selectedIndex) => {
+        switch (selectedIndex) {
+          case destructiveButtonIndex:
+            // Delete
+            Alert.alert('Report this place', 'Are you sure?', [
+              {
+                text: 'Report',
+                onPress: () => handleReportAbuse(),
+              },
+              {
+                text: 'Cancel',
+                onPress: () => null,
+                style: 'cancel',
+              },
+            ])
+            break
+
+          case cancelButtonIndex:
+            break
+
+          // Canceled
+          default:
+            break
+        }
+      },
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -392,84 +467,86 @@ function Place({ route, navigation }) {
 
           return (
             <Card key={index}>
-              <Card.Title>{card.cardTitle}</Card.Title>
-              {card?.photo && <Photo photo={card?.photo} />}
-              <Markdown style={markdownStyles}>{card.cardText}</Markdown>
-              {canEdit && (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    alignContent: 'space-around',
-                  }}
-                >
-                  {index > 0 && (
-                    <Icon
-                      name="arrow-up"
-                      type="font-awesome-5"
-                      color={CONSTS.MAIN_COLOR}
-                      onPress={async () => {
-                        setShowSpinner(true)
-                        await UTILS.placeCardSwap({
-                          uuid,
-                          phoneNumber,
-                          token,
-
-                          placeUuid,
-
-                          cardUuid1: card.cardUuid,
-                          cardUuid2: currentPlace.cards[index - 1].cardUuid,
-                        })
-                        setShowSpinner(false)
-                        refresh()
-                      }}
-                    />
-                  )}
-                  {!(index > 0) && <Text>{`   `}</Text>}
-
-                  <Button
-                    onPress={() => {
-                      navigation.navigate('PlaceCardEdit', {
-                        placeUuid,
-                        cardUuid: card.cardUuid,
-                      })
+              <TouchableOpacity onPress={onCardPress}>
+                <Card.Title>{card.cardTitle}</Card.Title>
+                {card?.photo && <Photo photo={card?.photo} />}
+                <Markdown style={markdownStyles}>{card.cardText}</Markdown>
+                {canEdit && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      alignContent: 'space-around',
                     }}
-                    size="sm"
-                    color={CONSTS.MAIN_COLOR}
-                    iconRight
                   >
-                    {`  Edit Card`}
-                    <Icon name="edit" color="white" />
-                  </Button>
+                    {index > 0 && (
+                      <Icon
+                        name="arrow-up"
+                        type="font-awesome-5"
+                        color={CONSTS.MAIN_COLOR}
+                        onPress={async () => {
+                          setShowSpinner(true)
+                          await UTILS.placeCardSwap({
+                            uuid,
+                            phoneNumber,
+                            token,
 
-                  {index < currentPlace.cards.length - 1 && (
-                    <Icon
-                      name="arrow-down"
-                      type="font-awesome-5"
-                      color={CONSTS.MAIN_COLOR}
-                      onPress={async () => {
-                        setShowSpinner(true)
-                        await UTILS.placeCardSwap({
-                          uuid,
-                          phoneNumber,
-                          token,
+                            placeUuid,
 
+                            cardUuid1: card.cardUuid,
+                            cardUuid2: currentPlace.cards[index - 1].cardUuid,
+                          })
+                          setShowSpinner(false)
+                          refresh()
+                        }}
+                      />
+                    )}
+                    {!(index > 0) && <Text>{`   `}</Text>}
+
+                    <Button
+                      onPress={() => {
+                        navigation.navigate('PlaceCardEdit', {
                           placeUuid,
-
-                          cardUuid1: card.cardUuid,
-                          cardUuid2: currentPlace.cards[index + 1].cardUuid,
+                          cardUuid: card.cardUuid,
                         })
-                        setShowSpinner(false)
-                        refresh()
                       }}
-                    />
-                  )}
-                  {!(index < currentPlace.cards.length - 1) && (
-                    <Text>{`   `}</Text>
-                  )}
-                </View>
-              )}
+                      size="sm"
+                      color={CONSTS.MAIN_COLOR}
+                      iconRight
+                    >
+                      {`  Edit Card`}
+                      <Icon name="edit" color="white" />
+                    </Button>
+
+                    {index < currentPlace.cards.length - 1 && (
+                      <Icon
+                        name="arrow-down"
+                        type="font-awesome-5"
+                        color={CONSTS.MAIN_COLOR}
+                        onPress={async () => {
+                          setShowSpinner(true)
+                          await UTILS.placeCardSwap({
+                            uuid,
+                            phoneNumber,
+                            token,
+
+                            placeUuid,
+
+                            cardUuid1: card.cardUuid,
+                            cardUuid2: currentPlace.cards[index + 1].cardUuid,
+                          })
+                          setShowSpinner(false)
+                          refresh()
+                        }}
+                      />
+                    )}
+                    {!(index < currentPlace.cards.length - 1) && (
+                      <Text>{`   `}</Text>
+                    )}
+                  </View>
+                )}
+              </TouchableOpacity>
             </Card>
           )
         })}

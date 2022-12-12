@@ -27,6 +27,8 @@ import {
 // eslint-disable-next-line no-unused-vars
 import Toast from 'react-native-toast-message'
 
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'
+
 // eslint-disable-next-line no-unused-vars
 import { ThemeProvider } from '@rneui/themed'
 
@@ -281,7 +283,7 @@ function App() {
     </Stack.Navigator>
   )
   return (
-    <>
+    <ActionSheetProvider>
       <AuthContext.Provider value={{ authContext, setAuthContext }}>
         <ThemeProvider>
           <NavigationContainer>
@@ -290,7 +292,7 @@ function App() {
           <Toast />
         </ThemeProvider>
       </AuthContext.Provider>
-    </>
+    </ActionSheetProvider>
   )
 }
 export default App
