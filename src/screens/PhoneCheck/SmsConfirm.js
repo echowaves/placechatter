@@ -68,6 +68,12 @@ function SmsConfirm({ navigation }) {
   //   // Return the function to unsubscribe from the event so it gets removed on unmount
   //   return unsubscribe
   // }, [navigation])
+  useEffect(() => {
+    ;(async () => {
+      setNickName(await UTILS.getNickName())
+    })()
+  }, [])
+
   const back = () => {
     navigation.goBack()
     navigation.goBack()
@@ -94,13 +100,13 @@ function SmsConfirm({ navigation }) {
         await setAuthContext({ ...authContext, token, phoneNumber, nickName })
       } else {
         await UTILS.setToken('')
-        await UTILS.setPhoneNumber('')
-        await UTILS.setNickName('')
+        // await UTILS.setPhoneNumber('')
+        // await UTILS.setNickName('')
         await setAuthContext({
           ...authContext,
           token: '',
-          phoneNumber: '',
-          nickName: '',
+          // phoneNumber: '',
+          // nickName: '',
         })
       }
 
@@ -111,13 +117,13 @@ function SmsConfirm({ navigation }) {
     } catch (err3) {
       console.log({ err3 })
       await UTILS.setToken('')
-      await UTILS.setPhoneNumber('')
-      await UTILS.setNickName('')
+      // await UTILS.setPhoneNumber('')
+      // await UTILS.setNickName('')
       setAuthContext({
         ...authContext,
         token: '',
-        phoneNumber: '',
-        nickName: '',
+        // phoneNumber: '',
+        // nickName: '',
       })
       setSmsCode('')
 

@@ -63,14 +63,11 @@ function PhoneCheck({ navigation }) {
     }
   }
 
-  // useEffect(() => {
-  //   Toast.show({
-  //     text1: 'Need to confirm your phone number',
-  //     // text2: err01.toString(),
-  //     type: 'error',
-  //     topOffset,
-  //   })
-  // }, [])
+  useEffect(() => {
+    ;(async () => {
+      setPhoneNumber(await UTILS.getPhoneNumber())
+    })()
+  }, [])
 
   useEffect(() => {
     // console.log({ smsCode, nickName })
@@ -89,10 +86,10 @@ function PhoneCheck({ navigation }) {
       // console.log({ response })
       // alert(response)
       UTILS.setToken('')
-      UTILS.setPhoneNumber('')
-      UTILS.setNickName('')
+      UTILS.setPhoneNumber(phoneNumber)
+      // UTILS.setNickName('')
 
-      setAuthContext({ ...authContext, token: '', phoneNumber, nickName: '' })
+      setAuthContext({ ...authContext, token: '', phoneNumber })
 
       navigation.navigate('SmsConfirm')
     } catch (err) {

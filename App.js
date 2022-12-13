@@ -66,6 +66,7 @@ const { AuthContext } = CONSTS
 function App() {
   const [authContext, setAuthContext] = useState()
   const [nickName, setNickName] = useState()
+  const [token, setToken] = useState()
 
   const init = async () => {
     setAuthContext({
@@ -82,6 +83,7 @@ function App() {
 
   useEffect(() => {
     setNickName(authContext?.nickName)
+    setToken(authContext?.token)
   }, [authContext])
 
   const MainDrawNavigator = () => (
@@ -124,7 +126,7 @@ function App() {
               }}
             />
           ),
-          drawerLabel: nickName || 'confirm phone',
+          drawerLabel: token ? nickName : 'confirm phone',
           // headerShown: true,
         }}
       />

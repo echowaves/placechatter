@@ -467,7 +467,7 @@ function Place({ route, navigation }) {
 
           return (
             <Card key={index}>
-              <TouchableOpacity onPress={onCardPress}>
+              <TouchableOpacity onLongPress={onCardPress}>
                 <Card.Title>{card.cardTitle}</Card.Title>
                 {card?.photo && <Photo photo={card?.photo} />}
                 <Markdown style={markdownStyles}>{card.cardText}</Markdown>
