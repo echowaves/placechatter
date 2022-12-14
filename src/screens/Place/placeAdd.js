@@ -8,7 +8,7 @@ import * as Location from 'expo-location'
 import { StyleSheet, SafeAreaView } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { Input, LinearProgress, Card } from '@rneui/themed'
+import { Input, LinearProgress, Card, Text } from '@rneui/themed'
 
 import Spinner from 'react-native-loading-spinner-overlay'
 
