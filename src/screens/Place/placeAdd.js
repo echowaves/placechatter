@@ -302,6 +302,16 @@ function PlaceAdd({ navigation }) {
       />
       <KeyboardAwareScrollView>
         <Card>
+          <Text
+            style={{
+              color: CONSTS.MAIN_COLOR,
+            }}
+          >
+            Make sure you are located at the place your are creating. You will
+            not be able to change the address and the GEO location once created.
+          </Text>
+        </Card>
+        <Card>
           <Input
             label="Place Name"
             placeholder={`What do you call this place`}
