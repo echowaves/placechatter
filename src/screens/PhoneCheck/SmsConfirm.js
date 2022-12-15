@@ -256,7 +256,7 @@ function SmsConfirm({ navigation }) {
           focus={true}
           //   keyboardType="numeric"
           value={smsCode}
-          onChangeText={(value) => setSmsCode(value)}
+          onChangeText={(value) => setSmsCode(value.slice(0, 4))}
           autoCapitalize={'none'}
           autoComplete={'off'}
           autoCorrect={false}
