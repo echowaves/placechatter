@@ -123,8 +123,7 @@ function PlacesList({ navigation }) {
     try {
       if (isLocationEnabled) {
         // console.log('loading')
-
-        const location = await UTILS.getLocation()
+        const location = await UTILS.getLastLocation()
         if (location) {
           const { latitude, longitude } = location.coords
           try {

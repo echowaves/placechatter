@@ -46,6 +46,20 @@ export async function getLocation() {
   return location
 }
 
+export async function getLastLocation() {
+  let location = await Location.getLastKnownPositionAsync({
+    accuracy: Location.Accuracy.BestForNavigation,
+  })
+
+  if (!location) {
+    location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.BestForNavigation,
+    })
+  }
+  // console.log({ location })
+  return location
+}
+
 async function storeUUID(uuid) {
   // console.log('storing', { uuid })
   try {
